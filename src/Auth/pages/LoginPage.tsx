@@ -1,4 +1,4 @@
-import { TextField, Box, Typography } from "@mui/material";
+import { TextField, Box, Typography, Divider } from "@mui/material";
 import { useAuthStore, useForm } from "../../hooks";
 import Button from "@mui/material/Button";
 import { AuthLayout } from "../Layout/AuthLayout";
@@ -9,7 +9,8 @@ import { Link } from "react-router-dom";
 interface RegisterInterface {
   [key: string]: string | string[];
   email: string;
-  password: string; 
+  password: string;
+  campoTexto: string[];
 }
 
 export const LoginPage = () => {
@@ -17,6 +18,7 @@ export const LoginPage = () => {
     () => ({
       email: "",
       password: "",
+      campoTexto: ["1", "2"],
     }),
     []
   );
@@ -25,22 +27,21 @@ export const LoginPage = () => {
     () => ({
       password: [required],
       email: [required],
-      // campoTexto: [
-      //   (value: any) => {
-      //     console.log({ value });
-      //     if (value.length < 5) {
-      //       return "El valor tiene que ser minimo de 5 caracteres";
-      //     }
-      //     return "";
-      //   },
-      //   (value: any) => {
-      //     console.log({ value });
-      //     if (value.length < 6) {
-      //       return "El valor tiene que ser minimo de 6 caracteres";
-      //     }
-      //     return "";
-      //   },
-      // ],
+      campoTexto: [
+        required,
+        (a: string | string[]) => {
+          const res =
+            typeof a === "object" &&
+            a.some((campo: string) => {
+              return Number(campo) < 5;
+            });
+
+          if (res) {
+            return "Los campos tienen tener valor mayor a 5";
+          }
+          return "";
+        },
+      ],
     }),
     []
   );
@@ -53,6 +54,7 @@ export const LoginPage = () => {
     isFormInvalid,
     handleBlur,
     isFormInvalidSubmit,
+    setformValues,
   } = useForm(initialValues, config);
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,6 +99,30 @@ export const LoginPage = () => {
           helperText={errorValues.password.join(" - ")}
           onBlur={handleBlur}
         />
+        <Divider sx={{ mt: 2 }}>
+          <Typography color={"error"}>
+            {errorValues.campoTexto.join(" - ")}
+          </Typography>
+        </Divider>
+        {formValues.campoTexto.map((campo, index) => (
+          <TextField
+            key={index}
+            sx={{ mt: 1 }}
+            fullWidth
+            type="number"
+            label={`Campo ${index + 1}`}
+            value={campo}
+            error={errorValues.campoTexto.length > 0}
+            onBlur={handleBlur}
+            onChange={(e) => {
+              setformValues((prev) => {
+                let newCampos = prev.campoTexto;
+                newCampos[index] = e.target.value;
+                return { ...prev, campoTexto: newCampos };
+              });
+            }}
+          />
+        ))}
 
         <Button
           sx={{ mt: 2 }}
@@ -108,13 +134,13 @@ export const LoginPage = () => {
           SING IN
         </Button>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="subtitle1" color="primary.light">
+          <Typography variant="subtitle1" color="secondary.light">
             Aun no tienes una cuenta?
           </Typography>
           <Link to="/auth/register">
             <Typography
               variant="subtitle1"
-              color="primary.light"
+              color="secondary.light"
               sx={{
                 ":hover": {
                   textDecoration: "underline",

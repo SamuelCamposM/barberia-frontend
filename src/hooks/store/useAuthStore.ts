@@ -41,7 +41,13 @@ export const useAuthStore = () => {
     }
   };
 
-  const onStartRegister = async ({ name, email, password }: RegisterParams) => {
+  const onStartRegister = async ({
+    name,
+    email,
+    password,
+    lastname,
+    tel,
+  }: RegisterParams) => {
     dispatch(onSlicechecking());
     try {
       const {
@@ -50,6 +56,8 @@ export const useAuthStore = () => {
         name,
         email,
         password,
+        lastname,
+        tel,
       });
       localStorage.setItem("token", token);
       localStorage.setItem("token-init-data", String(new Date().getTime()));

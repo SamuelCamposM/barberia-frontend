@@ -6,10 +6,14 @@ export interface AuthState {
 
 export interface User {
   name: string;
+  lastname: string;
+  tel: string;
   email: string;
   online: boolean;
+  estado: boolean;
+  rol: "GERENTE" | "EMPLEADO" | "CLIENTE";
+  photo?: string;
   uid: string;
-  roles: string;
 }
 // FUNCIONES
 export interface LoginParams {
@@ -19,6 +23,8 @@ export interface LoginParams {
 
 export interface RegisterParams {
   name: string;
+  lastname: string;
+  tel: string;
   email: string;
   password: string;
 }

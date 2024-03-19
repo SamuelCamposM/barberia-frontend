@@ -9,7 +9,10 @@ const initialState: AuthState = {
     email: "",
     online: false,
     uid: "",
-    roles: "",
+    estado: true,
+    lastname: "",
+    rol: "GERENTE",
+    tel: "",
   }, // You might want to replace this with a proper initial value
   errorMessage: undefined,
 };

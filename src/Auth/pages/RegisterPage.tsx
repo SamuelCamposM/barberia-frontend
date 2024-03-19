@@ -8,19 +8,23 @@ import { Link } from "react-router-dom";
 
 interface RegisterInterface {
   [key: string]: string | string[];
-  name: string;
   email: string;
+  lastname: string;
+  name: string;
   password: string;
   password2: string;
+  tel: string;
 }
 
 export const RegisterPage = () => {
   const initialValues = useMemo<RegisterInterface>(
     () => ({
-      name: "",
       email: "",
+      lastname: "",
+      name: "",
       password: "",
       password2: "",
+      tel: "",
     }),
     []
   );
@@ -41,33 +45,37 @@ export const RegisterPage = () => {
       password2: [
         required,
         (a: string | string[], b: RegisterInterface) => {
+          console.log({ a, b });
+
           if (a !== b.password) {
             return "Las contraseñas no coinciden";
           }
           return "";
         },
       ],
+      lastname: [required],
+      tel: [required],
     }),
     []
   );
   const { onStartRegister, errorMessage } = useAuthStore();
   const {
-    formValues,
     errorValues,
-    handleChange,
-    setisSubmited,
-    isFormInvalid,
+    formValues,
     handleBlur,
+    handleChange,
+    isFormInvalid,
     isFormInvalidSubmit,
+    setisSubmited,
   } = useForm(initialValues, config);
-  const { email, name, password, password2 } = formValues;
+  const { email, name, lastname, tel, password, password2 } = formValues;
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisSubmited(true);
     if (isFormInvalidSubmit(formValues)) {
       return;
     }
-    onStartRegister({ email, name, password });
+    onStartRegister({ email, name, password, lastname, tel });
   };
   useEffect(() => {
     if (errorMessage !== undefined) {
@@ -92,12 +100,34 @@ export const RegisterPage = () => {
         <TextField
           sx={{ mt: 1 }}
           fullWidth
+          label="Apellido"
+          value={lastname}
+          onChange={handleChange}
+          name="lastname"
+          error={errorValues.lastname.length > 0}
+          helperText={errorValues.lastname.join(" - ")}
+          onBlur={handleBlur}
+        />
+        <TextField
+          sx={{ mt: 1 }}
+          fullWidth
           label="Email"
           value={email}
           onChange={handleChange}
           name="email"
           error={errorValues.email.length > 0}
           helperText={errorValues.email.join(" - ")}
+          onBlur={handleBlur}
+        />
+        <TextField
+          sx={{ mt: 1 }}
+          fullWidth
+          label="Teléfono"
+          value={tel}
+          onChange={handleChange}
+          name="tel"
+          error={errorValues.tel.length > 0}
+          helperText={errorValues.tel.join(" - ")}
           onBlur={handleBlur}
         />
         <TextField
@@ -135,7 +165,7 @@ export const RegisterPage = () => {
         </Button>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="subtitle1" color="secondary.light">
-            Aun no tienes una cuenta?
+            Ya tienes una cuenta?
           </Typography>
           <Link to={"/auth/login"}>
             <Typography
@@ -147,7 +177,7 @@ export const RegisterPage = () => {
                 },
               }}
             >
-              Registrarse
+              Inicia Sesión
             </Typography>
           </Link>
         </Box>
