@@ -38,7 +38,9 @@ export const menuSlice = createSlice({
     },
     onSliceEditMenu: (state, action: PayloadAction<PageItem>) => {
       state.rows = state.rows.map((row) =>
-        row._id === action.payload._id ? action.payload : row
+        row._id === action.payload._id
+          ? { crud: { nuevo: true }, ...action.payload }
+          : row
       );
     },
   },

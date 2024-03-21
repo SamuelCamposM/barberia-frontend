@@ -1,5 +1,6 @@
+import { Crud } from "./global";
+
 export interface PageItem {
-  [key: string]: string | string[] | number;
   _id: string;
   nombre: string;
   icono: string;
@@ -12,6 +13,7 @@ export interface PageItem {
   updatedAt: string;
   orden: number;
   componente: string;
+  crud?: Crud;
 }
 
 export interface MenuState {

@@ -77,7 +77,9 @@ export const Page3 = () => {
     },
   ];
   useEffect(() => {
-    socket?.on("cliente:page-editar", (data: PageItem) => { 
+    socket?.on("cliente:page-editar", (data: PageItem) => {
+      console.log({ data });
+
       onEditMenu(data);
     });
   }, [socket]);

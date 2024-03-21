@@ -14,8 +14,21 @@ import { required } from "../../../../helpers";
 import { roles } from "../../../helpers";
 import { Save } from "@mui/icons-material";
 import { SocketContext } from "../../../../context";
+import { PageItem } from "../../../../store/interfaces";
 
 export const ModalMenu = () => {
+  const propsUseForm = (item: PageItem) => {
+    return {
+      nombre: item.nombre,
+      icono: item.icono,
+      insert: item.insert,
+      delete: item.delete,
+      update: item.update,
+      select: item.select,
+      ver: item.ver,
+      orden: item.orden,
+    };
+  };
   const { socket } = useContext(SocketContext);
   const { openModal, onToggleOpenMenu, rowActive } = useMenuStore();
 
@@ -44,7 +57,7 @@ export const ModalMenu = () => {
     // onResetForm,
     onNewForm,
     // setformValues,
-  } = useForm(rowDefault, config);
+  } = useForm(propsUseForm(rowDefault), config);
   useEffect(() => {
     onNewForm(rowActive);
   }, [rowActive]);

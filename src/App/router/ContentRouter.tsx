@@ -27,7 +27,7 @@ export const ContentRouter = () => {
       <Route path={"/chat/*"} element={<ChatPage />} />
 
       {/* Aquí se redirige a la primera página si la ruta no coincide */}
-      <Route path="*" element={<Navigate replace to="menu" />} />
+      <Route path="*" element={<Navigate replace to={convertirPath(rows[0].nombre)} />} />
     </Routes>
   );
 };
