@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { chatSlice } from "./chat";
 import { authSlice } from "./auth";
 import { uiSlice } from "./ui";
-import { menuSlice } from "./menu";
+import { menuSlice } from "../App/pages/Menu/store";
 
 export const store = configureStore({
   reducer: {

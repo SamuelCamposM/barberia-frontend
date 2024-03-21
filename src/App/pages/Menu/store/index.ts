@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { MenuState, PageItem } from "../interfaces";
+import { MenuState, PageItem } from "../../../../store/interfaces";
 
 export const rowDefault: PageItem = {
   _id: "",
@@ -39,7 +39,7 @@ export const menuSlice = createSlice({
     onSliceEditMenu: (state, action: PayloadAction<PageItem>) => {
       state.rows = state.rows.map((row) =>
         row._id === action.payload._id
-          ? { crud: { nuevo: true }, ...action.payload }
+          ? { crud: { editado: true }, ...action.payload }
           : row
       );
     },

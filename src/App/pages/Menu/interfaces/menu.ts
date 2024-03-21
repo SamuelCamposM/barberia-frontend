@@ -1,4 +1,4 @@
-import { Crud } from "./global";
+import { Crud } from "../../../../interfaces/global";
 
 export interface PageItem {
   _id: string;

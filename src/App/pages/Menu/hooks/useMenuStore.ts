@@ -5,9 +5,9 @@ import {
   onOpenSliceModalMenu,
   onSliceEditMenu,
   setSliceActiveRow,
-} from "../../store/menu";
-import { PageItem, RootState } from "../../store/interfaces";
-import { getPages } from "../../App/Layout/helpers";
+} from "../store";
+import { PageItem, RootState } from "../../../../store/interfaces";
+import { getPages } from "../../../Layout/helpers";
 
 export const useMenuStore = () => {
   const { openModal, rowActive, rows } = useSelector(

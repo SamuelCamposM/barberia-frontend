@@ -11,15 +11,23 @@ import {
   TableSortLabel,
   TextField,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { Acciones } from "../../components";
-import { Create, Delete, FileCopy, PictureAsPdf } from "@mui/icons-material";
+import {
+  Create,
+  Delete,
+  FileCopy,
+  Person,
+  PictureAsPdf,
+} from "@mui/icons-material";
 import { ModalMenu } from "./Componentes/ModalMenu";
 import { useMenuStore } from "../../../hooks";
 import { ConvertirIcono } from "../../hooks";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../../context";
 import { PageItem } from "../../../store/interfaces";
+import { Action } from "../../../interfaces/global";
 // import { agregarTransparencia } from "../../../helpers";
 
 interface Column {
@@ -56,30 +64,33 @@ export const Page3 = () => {
     setPage(0);
   };
 
-  const actions = [
+  const actionsLeft: Action[] = [
     {
-      icon: <Create color="secondary" />,
+      icon: <Create />,
+      bgColor: "secondary",
       name: "Editar",
+      badge: "1",
+      disabled: false,
+      ocultar: !Boolean(rowActive._id),
       onClick: () => {
         onOpenModalMenu();
       },
     },
-    { icon: <FileCopy color="secondary" />, name: "Copiar", onClick: () => {} },
+  ];
+  const actionsRight: Action[] = [
     {
-      icon: <Delete sx={{ color: (theme) => theme.palette.tertiary.main }} />,
-      name: "Eliminar",
-      onClick: () => {},
-    },
-    {
-      icon: <PictureAsPdf color="error" />,
-      name: "Reporte PDF",
-      onClick: () => {},
+      icon: <Create color="secondary" />,
+      name: "Editar",
+      badge: "1",
+      disabled: true,
+      ocultar: true,
+      onClick: () => {
+        onOpenModalMenu();
+      },
     },
   ];
   useEffect(() => {
     socket?.on("cliente:page-editar", (data: PageItem) => {
-      console.log({ data });
-
       onEditMenu(data);
     });
   }, [socket]);
@@ -121,10 +132,9 @@ export const Page3 = () => {
                   <TableRow
                     hover
                     sx={{
-                      background:
-                        rowActive._id === row._id
-                          ? (theme) => theme.palette.secondary.dark
-                          : "",
+                      background: row.crud?.editado
+                        ? (theme) => theme.palette.secondary.dark
+                        : "",
                     }}
                     role="checkbox"
                     key={row._id}
@@ -135,8 +145,9 @@ export const Page3 = () => {
                   >
                     <TableCell size="small">
                       <Box display={"flex"} alignItems={"center"} gap={1}>
-                        {/* //editado */}
-                        {/* {true && <Create color="secondary" />} */}
+                        {rowActive._id === row._id && (
+                          <Create color="primary" />
+                        )}
                         {/* //eliminado */}
                         {/* {true && <DeleteForever color="error" />} */}
                         {/* //nuevo */}
@@ -158,7 +169,8 @@ export const Page3 = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Acciones actions={actions} />
+      <Acciones actionsLeft={actionsLeft} actionsRight={actionsRight} />
+
       <TablePagination
         sx={{
           minHeight: "52px",

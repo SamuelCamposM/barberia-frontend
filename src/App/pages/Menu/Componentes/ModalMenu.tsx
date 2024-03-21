@@ -7,7 +7,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { ModalLayout } from "../../../components";
-import { rowDefault } from "../../../../store/menu";
+import { rowDefault } from "../store";
 import { useContext, useEffect, useMemo } from "react";
 import { useForm, useMenuStore } from "../../../../hooks";
 import { required } from "../../../../helpers";
@@ -71,11 +71,18 @@ export const ModalMenu = () => {
       return;
     }
 
-    socket?.emit("server:page-editar", formValues, (error: boolean) => {
-      if (!error) {
-        onToggleOpenMenu();
+    socket?.emit(
+      "server:page-editar",
+      formValues,
+      ({ error, msg }: { error: boolean; msg: string }) => {
+        if (error) {
+          console.log(msg);
+        }
+        if (!error) {
+          onToggleOpenMenu();
+        }
       }
-    });
+    );
   };
   const vh = useMemo(() => 60, []);
 
