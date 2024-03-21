@@ -8,13 +8,15 @@ import {
 } from "@mui/material";
 import { ModalLayout } from "../../../components";
 import { rowDefault } from "../../../../store/menu";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useForm, useMenuStore } from "../../../../hooks";
 import { required } from "../../../../helpers";
 import { roles } from "../../../helpers";
-import { Person, Save } from "@mui/icons-material";
+import { Save } from "@mui/icons-material";
+import { SocketContext } from "../../../../context";
 
 export const ModalMenu = () => {
+  const { socket } = useContext(SocketContext);
   const { openModal, onToggleOpenMenu, rowActive } = useMenuStore();
 
   const config = useMemo(
@@ -39,7 +41,7 @@ export const ModalMenu = () => {
     isFormInvalid,
     handleBlur,
     isFormInvalidSubmit,
-    onResetForm,
+    // onResetForm,
     onNewForm,
     // setformValues,
   } = useForm(rowDefault, config);
@@ -51,9 +53,16 @@ export const ModalMenu = () => {
 
     setisSubmited(true);
     handleBlur();
+
     if (isFormInvalidSubmit(formValues)) {
       return;
     }
+
+    socket?.emit("server:page-editar", formValues, (error: boolean) => {
+      if (!error) {
+        onToggleOpenMenu();
+      }
+    });
   };
   const vh = useMemo(() => 60, []);
 

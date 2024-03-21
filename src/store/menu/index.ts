@@ -13,6 +13,7 @@ export const rowDefault: PageItem = {
   createdAt: "",
   updatedAt: "",
   orden: 0,
+  componente: "",
 };
 const initialState: MenuState = {
   openModal: false,
@@ -35,6 +36,11 @@ export const menuSlice = createSlice({
     setSliceActiveRow: (state, action: PayloadAction<PageItem>) => {
       state.rowActive = action.payload;
     },
+    onSliceEditMenu: (state, action: PayloadAction<PageItem>) => {
+      state.rows = state.rows.map((row) =>
+        row._id === action.payload._id ? action.payload : row
+      );
+    },
   },
 });
 
@@ -43,5 +49,6 @@ export const {
   getSliceDataMenu,
   onCloseSliceModalMenu,
   onOpenSliceModalMenu,
+  onSliceEditMenu,
   setSliceActiveRow,
 } = menuSlice.actions;

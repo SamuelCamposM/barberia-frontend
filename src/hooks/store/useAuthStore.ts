@@ -37,7 +37,7 @@ export const useAuthStore = () => {
       dispatch(onSliceLogout("Credenciales incorrectas"));
       setTimeout(() => {
         dispatch(clearErrorMessage());
-      }, 10);
+      }, 2000);
     }
   };
 
@@ -66,7 +66,7 @@ export const useAuthStore = () => {
       dispatch(onSliceLogout(error.response?.data?.msg));
       setTimeout(() => {
         dispatch(clearErrorMessage());
-      }, 10);
+      }, 2000);
     }
   };
 

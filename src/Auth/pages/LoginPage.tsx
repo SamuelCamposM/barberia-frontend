@@ -7,7 +7,7 @@ import { required } from "../../helpers";
 import { Link } from "react-router-dom";
 
 interface RegisterInterface {
-  [key: string]: string | string[];
+  [key: string]: string | string[] | number;
   email: string;
   password: string;
   // campoTexto: string[];
@@ -68,13 +68,14 @@ export const LoginPage = () => {
   };
   useEffect(() => {
     if (errorMessage !== undefined) {
-      console.log(errorMessage);
+      console.log({ errorMessage });
     }
   }, [errorMessage]);
 
   return (
     <AuthLayout title="Iniciar sesión">
-      <form onSubmit={loginSubmit}>
+      <form onSubmit={loginSubmit}> 
+        {errorMessage ? errorMessage : ""}
         <h2> {isFormInvalid ? "Invalido" : "valido"}</h2>
         <TextField
           sx={{ mt: 1 }}
@@ -123,7 +124,6 @@ export const LoginPage = () => {
             }}
           />
         ))} */}
-
         <Button
           sx={{ mt: 2 }}
           variant="contained"

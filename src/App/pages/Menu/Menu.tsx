@@ -1,4 +1,3 @@
-import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,17 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 import { Acciones } from "../../components";
-import {
-  CheckBox,
-  Create,
-  Delete,
-  DeleteForever,
-  FileCopy,
-  PictureAsPdf,
-} from "@mui/icons-material";
+import { Create, Delete, FileCopy, PictureAsPdf } from "@mui/icons-material";
 import { ModalMenu } from "./Componentes/ModalMenu";
 import { useMenuStore } from "../../../hooks";
 import { ConvertirIcono } from "../../hooks";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { SocketContext } from "../../../context";
+import { PageItem } from "../../../store/interfaces";
 // import { agregarTransparencia } from "../../../helpers";
 
 interface Column {
@@ -46,18 +41,17 @@ const columns: readonly Column[] = [
 ];
 
 export const Page3 = () => {
-  const { rows, setActiveRow, rowActive } = useMenuStore();
+  const { socket } = useContext(SocketContext);
+  const { rows, setActiveRow, rowActive, onEditMenu } = useMenuStore();
   const { onOpenModalMenu } = useMenuStore();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(100);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
@@ -82,7 +76,11 @@ export const Page3 = () => {
       onClick: () => {},
     },
   ];
-
+  useEffect(() => {
+    socket?.on("cliente:page-editar", (data: PageItem) => { 
+      onEditMenu(data);
+    });
+  }, [socket]);
   return (
     <Paper
       sx={{

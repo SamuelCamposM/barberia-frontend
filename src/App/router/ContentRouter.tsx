@@ -15,12 +15,12 @@ export const ContentRouter = () => {
     <Routes>
       {rows
         .filter(({ ver }) => ver.includes(user.rol))
-        .map(({ nombre, _id }) => {
+        .map(({ nombre, _id, componente }) => {
           return (
             <Route
               key={_id}
               path={convertirPath(nombre)}
-              element={ConvertirComponente(nombre)}
+              element={ConvertirComponente(componente)}
             />
           );
         })}

@@ -11,6 +11,7 @@ export interface PageItem {
   createdAt: string;
   updatedAt: string;
   orden: number;
+  componente: string;
 }
 
 export interface MenuState {

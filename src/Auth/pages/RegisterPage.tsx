@@ -77,13 +77,14 @@ export const RegisterPage = () => {
   };
   useEffect(() => {
     if (errorMessage !== undefined) {
-      console.log(errorMessage);
+      console.log({ errorMessage });
     }
   }, [errorMessage]);
 
   return (
     <AuthLayout title="Registrarse">
       <form onSubmit={loginSubmit}>
+        {errorMessage ? errorMessage : ""}
         <TextField
           sx={{ mt: 1 }}
           fullWidth
