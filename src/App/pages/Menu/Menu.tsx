@@ -11,17 +11,10 @@ import {
   TableSortLabel,
   TextField,
   Typography,
-  IconButton,
 } from "@mui/material";
 import { Acciones } from "../../components";
-import {
-  Create,
-  Delete,
-  FileCopy,
-  Person,
-  PictureAsPdf,
-} from "@mui/icons-material";
-import { ModalMenu } from "./Componentes/ModalMenu";
+import { Cancel, Create } from "@mui/icons-material";
+import { ModalMenu } from "./Components/ModalMenu";
 import { useMenuStore } from "../../../hooks";
 import { ConvertirIcono } from "../../hooks";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
@@ -50,7 +43,8 @@ const columns: readonly Column[] = [
 
 export const Page3 = () => {
   const { socket } = useContext(SocketContext);
-  const { rows, setActiveRow, rowActive, onEditMenu } = useMenuStore();
+  const { rows, setActiveRow, rowActive, onEditMenu, rowDefault } =
+    useMenuStore();
   const { onOpenModalMenu } = useMenuStore();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
@@ -68,12 +62,23 @@ export const Page3 = () => {
     {
       icon: <Create />,
       bgColor: "secondary",
-      name: "Editar",
+      name: "Continuar Editando",
       badge: "1",
       disabled: false,
       ocultar: !Boolean(rowActive._id),
       onClick: () => {
         onOpenModalMenu();
+      },
+    },
+    {
+      icon: <Cancel />,
+      bgColor: "error",
+      name: "Cancelar Edición",
+      badge: "1",
+      disabled: false,
+      ocultar: !Boolean(rowActive._id),
+      onClick: () => {
+        setActiveRow(rowDefault);
       },
     },
   ];

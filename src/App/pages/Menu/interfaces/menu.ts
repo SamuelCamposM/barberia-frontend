@@ -20,4 +20,5 @@ export interface MenuState {
   rows: PageItem[];
   openModal: boolean;
   rowActive: PageItem;
+  rowDefault: PageItem;
 }

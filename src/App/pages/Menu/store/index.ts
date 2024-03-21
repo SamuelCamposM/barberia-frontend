@@ -19,6 +19,7 @@ const initialState: MenuState = {
   openModal: false,
   rows: [],
   rowActive: rowDefault,
+  rowDefault,
 };
 export const menuSlice = createSlice({
   name: "menu",

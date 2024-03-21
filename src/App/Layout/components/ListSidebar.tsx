@@ -10,7 +10,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { useAuthStore, useMenuStore } from "../../../hooks";
 import { convertirPath } from "../../../helpers";
-import { ConvertirIcono } from "../../hooks/stringToComponents";
+import { ConvertirIcono } from "../../helpers/stringToComponents";
 export const ListSidebar = ({ openSidebar = true }) => {
   const { rows } = useMenuStore();
   const { user } = useAuthStore();

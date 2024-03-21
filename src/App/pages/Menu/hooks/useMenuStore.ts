@@ -10,7 +10,7 @@ import { PageItem, RootState } from "../../../../store/interfaces";
 import { getPages } from "../../../Layout/helpers";
 
 export const useMenuStore = () => {
-  const { openModal, rowActive, rows } = useSelector(
+  const { openModal, rowActive, rows, rowDefault } = useSelector(
     (state: RootState) => state.menu
   );
 
@@ -56,5 +56,6 @@ export const useMenuStore = () => {
     onOpenModalMenu,
     onToggleOpenMenu,
     setActiveRow,
+    rowDefault,
   };
 };

@@ -1,3 +1,3 @@
-export * from "./Loading";
-export * from "./ModalLayout";
-export * from "./Acciones";
+export * from "./Cargando/Loading";
+export * from "./Modal/ModalLayout";
+export * from "./Botones/Acciones";

@@ -1,1 +1,1 @@
-export * from "./stringToComponents";
+export * from "../helpers/stringToComponents";

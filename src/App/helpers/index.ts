@@ -1,2 +1,2 @@
-export * from "./scroll";
-export * from "./const";
+export * from "../../helpers/scroll";
+export * from "../../helpers/const";
