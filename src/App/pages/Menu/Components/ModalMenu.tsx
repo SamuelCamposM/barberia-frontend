@@ -1,20 +1,21 @@
 import {
   Box,
   Divider,
-  Typography,
-  TextField,
-  MenuItem,
   IconButton,
+  MenuItem,
+  TextField,
+  Typography,
 } from "@mui/material";
+import { DataAlerta } from "../../../components/Alertas/DataAlerta";
 import { ModalLayout } from "../../../components";
-import { rowDefault } from "../store";
-import { useContext, useEffect, useMemo } from "react";
-import { useForm, useMenuStore } from "../../../../hooks";
-import { required } from "../../../../helpers";
-import { roles } from "../../../helpers";
+
+import { required, roles } from "../../../../helpers";
+import { PageItem, useMenuStore } from "../index";
 import { Save } from "@mui/icons-material";
 import { SocketContext } from "../../../../context";
-import { PageItem } from "../../../../store/interfaces";
+import { toast } from "react-toastify";
+import { useContext, useEffect, useMemo } from "react";
+import { useForm } from "../../../../hooks";
 
 export const ModalMenu = () => {
   const propsUseForm = (item: PageItem) => {
@@ -30,7 +31,8 @@ export const ModalMenu = () => {
     };
   };
   const { socket } = useContext(SocketContext);
-  const { openModal, onToggleOpenMenu, rowActive } = useMenuStore();
+  const { openModal, onToggleOpenMenu, rowActive, setActiveRow, rowDefault } =
+    useMenuStore();
 
   const config = useMemo(
     () => ({
@@ -76,10 +78,23 @@ export const ModalMenu = () => {
       formValues,
       ({ error, msg }: { error: boolean; msg: string }) => {
         if (error) {
-          console.log(msg);
+          toast.error(<DataAlerta titulo={msg} subtitulo="" enlace="" />, {
+            position: "top-center",
+          });
         }
         if (!error) {
+          toast.success(
+            <DataAlerta
+              titulo={msg}
+              subtitulo={formValues.nombre}
+              enlace="sucursal_editado"
+            />,
+            {
+              position: "bottom-right",
+            }
+          );
           onToggleOpenMenu();
+          setActiveRow(rowDefault);
         }
       }
     );

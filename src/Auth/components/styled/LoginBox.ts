@@ -61,7 +61,7 @@ export const LoginBox = styled(Box)(({ theme }: { theme: Theme }) => ({
         fontSize: "1.5rem",
         textTransform: "uppercase",
         marginBottom: "20px",
-        borderBottom: `4px solid ${theme.palette.error.light}`,
+        borderBottom: `4px solid ${theme.palette.secondary.light}`,
          
         letterSpacing: "1px",
       },

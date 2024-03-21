@@ -1,5 +1,5 @@
-import { Badge, Box, IconButton, Tooltip } from "@mui/material";
 import { Action } from "../../../interfaces/global";
+import { Badge, Box, IconButton, Tooltip } from "@mui/material";
 
 interface AccionesProps {
   actionsLeft: Action[];

@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
 import {
   getSliceDataMenu,
   onCloseSliceModalMenu,
@@ -6,9 +5,10 @@ import {
   onSliceEditMenu,
   setSliceActiveRow,
 } from "../store";
-import { PageItem, RootState } from "../../../../store/interfaces";
 import { getPages } from "../../../Layout/helpers";
-
+import { PageItem } from "../";
+import { RootState } from "../../../../store/interfaces";
+import { useDispatch, useSelector } from "react-redux";
 export const useMenuStore = () => {
   const { openModal, rowActive, rows, rowDefault } = useSelector(
     (state: RootState) => state.menu

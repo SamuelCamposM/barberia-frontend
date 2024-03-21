@@ -15,12 +15,12 @@ import {
 import { Acciones } from "../../components";
 import { Cancel, Create } from "@mui/icons-material";
 import { ModalMenu } from "./Components/ModalMenu";
-import { useMenuStore } from "../../../hooks";
-import { ConvertirIcono } from "../../hooks";
+
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../../context";
-import { PageItem } from "../../../store/interfaces";
 import { Action } from "../../../interfaces/global";
+import { ConvertirIcono } from "../../helpers";
+import { useMenuStore, PageItem } from "./";
 // import { agregarTransparencia } from "../../../helpers";
 
 interface Column {
@@ -138,7 +138,7 @@ export const Page3 = () => {
                     hover
                     sx={{
                       background: row.crud?.editado
-                        ? (theme) => theme.palette.secondary.dark
+                        ? (theme) => theme.palette.secondary.light
                         : "",
                     }}
                     role="checkbox"

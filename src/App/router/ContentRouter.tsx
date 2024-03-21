@@ -1,8 +1,10 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { lazy } from "react";
-import { useAuthStore, useMenuStore } from "../../hooks";
+import { ConvertirComponente } from "../helpers";
 import { convertirPath } from "../../helpers";
-import { ConvertirComponente } from "../hooks";
+import { lazy } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useAuthStore } from "../../hooks";
+import { useMenuStore } from "../pages/Menu";
+
 const ChatPage = lazy(() => import("../pages/Chat/ChatPage"));
 
 export const ContentRouter = () => {
@@ -27,7 +29,10 @@ export const ContentRouter = () => {
       <Route path={"/chat/*"} element={<ChatPage />} />
 
       {/* Aquí se redirige a la primera página si la ruta no coincide */}
-      <Route path="*" element={<Navigate replace to={convertirPath(rows[0].nombre)} />} />
+      <Route
+        path="*"
+        element={<Navigate replace to={convertirPath(rows[0].nombre)} />}
+      />
     </Routes>
   );
 };

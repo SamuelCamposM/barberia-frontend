@@ -1,12 +1,12 @@
 import {
+  Avatar,
+  Badge,
   Box,
   Drawer,
   List,
-  ListItemButton,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
-  Avatar,
-  Badge,
 } from "@mui/material";
 import { useAuthStore, useChatStore, useUiStore } from "../../../hooks";
 import { useNavigate } from "react-router-dom";

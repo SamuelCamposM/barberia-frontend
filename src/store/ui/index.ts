@@ -5,6 +5,7 @@ const initialState: UiState = {
   openDrawerChat: false,
   openDrawerSidebar: false,
   openDrawerSidebarMobile: false,
+  
 };
 export const uiSlice = createSlice({
   name: "ui",

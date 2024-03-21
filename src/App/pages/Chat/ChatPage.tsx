@@ -4,12 +4,12 @@ import { useCallback, useEffect } from "react";
 
 import queryString from "query-string";
 import { chatApi } from "../../../api";
-import { scrollToBottomAnimated } from "../../helpers";
 
 import { IncomingMessage, OutgoingMessage, SendMessage } from "./Components";
 import { useChatStore, useAuthStore } from "../../../hooks";
 import { Divider } from "@mui/material";
 import { BoxChat, TypographyChatActive } from "./style";
+import { scrollToBottomAnimated } from "../../../helpers";
 
 export const ChatPage = () => {
   const { onSelectChat, oneGetMensajes } = useChatStore();

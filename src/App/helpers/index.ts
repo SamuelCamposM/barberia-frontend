@@ -1,2 +1,1 @@
-export * from "../../helpers/scroll";
-export * from "../../helpers/const";
+export * from "./stringToComponents";

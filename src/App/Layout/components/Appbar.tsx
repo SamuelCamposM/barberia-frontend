@@ -1,18 +1,18 @@
 import * as React from "react";
 import {
-  Box,
-  Toolbar,
-  IconButton,
-  Typography,
   Avatar,
-  Tooltip,
-  MenuItem,
+  Box,
+  IconButton,
   Menu,
+  MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
+import { AppBarHeader } from "./styled";
 import { ContentCut, MenuTwoTone } from "@mui/icons-material";
 import { useAuthStore, useUiStore } from "../../../hooks";
-import { AppBarHeader } from "./styled";
 
 export const Appbar = () => {
   const { onStartLogout } = useAuthStore();

@@ -14,8 +14,10 @@ import {
   LayoutBox,
   LayoutBox2,
 } from "./components/styled";
-import { useMenuStore } from "../../hooks";
+
 import { ContentCut } from "@mui/icons-material";
+import { Alerta } from "../components/Alertas/Alerta";
+import { useMenuStore } from "../pages/Menu";
 
 export const AppLayout = ({
   children,
@@ -53,7 +55,9 @@ export const AppLayout = ({
             >
               <LayoutBox2>
                 <MigasDePan />
-                <LayoutBox2>{children}</LayoutBox2>
+                <LayoutBox2>
+                  {children} <Alerta />
+                </LayoutBox2>
               </LayoutBox2>
             </Suspense>
           </ContentBox>

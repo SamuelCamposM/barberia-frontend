@@ -1,5 +1,5 @@
-import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Grid";
+import Modal from "@mui/material/Modal";
 
 export const ModalLayout = ({
   open,

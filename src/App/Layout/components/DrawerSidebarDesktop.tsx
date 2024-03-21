@@ -1,6 +1,6 @@
 import { Drawer, Toolbar } from "@mui/material";
-import { useUiStore } from "../../../hooks";
 import { ListSidebar } from "./ListSidebar";
+import { useUiStore } from "../../../hooks";
 
 const drawerWidthClose = 56;
 const drawerWidthOpen = 240;

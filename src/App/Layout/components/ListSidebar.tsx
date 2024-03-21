@@ -7,10 +7,12 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
-import { useAuthStore, useMenuStore } from "../../../hooks";
-import { convertirPath } from "../../../helpers";
 import { ConvertirIcono } from "../../helpers/stringToComponents";
+import { convertirPath } from "../../../helpers";
+import { NavLink } from "react-router-dom";
+import { useAuthStore } from "../../../hooks";
+import { useMenuStore } from "../../pages/Menu";
+
 export const ListSidebar = ({ openSidebar = true }) => {
   const { rows } = useMenuStore();
   const { user } = useAuthStore();
