@@ -1,25 +1,25 @@
 import { createTheme } from "@mui/material";
-import { red, blueGrey, purple, blue, grey } from "@mui/material/colors";
+import { red, blue, grey, deepOrange } from "@mui/material/colors";
 
-// declare module '@mui/material/styles' {
-//   interface Palette {
-//     tertiary: Palette['primary'];
-//   }
-//   interface PaletteOptions {
-//     tertiary: PaletteOptions['primary'];
-//   }
-// }
+declare module "@mui/material/styles" {
+  interface Palette {
+    tertiary: Palette["primary"];
+  }
+  interface PaletteOptions {
+    tertiary: PaletteOptions["primary"];
+  }
+}
 
 export const purpleTheme = () => {
   return createTheme({
     palette: {
       mode: "dark",
-      primary: { main: grey["800"] },
-      secondary: { main: blue["500"] },
-      // tertiary: { main: blueGrey["500"], dark: "#607d8b", light: "#78909c" },
+      primary: { main: blue["500"] },
+      secondary: { main: grey["500"] },
+      tertiary: { main: red["500"] },
 
       error: {
-        main: red[400],
+        main: deepOrange[800],
       },
     },
     components: { MuiTextField: { defaultProps: { autoComplete: "off" } } },

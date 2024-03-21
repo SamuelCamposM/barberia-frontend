@@ -6,15 +6,29 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Paper, TableSortLabel, TextField } from "@mui/material";
+import {
+  Box,
+  Paper,
+  TableSortLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Acciones } from "../../components";
-import { Create, Delete, FileCopy, PictureAsPdf } from "@mui/icons-material";
+import {
+  CheckBox,
+  Create,
+  Delete,
+  DeleteForever,
+  FileCopy,
+  PictureAsPdf,
+} from "@mui/icons-material";
 import { ModalMenu } from "./Componentes/ModalMenu";
 import { useMenuStore } from "../../../hooks";
+import { ConvertirIcono } from "../../hooks";
 // import { agregarTransparencia } from "../../../helpers";
 
 interface Column {
-  id: "name" | "code" | "population" | "size" | "density";
+  id: string;
   label: string;
   minWidth?: number;
   align?: "right" | "center" | "left";
@@ -22,15 +36,17 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "name", label: "Name", minWidth: 170 },
+  { id: "nombre", label: "Nombre", minWidth: 170 },
+  { id: "icono", label: "Icono", minWidth: 170 },
+  { id: "delete", label: "Delete", minWidth: 170 },
+  { id: "insert", label: "Insert", minWidth: 170 },
+  { id: "update", label: "Update", minWidth: 170 },
+  { id: "select", label: "Select", minWidth: 170 },
+  { id: "ver", label: "Wachar", minWidth: 170 },
 ];
 
-const rows: any[] = [];
-
 export const Page3 = () => {
+  const { rows, setActiveRow, rowActive } = useMenuStore();
   const { onOpenModalMenu } = useMenuStore();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(100);
@@ -55,13 +71,18 @@ export const Page3 = () => {
       },
     },
     { icon: <FileCopy color="secondary" />, name: "Copiar", onClick: () => {} },
-    { icon: <Delete color="error" />, name: "Eliminar", onClick: () => {} },
+    {
+      icon: <Delete sx={{ color: (theme) => theme.palette.tertiary.main }} />,
+      name: "Eliminar",
+      onClick: () => {},
+    },
     {
       icon: <PictureAsPdf color="error" />,
       name: "Reporte PDF",
       onClick: () => {},
     },
   ];
+
   return (
     <Paper
       sx={{
@@ -91,452 +112,46 @@ export const Page3 = () => {
               ))}
             </TableRow>
           </TableHead>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
-          <TableRow hover role="checkbox">
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-            <TableCell>test</TableCell> <TableCell>test</TableCell>
-          </TableRow>
+
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" key={row.name}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {value}
-                        </TableCell>
-                      );
-                    })}
+                  <TableRow
+                    hover
+                    sx={{
+                      background:
+                        rowActive._id === row._id
+                          ? (theme) => theme.palette.secondary.dark
+                          : "",
+                    }}
+                    role="checkbox"
+                    key={row._id}
+                    onDoubleClick={() => {
+                      onOpenModalMenu();
+                      setActiveRow(row);
+                    }}
+                  >
+                    <TableCell size="small">
+                      <Box display={"flex"} alignItems={"center"} gap={1}>
+                        {/* //editado */}
+                        {/* {true && <Create color="secondary" />} */}
+                        {/* //eliminado */}
+                        {/* {true && <DeleteForever color="error" />} */}
+                        {/* //nuevo */}
+                        {/* {true && <CheckBox color="success" />} */}
+                        <Typography variant="body1">{row.nombre}</Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell size="small">
+                      {ConvertirIcono(row.icono)}
+                    </TableCell>
+                    <TableCell size="small">{row.delete.join(", ")}</TableCell>
+                    <TableCell size="small">{row.insert.join(", ")}</TableCell>
+                    <TableCell size="small">{row.update.join(", ")}</TableCell>
+                    <TableCell size="small">{row.select.join(", ")}</TableCell>
+                    <TableCell size="small">{row.ver.join(", ")}</TableCell>
                   </TableRow>
                 );
               })}

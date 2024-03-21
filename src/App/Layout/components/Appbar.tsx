@@ -10,7 +10,7 @@ import {
   Menu,
   useMediaQuery,
 } from "@mui/material";
-import { ContentCut, LogoDev, MenuTwoTone } from "@mui/icons-material";
+import { ContentCut, MenuTwoTone } from "@mui/icons-material";
 import { useAuthStore, useUiStore } from "../../../hooks";
 import { AppBarHeader } from "./styled";
 

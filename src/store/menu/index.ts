@@ -5,13 +5,14 @@ export const rowDefault: PageItem = {
   _id: "",
   nombre: "",
   icono: "",
-  orden: 1,
   delete: [],
   update: [],
   insert: [],
   select: [],
+  ver: [],
   createdAt: "",
   updatedAt: "",
+  orden: 0,
 };
 const initialState: MenuState = {
   openModal: false,
@@ -31,9 +32,16 @@ export const menuSlice = createSlice({
     onOpenSliceModalMenu: (state) => {
       state.openModal = true;
     },
+    setSliceActiveRow: (state, action: PayloadAction<PageItem>) => {
+      state.rowActive = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { getSliceDataMenu, onCloseSliceModalMenu, onOpenSliceModalMenu } =
-  menuSlice.actions;
+export const {
+  getSliceDataMenu,
+  onCloseSliceModalMenu,
+  onOpenSliceModalMenu,
+  setSliceActiveRow,
+} = menuSlice.actions;

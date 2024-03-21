@@ -1,6 +1,6 @@
 import { AppBar, Theme, styled } from "@mui/material";
 import { Box } from "@mui/material";
-
+import "./animations.css";
 export const LayoutBox = styled(Box)({
   display: "flex",
   justifyContent: "space-between",
@@ -23,7 +23,9 @@ export const ContentBox = styled(Box)({
   flexGrow: 1,
   overflow: "auto",
 });
-
+export const ContentBoxAnimation = styled(Box)({
+  animation: "rotating 2s linear infinite",
+});
 export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   background: theme.palette.primary.main,
   // background: `linear-gradient(45deg, ${theme.palette.success.dark} 30%, ${theme.palette.secondary.main} 90%)`,
@@ -39,13 +41,13 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     ".logoEmpresa": {
-      mr: 1, 
+      mr: 1,
     },
     ".textoEmpresa": {
       mr: 2,
       fontFamily: "monospace",
       fontWeight: 700,
-      letterSpacing: ".3rem", 
+      letterSpacing: ".3rem",
       textDecoration: "none",
     },
   },
@@ -62,7 +64,7 @@ export const AppBarFooter = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   },
   ".boxChat": {
     flexGrow: 1,
-    ".botonChat": { 
+    ".botonChat": {
       display: "block",
     },
   },

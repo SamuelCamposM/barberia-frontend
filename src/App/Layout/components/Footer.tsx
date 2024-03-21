@@ -8,7 +8,7 @@ export const Footer = () => {
   const { onToogleDrawerChat } = useUiStore();
   const { user } = useAuthStore();
   return (
-    <AppBarFooter color="transparent" position="sticky">
+    <AppBarFooter position="sticky">
       <Toolbar className="toolbar">
         <Box className="boxChat">
           <IconButton

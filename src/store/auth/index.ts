@@ -26,6 +26,16 @@ export const authSlice = createSlice({
       state.errorMessage = undefined;
     },
     onSliceLogin: (state, action: PayloadAction<User>) => {
+    //   {
+    //     "": true,
+    //     "": "Samuel Benjamin",
+    //     "": "s.cmelara12@gmail.com",
+    //     "": true,
+    //     "": "CLIENTE",
+    //     "": "Campos",
+    //     "": "+50376681782",
+    //     "": "65f9f915df006187fc65b648"
+    // }
       state.status = "authenticated";
       state.user = action.payload;
       state.errorMessage = undefined;

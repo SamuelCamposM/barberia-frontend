@@ -1,22 +1,16 @@
-import { LazyExoticComponent } from "react";
-type JSXComponent = () => JSX.Element;
-
-export interface Rol {
-  _id: string;
-  nombre: string;
-}
 export interface PageItem {
+  [key: string]: string | string[] | number;
   _id: string;
   nombre: string;
   icono: string;
-  orden: number;
-  delete: Rol[];
-  update: Rol[];
-  insert: Rol[];
-  select: Rol[];
+  delete: string[];
+  update: string[];
+  insert: string[];
+  select: string[];
+  ver: string[];
   createdAt: string;
   updatedAt: string;
-  Component?: LazyExoticComponent<JSXComponent> | JSXComponent;
+  orden: number;
 }
 
 export interface MenuState {

@@ -3,8 +3,9 @@ import {
   getSliceDataMenu,
   onCloseSliceModalMenu,
   onOpenSliceModalMenu,
+  setSliceActiveRow,
 } from "../../store/menu";
-import { RootState } from "../../store/interfaces";
+import { PageItem, RootState } from "../../store/interfaces";
 import { getPages } from "../../App/Layout/helpers";
 
 export const useMenuStore = () => {
@@ -17,7 +18,6 @@ export const useMenuStore = () => {
   const getDataMenu = async () => {
     const res = await getPages();
     const { data } = res.data;
-    console.log({ res });
 
     dispatch(getSliceDataMenu(data));
   };
@@ -35,6 +35,10 @@ export const useMenuStore = () => {
       dispatch(onOpenSliceModalMenu());
     }
   };
+
+  const setActiveRow = (item: PageItem) => {
+    dispatch(setSliceActiveRow(item));
+  };
   return {
     //Propiedades
     openModal,
@@ -45,5 +49,6 @@ export const useMenuStore = () => {
     onCloseModalMenu,
     onOpenModalMenu,
     onToggleOpenMenu,
+    setActiveRow,
   };
 };

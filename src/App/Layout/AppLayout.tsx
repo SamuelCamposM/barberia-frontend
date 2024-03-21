@@ -8,8 +8,14 @@ import {
 } from "./components";
 import { Suspense, useEffect } from "react";
 import { CssBaseline, useMediaQuery, useTheme } from "@mui/material";
-import { ContentBox, LayoutBox, LayoutBox2 } from "./components/styled";
+import {
+  ContentBox,
+  ContentBoxAnimation,
+  LayoutBox,
+  LayoutBox2,
+} from "./components/styled";
 import { useMenuStore } from "../../hooks";
+import { ContentCut } from "@mui/icons-material";
 
 export const AppLayout = ({
   children,
@@ -31,12 +37,23 @@ export const AppLayout = ({
         <Appbar />
         <LayoutBox className="row">
           {isMdDown ? <DrawerSidebarMobile /> : <DrawerSidebarDesktop />}
-
           <ContentBox>
-            <Suspense fallback={<span>Loading...</span>}>
+            <Suspense
+              fallback={
+                <ContentBoxAnimation
+                  height={"100vh"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  className="suspense"
+                >
+                  <ContentCut sx={{ fontSize: "10rem" }} />
+                </ContentBoxAnimation>
+              }
+            >
               <LayoutBox2>
                 <MigasDePan />
-                {children}
+                <LayoutBox2>{children}</LayoutBox2>
               </LayoutBox2>
             </Suspense>
           </ContentBox>

@@ -40,14 +40,11 @@ export const SendMessage = ({ name }: { name: string }) => {
     });
   };
   useEffect(() => {
-    console.log("focus");
-
     inputRef.current?.select();
   }, [name]);
 
   return (
     <form onSubmit={handleSubmit}>
-
       <TextField
         autoFocus
         inputRef={inputRef}

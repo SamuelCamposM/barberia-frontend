@@ -1,10 +1,10 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 export const useForm = <
-  ValueTypes extends Record<string, string | string[]>,
+  ValueTypes extends Record<string, string | string[] | number>,
   ConfigTypes extends Record<
     string,
-    ((value: string | string[], allValues: ValueTypes) => string)[]
+    ((value: string | string[] | number, allValues: ValueTypes) => string)[]
   >
 >(
   InitialValues: ValueTypes,
@@ -54,6 +54,12 @@ export const useForm = <
     setonBlur(0);
   }, []);
 
+  const onNewForm = useCallback((newValues: ValueTypes) => {
+    setformValues(newValues);
+    setisSubmited(false);
+    setonBlur(0);
+  }, []);
+
   const handleBlur = useCallback(() => {
     setonBlur((prev) => prev + 1);
   }, []);
@@ -76,5 +82,6 @@ export const useForm = <
     onResetForm,
     isFormInvalidSubmit,
     setformValues,
+    onNewForm,
   };
 };

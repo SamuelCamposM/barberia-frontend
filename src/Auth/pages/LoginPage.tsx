@@ -1,4 +1,4 @@
-import { TextField, Box, Typography, Divider } from "@mui/material";
+import { TextField, Box, Typography } from "@mui/material";
 import { useAuthStore, useForm } from "../../hooks";
 import Button from "@mui/material/Button";
 import { AuthLayout } from "../Layout/AuthLayout";
@@ -10,7 +10,7 @@ interface RegisterInterface {
   [key: string]: string | string[];
   email: string;
   password: string;
-  campoTexto: string[];
+  // campoTexto: string[];
 }
 
 export const LoginPage = () => {
@@ -18,7 +18,7 @@ export const LoginPage = () => {
     () => ({
       email: "",
       password: "",
-      campoTexto: ["1", "2"],
+      // campoTexto: ["1", "2"],
     }),
     []
   );
@@ -27,21 +27,21 @@ export const LoginPage = () => {
     () => ({
       password: [required],
       email: [required],
-      campoTexto: [
-        required,
-        (a: string | string[]) => {
-          const res =
-            typeof a === "object" &&
-            a.some((campo: string) => {
-              return Number(campo) < 5;
-            });
+      // campoTexto: [
+      //   required,
+      //   (a: string | string[] ) => {
+      //     const res =
+      //       typeof a === "object" &&
+      //       a.some((campo: string) => {
+      //         return Number(campo) < 5;
+      //       });
 
-          if (res) {
-            return "Los campos tienen tener valor mayor a 5";
-          }
-          return "";
-        },
-      ],
+      //     if (res) {
+      //       return "Los campos tienen tener valor mayor a 5";
+      //     }
+      //     return "";
+      //   },
+      // ],
     }),
     []
   );
@@ -54,7 +54,7 @@ export const LoginPage = () => {
     isFormInvalid,
     handleBlur,
     isFormInvalidSubmit,
-    setformValues,
+    // setformValues,
   } = useForm(initialValues, config);
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,7 +99,7 @@ export const LoginPage = () => {
           helperText={errorValues.password.join(" - ")}
           onBlur={handleBlur}
         />
-        <Divider sx={{ mt: 2 }}>
+        {/* <Divider sx={{ mt: 2 }}>
           <Typography color={"error"}>
             {errorValues.campoTexto.join(" - ")}
           </Typography>
@@ -122,7 +122,7 @@ export const LoginPage = () => {
               });
             }}
           />
-        ))}
+        ))} */}
 
         <Button
           sx={{ mt: 2 }}

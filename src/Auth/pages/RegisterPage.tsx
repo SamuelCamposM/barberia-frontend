@@ -7,7 +7,7 @@ import { required, validarEmail } from "../../helpers";
 import { Link } from "react-router-dom";
 
 interface RegisterInterface {
-  [key: string]: string | string[];
+  [key: string]: string | string[] | number;
   email: string;
   lastname: string;
   name: string;
@@ -35,7 +35,7 @@ export const RegisterPage = () => {
       email: [required, validarEmail],
       password: [
         required,
-        (a: string | string[], b: RegisterInterface) => {
+        (a: string | string[] | number, b: RegisterInterface) => {
           if (a !== b.password2) {
             return "Las contraseñas no coinciden";
           }
@@ -44,9 +44,7 @@ export const RegisterPage = () => {
       ],
       password2: [
         required,
-        (a: string | string[], b: RegisterInterface) => {
-          console.log({ a, b });
-
+        (a: string | string[] | number, b: RegisterInterface) => {
           if (a !== b.password) {
             return "Las contraseñas no coinciden";
           }
@@ -68,7 +66,7 @@ export const RegisterPage = () => {
     isFormInvalidSubmit,
     setisSubmited,
   } = useForm(initialValues, config);
-  const { email, name, lastname, tel, password, password2 } = formValues;
+  const { email, lastname, name, password, password2, tel } = formValues;
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisSubmited(true);
