@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { MenuState, PageItem } from "../../../../store/interfaces";
+import { MenuState, PageItem} from "../";
 
 export const rowDefault: PageItem = {
   _id: "",

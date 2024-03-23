@@ -1,3 +1,6 @@
+import { SvgIconTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+
 export interface Crud {
   editado?: boolean;
   eliminado?: boolean;
@@ -5,11 +8,10 @@ export interface Crud {
 }
 
 export interface Action {
-  icon: JSX.Element;
+  Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   name: string;
-  badge?: string;
   disabled?: boolean;
   ocultar?: boolean;
   onClick: (arg: any) => void;
-  bgColor?: "primary" | "secondary" | "tertiary" | "error" | "success";
+  bgColor: "primary" | "secondary" | "error" | "success";
 }

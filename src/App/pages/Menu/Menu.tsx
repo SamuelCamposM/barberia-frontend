@@ -1,19 +1,9 @@
-import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import {
-  Box,
-  Paper,
-  TableSortLabel,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, TextField, Table, Typography } from "@mui/material";
 import { Acciones } from "../../components";
-import { Cancel, Create } from "@mui/icons-material";
+import { Cancel, CenterFocusStrong, Create } from "@mui/icons-material";
 import { ModalMenu } from "./Components/ModalMenu";
 
 import { ChangeEvent, useContext, useEffect, useState } from "react";
@@ -21,7 +11,13 @@ import { SocketContext } from "../../../context";
 import { Action } from "../../../interfaces/global";
 import { ConvertirIcono } from "../../helpers";
 import { useMenuStore, PageItem } from "./";
-// import { agregarTransparencia } from "../../../helpers";
+import {
+  PaperContainerPage,
+  StyledTableCell,
+  StyledTableContainer,
+  StyledTableHeaderCell,
+  StyledTableRow,
+} from "../../components/style";
 
 interface Column {
   id: string;
@@ -32,20 +28,20 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: "nombre", label: "Nombre", minWidth: 170 },
-  { id: "icono", label: "Icono", minWidth: 170 },
-  { id: "delete", label: "Delete", minWidth: 170 },
-  { id: "insert", label: "Insert", minWidth: 170 },
-  { id: "update", label: "Update", minWidth: 170 },
-  { id: "select", label: "Select", minWidth: 170 },
-  { id: "ver", label: "Wachar", minWidth: 170 },
+  { id: "nombre", label: "Nombre", minWidth: 50 },
+  { id: "icono", label: "Icono", minWidth: 50 },
+  { id: "delete", label: "Delete", minWidth: 50 },
+  { id: "insert", label: "Insert", minWidth: 50 },
+  { id: "update", label: "Update", minWidth: 50 },
+  { id: "select", label: "Select", minWidth: 50 },
+  { id: "ver", label: "Wachar", minWidth: 50 },
 ];
 
 export const Page3 = () => {
   const { socket } = useContext(SocketContext);
-  const { rows, setActiveRow, rowActive, onEditMenu, rowDefault } =
+  const { rows, setActiveRow, rowActive, onEditMenu, rowDefault, openModal } =
     useMenuStore();
-  const { onOpenModalMenu } = useMenuStore();
+  const { onOpenModalMenu, onToggleOpenMenu } = useMenuStore();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
 
@@ -60,33 +56,34 @@ export const Page3 = () => {
 
   const actionsLeft: Action[] = [
     {
-      icon: <Create />,
+      Icon: Create,
       bgColor: "secondary",
       name: "Continuar Editando",
-      badge: "1",
       disabled: false,
       ocultar: !Boolean(rowActive._id),
       onClick: () => {
-        onOpenModalMenu();
+        if (Boolean(rowActive._id)) {
+          onToggleOpenMenu();
+        }
       },
     },
     {
-      icon: <Cancel />,
+      Icon: Cancel,
       bgColor: "error",
       name: "Cancelar Edición",
-      badge: "1",
       disabled: false,
       ocultar: !Boolean(rowActive._id),
       onClick: () => {
+        if (Boolean(rowActive._id) && openModal) return;
         setActiveRow(rowDefault);
       },
     },
   ];
   const actionsRight: Action[] = [
     {
-      icon: <Create color="secondary" />,
+      bgColor: "error",
+      Icon: Create,
       name: "Editar",
-      badge: "1",
       disabled: true,
       ocultar: true,
       onClick: () => {
@@ -99,34 +96,34 @@ export const Page3 = () => {
       onEditMenu(data);
     });
   }, [socket]);
+
   return (
-    <Paper
-      sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "auto",
-        position: "relative",
+    <PaperContainerPage
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (isNaN(Number(e.key))) {
+          return;
+        }
+
+        actionsLeft[Number(e.key) - 1].onClick(null);
       }}
     >
       <ModalMenu />
       <TextField label="Buscar" size="small" />
-      <TableContainer sx={{ flexGrow: 1 }}>
+      <StyledTableContainer>
         <Table size="small" stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow>
+            <StyledTableRow>
               {columns.map((column, index) => (
-                <TableCell
+                <StyledTableHeaderCell
                   key={index}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
                 >
-                  <TableSortLabel active={true} direction={"desc"}>
-                    {column.label}
-                  </TableSortLabel>
-                </TableCell>
+                  {column.label}
+                </StyledTableHeaderCell>
               ))}
-            </TableRow>
+            </StyledTableRow>
           </TableHead>
 
           <TableBody>
@@ -134,52 +131,50 @@ export const Page3 = () => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow
-                    hover
-                    sx={{
-                      background: row.crud?.editado
-                        ? (theme) => theme.palette.secondary.light
-                        : "",
-                    }}
-                    role="checkbox"
+                  <StyledTableRow
+                    crud={row.crud}
+                    // className={`table-container__row
+                    // ${row.crud?.editado && "table-container__row--update"}
+                    // ${row.crud?.nuevo && "table-container__row--create"}
+                    // ${row.crud?.eliminado && "table-container__row--delete"}
+                    // `}
                     key={row._id}
-                    onDoubleClick={() => {
-                      onOpenModalMenu();
+                    onClick={() => {
+                      console.log("onClick");
                       setActiveRow(row);
                     }}
+                    onDoubleClick={() => {
+                      onOpenModalMenu();
+                      // setActiveRow(row);
+                    }}
                   >
-                    <TableCell size="small">
+                    <StyledTableCell>
                       <Box display={"flex"} alignItems={"center"} gap={1}>
                         {rowActive._id === row._id && (
-                          <Create color="primary" />
+                          <CenterFocusStrong color="primary" />
                         )}
-                        {/* //eliminado */}
-                        {/* {true && <DeleteForever color="error" />} */}
-                        {/* //nuevo */}
-                        {/* {true && <CheckBox color="success" />} */}
                         <Typography variant="body1">{row.nombre}</Typography>
                       </Box>
-                    </TableCell>
-                    <TableCell size="small">
-                      {ConvertirIcono(row.icono)}
-                    </TableCell>
-                    <TableCell size="small">{row.delete.join(", ")}</TableCell>
-                    <TableCell size="small">{row.insert.join(", ")}</TableCell>
-                    <TableCell size="small">{row.update.join(", ")}</TableCell>
-                    <TableCell size="small">{row.select.join(", ")}</TableCell>
-                    <TableCell size="small">{row.ver.join(", ")}</TableCell>
-                  </TableRow>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {ConvertirIcono(row.icono, "small")}
+                    </StyledTableCell>
+                    <StyledTableCell>{row.delete.join(", ")}</StyledTableCell>
+                    <StyledTableCell>{row.insert.join(", ")}</StyledTableCell>
+                    <StyledTableCell>{row.update.join(", ")}</StyledTableCell>
+                    <StyledTableCell>{row.select.join(", ")}</StyledTableCell>
+                    <StyledTableCell>{row.ver.join(", ")}</StyledTableCell>
+                  </StyledTableRow>
                 );
               })}
           </TableBody>
         </Table>
-      </TableContainer>
+      </StyledTableContainer>
+
       <Acciones actionsLeft={actionsLeft} actionsRight={actionsRight} />
 
       <TablePagination
-        sx={{
-          minHeight: "52px",
-        }}
+        className="tablePagination"
         rowsPerPageOptions={[10, 20, 100]}
         component="div"
         count={rows.length}
@@ -188,7 +183,7 @@ export const Page3 = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </PaperContainerPage>
   );
 };
 export default Page3;

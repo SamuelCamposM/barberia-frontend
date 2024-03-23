@@ -1,23 +1,33 @@
 import {
   Box,
-  Divider,
   IconButton,
   MenuItem,
   TextField,
   Typography,
+  Tooltip,
 } from "@mui/material";
-import { DataAlerta } from "../../../components/Alertas/DataAlerta";
-import { ModalLayout } from "../../../components";
-
-import { required, roles } from "../../../../helpers";
+import { Cancel, Save } from "@mui/icons-material";
+import { ModalLayout, DataAlerta } from "../../../components";
 import { PageItem, useMenuStore } from "../index";
-import { Save } from "@mui/icons-material";
+import { required, roles } from "../../../../helpers";
 import { SocketContext } from "../../../../context";
 import { toast } from "react-toastify";
 import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "../../../../hooks";
+import {
+  StyledContainerForm,
+  StyledGridContainer,
+  StyledModalBoxFooter,
+  StyledModalBoxHeader,
+  StyledTypographyFooter,
+  StyledTypographyFooterSpan,
+  StyledTypographyHeader,
+} from "../../../components/style";
 
 export const ModalMenu = () => {
+  const { socket } = useContext(SocketContext);
+  const { openModal, onToggleOpenMenu, rowActive, setActiveRow, rowDefault } =
+    useMenuStore();
   const propsUseForm = (item: PageItem) => {
     return {
       nombre: item.nombre,
@@ -30,10 +40,24 @@ export const ModalMenu = () => {
       orden: item.orden,
     };
   };
-  const { socket } = useContext(SocketContext);
-  const { openModal, onToggleOpenMenu, rowActive, setActiveRow, rowDefault } =
-    useMenuStore();
 
+  const idModal = useMemo(() => "modalMenu", []);
+  const columns = useMemo(
+    () => ({
+      lg: 4,
+      md: 2,
+      xs: 1,
+    }),
+    []
+  );
+  const vhContainer = useMemo(
+    () => ({
+      height: 60,
+      headerHeight: 40,
+      footerHeight: 40,
+    }),
+    []
+  );
   const config = useMemo(
     () => ({
       nombre: [required],
@@ -60,9 +84,7 @@ export const ModalMenu = () => {
     onNewForm,
     // setformValues,
   } = useForm(propsUseForm(rowDefault), config);
-  useEffect(() => {
-    onNewForm(rowActive);
-  }, [rowActive]);
+
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -99,44 +121,52 @@ export const ModalMenu = () => {
       }
     );
   };
-  const vh = useMemo(() => 60, []);
 
+  const awaitActive = async () => {
+    await onNewForm(rowActive);
+    handleBlur();
+  };
+  useEffect(() => {
+    awaitActive();
+  }, [rowActive]);
   return (
     <>
-      <ModalLayout open={openModal} setOpen={onToggleOpenMenu} vh={vh}>
-        <Box width={"100%"}>
-          <Divider textAlign="center">
-            <Typography
-              variant="h5"
-              sx={{
-                fontSize: "2rem",
-                textTransform: "uppercase",
-                fontWeight: "bold",
-              }}
+      <ModalLayout
+        open={openModal}
+        setOpen={onToggleOpenMenu}
+        vh={vhContainer.height}
+        width={{
+          lg: "60",
+          md: "80",
+          xs: "100",
+        }}
+        idModal={idModal}
+      >
+        <>
+          {/* <Box> */}
+          <StyledModalBoxHeader>
+            <StyledTypographyHeader
               color={isFormInvalid ? "error" : "primary"}
+              id={idModal}
             >
-              {rowActive.nombre}
-            </Typography>
-          </Divider>
-          <Divider />
-          <Box component={"form"} onSubmit={onHandleSubmit}>
-            <Box
-              height={`calc(${vh}vh - ${43 + 22 + 16}px)`}
-              p={1}
-              overflow={"scroll"}
-            >
-              <Box display={"flex"} flexWrap={"wrap"} width={"100%"} gap={1}>
+              Menu
+            </StyledTypographyHeader>
+            <Tooltip title="Cancelar">
+              <IconButton
+                aria-label="Cancelar"
+                onClick={onToggleOpenMenu}
+                color="error"
+              >
+                <Cancel />
+              </IconButton>
+            </Tooltip>
+          </StyledModalBoxHeader>
+
+          <form onSubmit={onHandleSubmit}>
+            <StyledContainerForm {...vhContainer}>
+              <StyledGridContainer {...columns}>
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Nombre"}
                   value={formValues.nombre}
                   onChange={handleChange}
@@ -145,18 +175,8 @@ export const ModalMenu = () => {
                   helperText={errorValues.nombre.join(" - ")}
                   onBlur={handleBlur}
                 />
-
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Icono"}
                   value={formValues.icono}
                   onChange={handleChange}
@@ -165,18 +185,8 @@ export const ModalMenu = () => {
                   helperText={errorValues.icono.join(" - ")}
                   onBlur={handleBlur}
                 />
-
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Insert"}
                   value={formValues.insert}
                   onChange={handleChange}
@@ -196,24 +206,13 @@ export const ModalMenu = () => {
                           ? "bold"
                           : "",
                       }}
-                      // style={getStyles(rol, personrol, theme)}
                     >
                       {rol}
                     </MenuItem>
                   ))}
                 </TextField>
-
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Delete"}
                   value={formValues.delete}
                   onChange={handleChange}
@@ -233,24 +232,13 @@ export const ModalMenu = () => {
                           ? "bold"
                           : "",
                       }}
-                      // style={getStyles(rol, personrol, theme)}
                     >
                       {rol}
                     </MenuItem>
                   ))}
                 </TextField>
-
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Update"}
                   value={formValues.update}
                   onChange={handleChange}
@@ -270,24 +258,13 @@ export const ModalMenu = () => {
                           ? "bold"
                           : "",
                       }}
-                      // style={getStyles(rol, personrol, theme)}
                     >
                       {rol}
                     </MenuItem>
                   ))}
                 </TextField>
-
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Select"}
                   value={formValues.select}
                   onChange={handleChange}
@@ -307,7 +284,6 @@ export const ModalMenu = () => {
                           ? "bold"
                           : "",
                       }}
-                      // style={getStyles(rol, personrol, theme)}
                     >
                       {rol}
                     </MenuItem>
@@ -315,15 +291,6 @@ export const ModalMenu = () => {
                 </TextField>
                 <TextField
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Ver"}
                   value={formValues.ver}
                   onChange={handleChange}
@@ -341,25 +308,14 @@ export const ModalMenu = () => {
                       sx={{
                         fontWeight: formValues.ver.includes(rol) ? "bold" : "",
                       }}
-                      // style={getStyles(rol, personrol, theme)}
                     >
                       {rol}
                     </MenuItem>
                   ))}
                 </TextField>
-
                 <TextField
                   type="number"
                   variant="standard"
-                  sx={{
-                    flexGrow: 1,
-                    flexBasis: (theme) => {
-                      return {
-                        xs: `calc(100%)`,
-                        md: `calc(50% - ${theme.spacing(1)})`,
-                      };
-                    },
-                  }}
                   label={"Orden"}
                   value={formValues.orden}
                   onChange={handleChange}
@@ -368,46 +324,38 @@ export const ModalMenu = () => {
                   helperText={errorValues.orden.join(" - ")}
                   onBlur={handleBlur}
                 />
-                {/* <TextField
-                    variant="standard"
-                    sx={{
-                      flexGrow: 1,
-                      flexBasis: (theme) => {
-                        return {
-                          xs: `calc(100%)`,
-                          md: `calc(50% - ${theme.spacing(1)})`,
-                        };
-                      },
-                    }}
-                    key={`${index}`}
-                    label={`Campo ${index + 1}`}
-                  /> */}
+              </StyledGridContainer>
+            </StyledContainerForm>
+
+            <StyledModalBoxFooter>
+              <Box display={"flex"} alignItems={"center"} gap={1}>
+                <StyledTypographyFooter
+                  color={isFormInvalid ? "error" : "secondary.light"}
+                >
+                  C:
+                  <Typography component={"span"}> Samuel Campos</Typography>
+                </StyledTypographyFooter>
+                <StyledTypographyFooter
+                  color={isFormInvalid ? "error" : "secondary.light"}
+                >
+                  E:
+                  <Typography component={"span"}> Samuel Campos</Typography>
+                </StyledTypographyFooter>
               </Box>
-            </Box>
-            <Divider />
-            <Box
-              width={"100%"}
-              display={"flex"}
-              justifyContent={"flex-end"}
-              alignItems={"center"}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  fontSize: "1.5rem",
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                }}
-                color={isFormInvalid ? "error" : "secondary"}
-              >
-                GUARDAR:
-              </Typography>
-              <IconButton aria-label="Submit" type="submit">
-                <Save />
-              </IconButton>
-            </Box>
-          </Box>
-        </Box>
+              <Box display={"flex"} alignItems={"center"}>
+                <StyledTypographyFooterSpan
+                  color={isFormInvalid ? "error" : "primary.light"}
+                >
+                  GUARDAR:
+                </StyledTypographyFooterSpan>
+                <IconButton aria-label="Submit" type="submit">
+                  <Save />
+                </IconButton>
+              </Box>
+            </StyledModalBoxFooter>
+          </form>
+          {/* </Box> */}
+        </>
       </ModalLayout>
     </>
   );

@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { red, deepOrange, blueGrey, blue } from "@mui/material/colors";
+import { red, deepOrange, blueGrey, blue, green } from "@mui/material/colors";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -17,7 +17,9 @@ export const purpleTheme = () => {
       primary: { main: blue["400"] },
       secondary: { main: blueGrey["700"] },
       tertiary: { main: deepOrange["400"] },
-
+      success: {
+        main: green["600"],
+      },
       error: {
         main: red["A400"],
       },
