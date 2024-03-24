@@ -1,8 +1,11 @@
 import { Drawer, Toolbar } from "@mui/material";
 import { ListSidebar } from "./ListSidebar";
 import { useUiStore } from "../../../hooks";
-const drawerWidthOpen = 240;
-export const DrawerSidebarMobile = () => {
+export const DrawerSidebarMobile = ({
+  drawerWidthOpen,
+}: {
+  drawerWidthOpen: number;
+}) => {
   const { openDrawerSidebarMobile, onToogleSidebarMobile } = useUiStore();
 
   return (

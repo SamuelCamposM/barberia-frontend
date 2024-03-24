@@ -1,10 +1,19 @@
 import {
+  StyledContainerForm,
+  StyledGridContainer,
+  StyledModalBoxFooter,
+  StyledModalBoxHeader,
+  StyledTypographyFooter,
+  StyledTypographyFooterSpan,
+  StyledTypographyHeader,
+} from "../../../components/style";
+import {
   Box,
   IconButton,
   MenuItem,
   TextField,
-  Typography,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout, DataAlerta } from "../../../components";
@@ -14,15 +23,6 @@ import { SocketContext } from "../../../../context";
 import { toast } from "react-toastify";
 import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "../../../../hooks";
-import {
-  StyledContainerForm,
-  StyledGridContainer,
-  StyledModalBoxFooter,
-  StyledModalBoxHeader,
-  StyledTypographyFooter,
-  StyledTypographyFooterSpan,
-  StyledTypographyHeader,
-} from "../../../components/style";
 
 export const ModalMenu = () => {
   const { socket } = useContext(SocketContext);
@@ -45,7 +45,7 @@ export const ModalMenu = () => {
   const columns = useMemo(
     () => ({
       lg: 2,
-      md: 4,
+      md: 2,
       xs: 1,
     }),
     []

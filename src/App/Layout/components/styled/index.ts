@@ -1,28 +1,34 @@
-import { AppBar, Theme, styled } from "@mui/material";
+import { AppBar, ListItem, Theme, styled } from "@mui/material";
 import { Box } from "@mui/material";
-
+import { agregarTransparencia } from "../../../../helpers";
 export const LayoutBox = styled(Box)({
   display: "flex",
-  justifyContent: "space-between",
   flexDirection: "column",
-  height: `100vh`,
+  justifyContent: "space-between",
+  height: "100vh",
   overflow: "hidden",
   ".row": {
     flexDirection: "row",
   },
 });
+
 export const LayoutBox2 = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
   width: "100%",
   height: "100%",
-  display: "flex",
-  justifyContent: "space-between",
-  flexDirection: "column",
   overflow: "auto",
 });
-export const ContentBox = styled(Box)({
-  flexGrow: 1,
-  overflow: "auto",
-});
+
+// export const ContentBox = styled(Box)<{
+//   drawerwidthclose: number;
+//   drawerwidthopen: number;
+//   ismddown: boolean;
+//   opendrawersidebar: boolean;
+// }>(({ drawerwidthclose, drawerwidthopen, ismddown, opendrawersidebar }) => ({
+
+// }));
 
 export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   background: theme.palette.primary.main,
@@ -72,3 +78,22 @@ export const AppBarFooter = styled(AppBar)(({ theme }: { theme: Theme }) => ({
     marginRight: theme.spacing(1),
   },
 }));
+
+//SIDEBAR
+export const StyledListItem = styled(ListItem)(
+  ({ theme }: { theme: Theme }) => ({
+    color: "red",
+    ".link": {
+      width: "100%",
+      textDecoration: "none",
+      color: theme.palette.primary.dark,
+    },
+
+    ".link--active": {
+      background: agregarTransparencia(theme.palette.primary.light, 0.40),
+      color: theme.palette.primary.contrastText,
+      transitionProperty: "background",
+      transitionDuration: "0.5s",
+    },
+  })
+);

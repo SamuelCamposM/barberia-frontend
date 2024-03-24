@@ -1,7 +1,6 @@
 import {
   Box,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -12,6 +11,7 @@ import { convertirPath } from "../../../helpers";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "../../../hooks";
 import { useMenuStore } from "../../pages/Menu";
+import { StyledListItem } from "./styled";
 
 export const ListSidebar = ({ openSidebar = true }) => {
   const { rows } = useMenuStore();
@@ -23,18 +23,14 @@ export const ListSidebar = ({ openSidebar = true }) => {
           .filter(({ ver }) => ver.includes(user.rol))
           .map(({ nombre, _id, icono }) => (
             <Tooltip key={_id} title={nombre} followCursor placement="right">
-              <ListItem disablePadding>
+              <StyledListItem disablePadding>
                 <NavLink
-                  style={{
-                    width: "100%",
-                    textDecoration: "none",
-                    color: "white",
-                  }}
                   to={convertirPath(nombre)}
                   className={({ isActive }) => {
                     if (isActive) {
-                      return "grey";
+                      return "link link--active";
                     }
+                    return "link";
                   }}
                 >
                   <ListItemButton
@@ -44,9 +40,12 @@ export const ListSidebar = ({ openSidebar = true }) => {
                     }}
                   >
                     <ListItemIcon
-                      sx={{ display: "flex", justifyContent: "center" }}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
                     >
-                      {ConvertirIcono(icono)}
+                      {ConvertirIcono(icono, "medium", "primary.contrastText")}
                     </ListItemIcon>
                     <ListItemText
                       sx={{ padding: 0, margin: 0 }}
@@ -64,7 +63,7 @@ export const ListSidebar = ({ openSidebar = true }) => {
               >
                 <ExpandMore />
               </IconButton> */}
-              </ListItem>
+              </StyledListItem>
             </Tooltip>
           ))}
       </List>

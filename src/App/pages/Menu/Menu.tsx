@@ -43,12 +43,11 @@ export const Page3 = () => {
     useMenuStore();
   const { onOpenModalMenu, onToggleOpenMenu } = useMenuStore();
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(100);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -125,7 +124,6 @@ export const Page3 = () => {
               ))}
             </StyledTableRow>
           </TableHead>
-
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

@@ -24,15 +24,9 @@ body {
   }
 }
 
-.grey {
-  background: grey;
-  transition-property: background;
-  transition-duration: 0.5s;
-}
-
 .top {
   font-size: 70px;
-} 
+}
 /* styles.css */
 .MuiTooltip-tooltip {
   color: RED;

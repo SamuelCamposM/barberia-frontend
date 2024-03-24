@@ -1,8 +1,14 @@
-import { Box, TableCell, TableRow, Theme, styled } from "@mui/material";
+import {
+  TableCell,
+  TableContainer,
+  TableRow,
+  Theme,
+  styled,
+} from "@mui/material";
 import { Crud } from "../../../interfaces/global";
 import { agregarTransparencia } from "../../../helpers";
 
-export const StyledTableContainer = styled(Box)({
+export const StyledTableContainer = styled(TableContainer)({
   flexGrow: 1,
 });
 

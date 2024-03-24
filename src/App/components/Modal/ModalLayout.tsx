@@ -37,27 +37,29 @@ export const ModalLayout = ({
       <Grid container>
         {/* [ "xs", "sm", "md", "lg", "xl" ] */}
         <Box
-          sx={(theme) => {
-            console.log({ theme });
-
-            return {
-              minHeight: `${vh}vh`,
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: {
-                xs: `${width.xs}%`,
-                md: `${width.md}%`,
-                lg: `${width.lg}%`,
-              },
-              border: "none",
-              background: "transparent",
-            };
+          sx={{
+            minHeight: `${vh}vh`,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: {
+              xs: `${width.xs}%`,
+              md: `${width.md}%`,
+              lg: `${width.lg}%`,
+            },
+            border: "none",
+            background: "transparent",
           }}
         >
           <Draggable handle={`#${idModal}`}>
-            <Box sx={{ background: (theme) => theme.palette.background.paper }}>
+            <Box
+              sx={{
+                background: (theme) => theme.palette.background.paper,
+                borderRadius: "20px",
+                boxShadow: (theme) => theme.shadows[24],
+              }}
+            >
               {children}
             </Box>
           </Draggable>

@@ -42,7 +42,13 @@ export const Acciones = ({ actionsLeft, actionsRight }: AccionesProps) => {
     <Box
       display={"flex"}
       justifyContent={"space-between"}
-      sx={{ borderTop: (theme) => `1px solid ${theme.palette.secondary.dark}` }}
+      sx={{
+        borderBlock: (theme) =>
+          `${theme.spacing(0.25)} solid ${agregarTransparencia(
+            theme.palette.secondary.light,
+            0.25
+          )}`,
+      }}
     >
       <Box display={"flex"} gap={1}>
         {actionsLeft.map((action, index) => (
