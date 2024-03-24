@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "../hooks";
 import { AuthRouter } from "../Auth";
 import { MainPage } from "../App";
+import { Alerta, Cargando } from "../App/components";
 
 export const AppRouter = () => {
   const { status, onStartSheckAuthToken } = useAuthStore();
@@ -13,21 +14,24 @@ export const AppRouter = () => {
   }, []);
 
   if (status === "checking") {
-    return "CARGANDO"
+    return <Cargando titulo="Autenticando" />;
   }
   return (
-    <Routes>
-      {status === "authenticated" ? (
-        <>
-          <Route path="/*" element={<MainPage />} />
-        </>
-      ) : (
-        <>
-          <Route path="/auth/*" element={<AuthRouter />} />
-          <Route path="/*" element={<Navigate to={"/auth/login"} />} />
-        </>
-      )}
-      <Route path="/*" element={<Navigate to={"/auth/login"} />} />
-    </Routes>
+    <>
+      <Alerta />
+      <Routes>
+        {status === "authenticated" ? (
+          <>
+            <Route path="/*" element={<MainPage />} />
+          </>
+        ) : (
+          <>
+            <Route path="/auth/*" element={<AuthRouter />} />
+            <Route path="/*" element={<Navigate to={"/auth/login"} />} />
+          </>
+        )}
+        <Route path="/*" element={<Navigate to={"/auth/login"} />} />
+      </Routes>
+    </>
   );
 };

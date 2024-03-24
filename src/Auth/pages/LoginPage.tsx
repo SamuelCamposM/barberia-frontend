@@ -5,6 +5,8 @@ import { AuthLayout } from "../Layout/AuthLayout";
 import { useMemo, useEffect } from "react";
 import { required } from "../../helpers";
 import { Link } from "react-router-dom";
+import { DataAlerta } from "../../App/components";
+import { toast } from "react-toastify";
 
 interface RegisterInterface {
   [key: string]: string | string[] | number;
@@ -68,15 +70,17 @@ export const LoginPage = () => {
   };
   useEffect(() => {
     if (errorMessage !== undefined) {
-      console.log({ errorMessage });
+      toast.error(<DataAlerta titulo={errorMessage} subtitulo="" enlace="" />, {
+        position: "top-center",
+      });
     }
   }, [errorMessage]);
 
   return (
     <AuthLayout title="Iniciar sesión">
-      <form onSubmit={loginSubmit}> 
+      <form onSubmit={loginSubmit}>
         {errorMessage ? errorMessage : ""}
-        <h2> {isFormInvalid ? "Invalido" : "valido"}</h2>
+        {/* <h2> {isFormInvalid ? "Invalido" : "valido"}</h2> */}
         <TextField
           sx={{ mt: 1 }}
           fullWidth

@@ -6,17 +6,10 @@ import {
   Footer,
   MigasDePan,
 } from "./components";
-import { Suspense, useEffect } from "react";
+import { Cargando } from "../components";
+import { ContentBox, LayoutBox, LayoutBox2 } from "./components/styled";
 import { CssBaseline, useMediaQuery, useTheme } from "@mui/material";
-import {
-  ContentBox,
-  ContentBoxAnimation,
-  LayoutBox,
-  LayoutBox2,
-} from "./components/styled";
-
-import { ContentCut } from "@mui/icons-material";
-import { Alerta } from "../components/Alertas/Alerta";
+import { Suspense, useEffect } from "react";
 import { useMenuStore } from "../pages/Menu";
 
 export const AppLayout = ({
@@ -40,24 +33,10 @@ export const AppLayout = ({
         <LayoutBox className="row">
           {isMdDown ? <DrawerSidebarMobile /> : <DrawerSidebarDesktop />}
           <ContentBox>
-            <Suspense
-              fallback={
-                <ContentBoxAnimation
-                  height={"100vh"}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  className="suspense"
-                >
-                  <ContentCut sx={{ fontSize: "10rem" }} />
-                </ContentBoxAnimation>
-              }
-            >
+            <Suspense fallback={<Cargando />}>
               <LayoutBox2>
                 <MigasDePan />
-                <LayoutBox2>
-                  {children} <Alerta />
-                </LayoutBox2>
+                <LayoutBox2>{children}</LayoutBox2>
               </LayoutBox2>
             </Suspense>
           </ContentBox>

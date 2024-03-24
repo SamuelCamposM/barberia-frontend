@@ -35,20 +35,25 @@ export const ModalLayout = ({
       aria-describedby="keep-mounted-modal-description"
     >
       <Grid container>
+        {/* [ "xs", "sm", "md", "lg", "xl" ] */}
         <Box
-          sx={{
-            minHeight: `${vh}vh`,
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: {
-              xs: `${width.xs}%`,
-              md: `${width.md}%`,
-              lg: `${width.lg}%`,
-            },
-            border: "none",
-            background: "transparent",
+          sx={(theme) => {
+            console.log({ theme });
+
+            return {
+              minHeight: `${vh}vh`,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: {
+                xs: `${width.xs}%`,
+                md: `${width.md}%`,
+                lg: `${width.lg}%`,
+              },
+              border: "none",
+              background: "transparent",
+            };
           }}
         >
           <Draggable handle={`#${idModal}`}>

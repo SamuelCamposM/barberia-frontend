@@ -21,10 +21,10 @@ export const StyledTypographyHeader = styled(Typography)(
 
 export const StyledContainerForm = styled(Box)<{
   height: number;
-  headerHeight: number;
-  footerHeight: number;
-}>(({ height, headerHeight, footerHeight, theme }) => ({
-  height: `calc(${height}vh - ${footerHeight + headerHeight}px)`,
+  header_height: number;
+  footer_height: number;
+}>(({ height, header_height, footer_height, theme }) => ({
+  height: `calc(${height}vh - ${footer_height + header_height}px)`,
   padding: theme.spacing(1),
   overflow: "scroll",
 }));
@@ -61,17 +61,13 @@ export const StyledModalBoxFooter = styled(Box)(
   })
 );
 
-export const StyledTypographyFooter = styled(Typography)(
-  ({ theme }: { theme: Theme }) => ({
-    textTransform: "uppercase",
-    fontWeight: "bold",
-  })
-);
+export const StyledTypographyFooter = styled(Typography)({
+  textTransform: "uppercase",
+  fontWeight: "bold",
+});
 
-export const StyledTypographyFooterSpan = styled(Typography)(
-  ({ theme }: { theme: Theme }) => ({
-    fontSize: "1.5rem",
-    textTransform: "uppercase",
-    fontWeight: "bold",
-  })
-);
+export const StyledTypographyFooterSpan = styled(Typography)({
+  fontSize: "1.5rem",
+  textTransform: "uppercase",
+  fontWeight: "bold",
+});

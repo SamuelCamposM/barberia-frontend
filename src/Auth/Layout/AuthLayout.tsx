@@ -18,11 +18,15 @@ export const AuthLayout = memo(
         </Box>
         <Box className="contentBx">
           <Box className="formBx">
-            <Typography  textAlign={"center"} variant="subtitle1" component={"h2"}>
+            <Typography
+              textAlign={"center"}
+              variant="subtitle1"
+              component={"h2"}
+            >
               {title}
             </Typography>
 
-            {children}
+            <Box>{children}</Box>
           </Box>
         </Box>
       </LoginBox>

@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { AppTheme } from "./theme";
 import { SocketProvider } from "./context/SocketContext";
+import { Box } from "@mui/material";
 
 export const ChatApp = () => {
   return (
@@ -11,7 +12,9 @@ export const ChatApp = () => {
       <SocketProvider>
         <AppTheme>
           <BrowserRouter>
-            <AppRouter />
+            <Box height={"100vh"}>
+              <AppRouter />
+            </Box>
           </BrowserRouter>
         </AppTheme>
       </SocketProvider>

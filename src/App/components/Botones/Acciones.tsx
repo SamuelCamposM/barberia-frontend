@@ -1,3 +1,4 @@
+import { agregarTransparencia } from "../../../helpers";
 import { Action } from "../../../interfaces/global";
 import { Badge, Box, IconButton, Tooltip } from "@mui/material";
 
@@ -16,19 +17,22 @@ export const Accion = ({
   if (ocultar) return null;
   return (
     <Tooltip title={name} placement="top" followCursor arrow>
-      <IconButton
-        disabled={disabled}
-        sx={{
-          background: bgColor ? (theme) => theme.palette[bgColor].dark : "",
-          mx: 1,
-        }}
-        aria-label={name}
-        onClick={onClick}
-      >
-        <Badge badgeContent={index + 1} color={bgColor}>
+      <Badge badgeContent={index + 1} color={bgColor}>
+        <IconButton
+          disabled={disabled}
+          sx={{
+            background: bgColor
+              ? (theme) =>
+                  agregarTransparencia(theme.palette[bgColor].dark, 0.5)
+              : "",
+            mx: 1,
+          }}
+          aria-label={name}
+          onClick={onClick}
+        >
           <Icon />
-        </Badge>
-      </IconButton>
+        </IconButton>
+      </Badge>
     </Tooltip>
   );
 };

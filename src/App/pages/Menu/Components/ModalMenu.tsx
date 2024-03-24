@@ -44,8 +44,8 @@ export const ModalMenu = () => {
   const idModal = useMemo(() => "modalMenu", []);
   const columns = useMemo(
     () => ({
-      lg: 4,
-      md: 2,
+      lg: 2,
+      md: 4,
       xs: 1,
     }),
     []
@@ -53,8 +53,16 @@ export const ModalMenu = () => {
   const vhContainer = useMemo(
     () => ({
       height: 60,
-      headerHeight: 40,
-      footerHeight: 40,
+      header_height: 40,
+      footer_height: 40,
+    }),
+    []
+  );
+  const width = useMemo(
+    () => ({
+      lg: "60",
+      md: "80",
+      xs: "100",
     }),
     []
   );
@@ -135,11 +143,7 @@ export const ModalMenu = () => {
         open={openModal}
         setOpen={onToggleOpenMenu}
         vh={vhContainer.height}
-        width={{
-          lg: "60",
-          md: "80",
-          xs: "100",
-        }}
+        width={width}
         idModal={idModal}
       >
         <>

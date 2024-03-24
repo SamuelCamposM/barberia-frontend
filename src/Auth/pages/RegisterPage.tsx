@@ -5,6 +5,8 @@ import { AuthLayout } from "../Layout/AuthLayout";
 import { useMemo, useEffect } from "react";
 import { required, validarEmail } from "../../helpers";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { DataAlerta } from "../../App/components";
 
 interface RegisterInterface {
   [key: string]: string | string[] | number;
@@ -77,14 +79,15 @@ export const RegisterPage = () => {
   };
   useEffect(() => {
     if (errorMessage !== undefined) {
-      console.log({ errorMessage });
+      toast.error(<DataAlerta titulo={errorMessage} subtitulo="" enlace="" />, {
+        position: "top-center",
+      });
     }
   }, [errorMessage]);
 
   return (
     <AuthLayout title="Registrarse">
       <form onSubmit={loginSubmit}>
-        {errorMessage ? errorMessage : ""}
         <TextField
           sx={{ mt: 1 }}
           fullWidth

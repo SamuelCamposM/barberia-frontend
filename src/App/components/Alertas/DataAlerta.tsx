@@ -10,12 +10,21 @@ export const DataAlerta = ({
   subtitulo: string;
   enlace?: string;
 }) => {
-  return (
-    <Link to={enlace === "" ? "#" : enlace} style={{ textDecoration: "none" }}>
+  return enlace === "" ? (
+    <>
       <Typography variant="body1" color="primary">
         {titulo}
       </Typography>
-      <Typography variant="body2" color="tertiary.main">
+      <Typography variant="body2" color="primary.light">
+        {subtitulo}
+      </Typography>
+    </>
+  ) : (
+    <Link to={enlace} style={{ textDecoration: "none" }}>
+      <Typography variant="body1" color="primary">
+        {titulo}
+      </Typography>
+      <Typography variant="body2" color="primary.light">
         {subtitulo}
       </Typography>
     </Link>

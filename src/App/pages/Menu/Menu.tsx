@@ -101,7 +101,7 @@ export const Page3 = () => {
     <PaperContainerPage
       tabIndex={-1}
       onKeyDown={(e) => {
-        if (isNaN(Number(e.key))) {
+        if (isNaN(Number(e.key)) || !e.altKey) {
           return;
         }
 
@@ -140,7 +140,6 @@ export const Page3 = () => {
                     // `}
                     key={row._id}
                     onClick={() => {
-                      console.log("onClick");
                       setActiveRow(row);
                     }}
                     onDoubleClick={() => {

@@ -4,7 +4,7 @@ import {
   clearErrorMessage,
   onSliceLogin,
   onSliceLogout,
-  onSlicechecking,
+  // onSlicechecking,
 } from "../../store/auth";
 import {
   LoginParams,
@@ -22,7 +22,7 @@ export const useAuthStore = () => {
   const dispatch = useDispatch();
 
   const onStartLogin = async ({ email, password }: LoginParams) => {
-    dispatch(onSlicechecking());
+    // dispatch(onSlicechecking());
     try {
       const {
         data: { token, ...usuarioSinToken },
@@ -48,7 +48,7 @@ export const useAuthStore = () => {
     lastname,
     tel,
   }: RegisterParams) => {
-    dispatch(onSlicechecking());
+    // dispatch(onSlicechecking());
     try {
       const {
         data: { token, ...usuarioSinToken },
