@@ -81,9 +81,10 @@ export const useAuthStore = () => {
       localStorage.setItem("token-init-data", String(new Date().getTime()));
 
       dispatch(onSliceLogin(usuarioSinToken));
-    } catch (error) {
+    } catch (error: any) {
       localStorage.clear();
-      dispatch(onSliceLogout(undefined));
+
+      dispatch(onSliceLogout(error?.response?.data?.msg || "Sesión expirada"));
     }
   };
 

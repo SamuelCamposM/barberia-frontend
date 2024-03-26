@@ -45,7 +45,7 @@ export const ListSidebar = ({ openSidebar = true }) => {
                         justifyContent: "center",
                       }}
                     >
-                      {ConvertirIcono(icono, "medium", "primary.contrastText")}
+                      {ConvertirIcono(icono, "medium", "primary")}
                     </ListItemIcon>
                     <ListItemText
                       sx={{ padding: 0, margin: 0 }}

@@ -79,7 +79,6 @@ export const LoginPage = () => {
   return (
     <AuthLayout title="Iniciar sesión">
       <form onSubmit={loginSubmit}>
-        {errorMessage ? errorMessage : ""}
         {/* <h2> {isFormInvalid ? "Invalido" : "valido"}</h2> */}
         <TextField
           sx={{ mt: 1 }}

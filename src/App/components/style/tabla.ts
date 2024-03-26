@@ -22,11 +22,11 @@ export const StyledTableRow = styled(TableRow)<{ crud?: Crud }>(
   ({ theme, crud }) => ({
     cursor: "pointer",
     backgroundColor: crud?.editado
-      ? agregarTransparencia(theme.palette.secondary.main, 0.5)
+      ? agregarTransparencia(theme.palette.secondary.light, 0.6)
       : crud?.eliminado
-      ? agregarTransparencia(theme.palette.error.main, 0.5)
+      ? agregarTransparencia(theme.palette.error.light, 0.6)
       : crud?.nuevo
-      ? agregarTransparencia(theme.palette.success.main, 0.5)
+      ? agregarTransparencia(theme.palette.success.light, 0.6)
       : "", // Utilizando el color aquí
   })
 );

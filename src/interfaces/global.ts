@@ -15,3 +15,15 @@ export interface Action {
   onClick: (arg: any) => void;
   bgColor: "primary" | "secondary" | "error" | "success";
 }
+
+export type Components =
+  | "Menu"
+  | "Sucursal"
+  | "Valoraciones"
+  | "Marca"
+  | "Municipio"
+  | "Productos"
+  | "Categoria"
+  | "Depto"
+  | "Cita";
+export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";

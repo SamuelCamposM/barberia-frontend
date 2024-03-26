@@ -13,7 +13,7 @@ declare module "@mui/material/styles" {
 export const purpleTheme = () => {
   return createTheme({
     palette: {
-      mode: "light",
+      mode: "dark",
       primary: { main: blue["400"] },
       secondary: { main: blueGrey["700"] },
       tertiary: { main: deepOrange["400"] },
@@ -24,7 +24,14 @@ export const purpleTheme = () => {
         main: red["A400"],
       },
     },
-    components: { MuiTextField: { defaultProps: { autoComplete: "off" } } },
+    components: {
+      MuiTextField: {
+        defaultProps: {
+          autoComplete: "off",
+          variant: "standard",
+        },
+      },
+    },
     typography: {},
   });
 };

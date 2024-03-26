@@ -8,13 +8,16 @@ import {
   StyledTypographyHeader,
 } from "../../../components/style";
 import {
+  Autocomplete,
   Box,
   IconButton,
+  InputAdornment,
   MenuItem,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
+
 import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout, DataAlerta } from "../../../components";
 import { PageItem, useMenuStore } from "../index";
@@ -23,8 +26,15 @@ import { SocketContext } from "../../../../context";
 import { toast } from "react-toastify";
 import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "../../../../hooks";
+import { IconosFiltered } from "../helpers";
+import { ConvertirIcono } from "../../../helpers";
 
 export const ModalMenu = () => {
+  //   .map(([nombreIcono, ComponenteIcono]) => (
+  //     <MenuItem key={nombreIcono} value={nombreIcono}>
+  //       <ComponenteIcono />
+  //     </MenuItem>
+  //   ))
   const { socket } = useContext(SocketContext);
   const { openModal, onToggleOpenMenu, rowActive, setActiveRow, rowDefault } =
     useMenuStore();
@@ -90,7 +100,7 @@ export const ModalMenu = () => {
     isFormInvalidSubmit,
     // onResetForm,
     onNewForm,
-    // setformValues,
+    setformValues,
   } = useForm(propsUseForm(rowDefault), config);
 
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -108,20 +118,11 @@ export const ModalMenu = () => {
       formValues,
       ({ error, msg }: { error: boolean; msg: string }) => {
         if (error) {
-          toast.error(<DataAlerta titulo={msg} subtitulo="" enlace="" />, {
-            position: "top-center",
-          });
+          toast.error(<DataAlerta titulo={msg} />);
         }
         if (!error) {
           toast.success(
-            <DataAlerta
-              titulo={msg}
-              subtitulo={formValues.nombre}
-              enlace="sucursal_editado"
-            />,
-            {
-              position: "bottom-right",
-            }
+            <DataAlerta titulo={msg} subtitulo={formValues.nombre} />
           );
           onToggleOpenMenu();
           setActiveRow(rowDefault);
@@ -147,7 +148,6 @@ export const ModalMenu = () => {
         idModal={idModal}
       >
         <>
-          {/* <Box> */}
           <StyledModalBoxHeader>
             <StyledTypographyHeader
               color={isFormInvalid ? "error" : "primary"}
@@ -170,7 +170,6 @@ export const ModalMenu = () => {
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
                 <TextField
-                  variant="standard"
                   label={"Nombre"}
                   value={formValues.nombre}
                   onChange={handleChange}
@@ -179,18 +178,48 @@ export const ModalMenu = () => {
                   helperText={errorValues.nombre.join(" - ")}
                   onBlur={handleBlur}
                 />
-                <TextField
-                  variant="standard"
-                  label={"Icono"}
+
+                <Autocomplete
+                  options={IconosFiltered}
+                  getOptionLabel={(nombreIcono) =>
+                    nombreIcono.replace("Rounded", "")
+                  }
                   value={formValues.icono}
-                  onChange={handleChange}
-                  name="icono"
-                  error={errorValues.icono.length > 0}
-                  helperText={errorValues.icono.join(" - ")}
-                  onBlur={handleBlur}
+                  onChange={(_, newValue) => {
+                    if (!newValue) return;
+
+                    setformValues((prev) => ({ ...prev, icono: newValue }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={"Icono"}
+                      error={errorValues.icono.length > 0}
+                      helperText={errorValues.icono.join(" - ")}
+                      onBlur={handleBlur}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Tooltip title="Ver iconos">
+                              <IconButton
+                                aria-label=""
+                                onClick={() => {
+                                  window.open(
+                                    "https://fonts.google.com/icons "
+                                  );
+                                }}
+                              >
+                                {ConvertirIcono(formValues.icono)}
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
                 />
                 <TextField
-                  variant="standard"
                   label={"Insert"}
                   value={formValues.insert}
                   onChange={handleChange}
@@ -216,7 +245,6 @@ export const ModalMenu = () => {
                   ))}
                 </TextField>
                 <TextField
-                  variant="standard"
                   label={"Delete"}
                   value={formValues.delete}
                   onChange={handleChange}
@@ -242,7 +270,6 @@ export const ModalMenu = () => {
                   ))}
                 </TextField>
                 <TextField
-                  variant="standard"
                   label={"Update"}
                   value={formValues.update}
                   onChange={handleChange}
@@ -268,7 +295,6 @@ export const ModalMenu = () => {
                   ))}
                 </TextField>
                 <TextField
-                  variant="standard"
                   label={"Select"}
                   value={formValues.select}
                   onChange={handleChange}
@@ -294,7 +320,6 @@ export const ModalMenu = () => {
                   ))}
                 </TextField>
                 <TextField
-                  variant="standard"
                   label={"Ver"}
                   value={formValues.ver}
                   onChange={handleChange}
@@ -319,7 +344,6 @@ export const ModalMenu = () => {
                 </TextField>
                 <TextField
                   type="number"
-                  variant="standard"
                   label={"Orden"}
                   value={formValues.orden}
                   onChange={handleChange}

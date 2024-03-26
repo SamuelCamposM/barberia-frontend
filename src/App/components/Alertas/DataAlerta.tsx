@@ -3,11 +3,11 @@ import { Typography } from "@mui/material";
 
 export const DataAlerta = ({
   titulo,
-  subtitulo,
+  subtitulo = "",
   enlace = "",
 }: {
   titulo: string;
-  subtitulo: string;
+  subtitulo?: string;
   enlace?: string;
 }) => {
   return enlace === "" ? (

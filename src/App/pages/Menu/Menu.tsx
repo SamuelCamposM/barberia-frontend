@@ -6,7 +6,7 @@ import { Acciones } from "../../components";
 import { Cancel, CenterFocusStrong, Create } from "@mui/icons-material";
 import { ModalMenu } from "./Components/ModalMenu";
 
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { SocketContext } from "../../../context";
 import { Action } from "../../../interfaces/global";
 import { ConvertirIcono } from "../../helpers";
@@ -18,6 +18,7 @@ import {
   StyledTableHeaderCell,
   StyledTableRow,
 } from "../../components/style";
+import { useTablePagination } from "../../hooks";
 
 interface Column {
   id: string;
@@ -37,21 +38,26 @@ const columns: readonly Column[] = [
   { id: "ver", label: "Wachar", minWidth: 50 },
 ];
 
-export const Page3 = () => {
+export const Menu = () => {
   const { socket } = useContext(SocketContext);
-  const { rows, setActiveRow, rowActive, onEditMenu, rowDefault, openModal } =
-    useMenuStore();
+  const {
+    noTienePermiso,
+    onEditMenu,
+    openModal,
+    rowActive,
+    rowDefault,
+    rows,
+    setActiveRow,
+  } = useMenuStore();
   const { onOpenModalMenu, onToggleOpenMenu } = useMenuStore();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const {
+    handleChangePage,
+    handleChangeRowsPerPage,
+    page,
+    rowsPerPage,
+    // setPage,
+    // setRowsPerPage,
+  } = useTablePagination();
 
   const actionsLeft: Action[] = [
     {
@@ -61,6 +67,9 @@ export const Page3 = () => {
       disabled: false,
       ocultar: !Boolean(rowActive._id),
       onClick: () => {
+        if (noTienePermiso("Menu", "update")) {
+          return;
+        }
         if (Boolean(rowActive._id)) {
           onToggleOpenMenu();
         }
@@ -78,18 +87,7 @@ export const Page3 = () => {
       },
     },
   ];
-  const actionsRight: Action[] = [
-    {
-      bgColor: "error",
-      Icon: Create,
-      name: "Editar",
-      disabled: true,
-      ocultar: true,
-      onClick: () => {
-        onOpenModalMenu();
-      },
-    },
-  ];
+  const actionsRight: Action[] = [];
   useEffect(() => {
     socket?.on("cliente:page-editar", (data: PageItem) => {
       onEditMenu(data);
@@ -103,7 +101,6 @@ export const Page3 = () => {
         if (isNaN(Number(e.key)) || !e.altKey) {
           return;
         }
-
         actionsLeft[Number(e.key) - 1].onClick(null);
       }}
     >
@@ -131,17 +128,16 @@ export const Page3 = () => {
                 return (
                   <StyledTableRow
                     crud={row.crud}
-                    // className={`table-container__row
-                    // ${row.crud?.editado && "table-container__row--update"}
-                    // ${row.crud?.nuevo && "table-container__row--create"}
-                    // ${row.crud?.eliminado && "table-container__row--delete"}
-                    // `}
                     key={row._id}
                     onClick={() => {
                       setActiveRow(row);
                     }}
                     onDoubleClick={() => {
+                      if (noTienePermiso("Menu", "update")) {
+                        return;
+                      }
                       onOpenModalMenu();
+
                       // setActiveRow(row);
                     }}
                   >
@@ -154,7 +150,9 @@ export const Page3 = () => {
                       </Box>
                     </StyledTableCell>
                     <StyledTableCell>
-                      {ConvertirIcono(row.icono, "small")}
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {ConvertirIcono(row.icono, "small")}
+                      </Box>
                     </StyledTableCell>
                     <StyledTableCell>{row.delete.join(", ")}</StyledTableCell>
                     <StyledTableCell>{row.insert.join(", ")}</StyledTableCell>
@@ -183,4 +181,4 @@ export const Page3 = () => {
     </PaperContainerPage>
   );
 };
-export default Page3;
+export default Menu;

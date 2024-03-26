@@ -9,10 +9,15 @@ import { getPages } from "../../../Layout/helpers";
 import { PageItem } from "../";
 import { RootState } from "../../../../store/interfaces";
 import { useDispatch, useSelector } from "react-redux";
+import { Components, tipoPermiso } from "../../../../interfaces/global";
+import { toast } from "react-toastify";
 export const useMenuStore = () => {
   const { openModal, rowActive, rows, rowDefault } = useSelector(
     (state: RootState) => state.menu
   );
+  const {
+    user: { rol },
+  } = useSelector((state: RootState) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -44,6 +49,18 @@ export const useMenuStore = () => {
   const onEditMenu = (item: PageItem) => {
     dispatch(onSliceEditMenu(item));
   };
+  const noTienePermiso = (component: Components, tipoPermiso: tipoPermiso) => {
+    const pageFind = rows.find((page) => page.componente === component);
+    if (!pageFind) {
+      toast.error(`Error al validar permiso`);
+      return false;
+    }
+    const sinPermiso = !pageFind[tipoPermiso].includes(rol);
+    if (sinPermiso) {
+      toast.error(`No tiene permiso para  ${tipoPermiso}`);
+    }
+    return sinPermiso;
+  };
   return {
     //Propiedades
     openModal,
@@ -57,5 +74,6 @@ export const useMenuStore = () => {
     onToggleOpenMenu,
     setActiveRow,
     rowDefault,
+    noTienePermiso,
   };
 };

@@ -86,11 +86,11 @@ export const StyledListItem = styled(ListItem)(
     ".link": {
       width: "100%",
       textDecoration: "none",
-      color: theme.palette.primary.dark,
+      color: theme.palette.primary.main,
     },
 
     ".link--active": {
-      background: agregarTransparencia(theme.palette.primary.light, 0.40),
+      background: agregarTransparencia(theme.palette.primary.light, 0.5),
       color: theme.palette.primary.contrastText,
       transitionProperty: "background",
       transitionDuration: "0.5s",
