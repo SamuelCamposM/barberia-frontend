@@ -1,9 +1,8 @@
 import {
   getSliceDataMenu,
-  onCloseSliceModalMenu,
-  onOpenSliceModalMenu,
   onSliceEditMenu,
   setSliceActiveRow,
+  setSliceOpenModalMenu,
 } from "../store";
 import { getPages } from "../../../Layout/helpers";
 import { PageItem } from "../";
@@ -28,18 +27,8 @@ export const useMenuStore = () => {
     dispatch(getSliceDataMenu(data));
   };
 
-  const onCloseModalMenu = () => {
-    dispatch(onCloseSliceModalMenu());
-  };
-  const onOpenModalMenu = () => {
-    dispatch(onOpenSliceModalMenu());
-  };
-  const onToggleOpenMenu = () => {
-    if (openModal) {
-      dispatch(onCloseSliceModalMenu());
-    } else {
-      dispatch(onOpenSliceModalMenu());
-    }
+  const setOpenModalMenu = (value: boolean) => {
+    dispatch(setSliceOpenModalMenu(value));
   };
 
   const setActiveRow = (item: PageItem) => {
@@ -68,10 +57,8 @@ export const useMenuStore = () => {
     rows,
     //Metodos
     getDataMenu,
-    onCloseModalMenu,
     onEditMenu,
-    onOpenModalMenu,
-    onToggleOpenMenu,
+    setOpenModalMenu,
     setActiveRow,
     rowDefault,
     noTienePermiso,

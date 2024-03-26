@@ -17,7 +17,14 @@ export const Accion = ({
   if (ocultar) return null;
   return (
     <Tooltip title={name} placement="top" followCursor arrow>
-      <Badge badgeContent={index + 1} color={bgColor}>
+      <Badge
+        badgeContent={index + 1}
+        color={bgColor}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
         <IconButton
           disabled={disabled}
           sx={{
@@ -40,6 +47,7 @@ export const Accion = ({
 export const Acciones = ({ actionsLeft, actionsRight }: AccionesProps) => {
   return (
     <Box
+    ml={2}
       display={"flex"}
       justifyContent={"space-between"}
       sx={{

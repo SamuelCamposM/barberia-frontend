@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { MenuState, PageItem} from "../";
+import { MenuState, PageItem } from "../";
 
 export const rowDefault: PageItem = {
   _id: "",
@@ -28,11 +28,8 @@ export const menuSlice = createSlice({
     getSliceDataMenu: (state, action: PayloadAction<PageItem[]>) => {
       state.rows = action.payload;
     },
-    onCloseSliceModalMenu: (state) => {
-      state.openModal = false;
-    },
-    onOpenSliceModalMenu: (state) => {
-      state.openModal = true;
+    setSliceOpenModalMenu: (state, action: PayloadAction<boolean>) => {
+      state.openModal = action.payload;
     },
     setSliceActiveRow: (state, action: PayloadAction<PageItem>) => {
       state.rowActive = action.payload;
@@ -50,8 +47,7 @@ export const menuSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   getSliceDataMenu,
-  onCloseSliceModalMenu,
-  onOpenSliceModalMenu,
   onSliceEditMenu,
   setSliceActiveRow,
+  setSliceOpenModalMenu,
 } = menuSlice.actions;

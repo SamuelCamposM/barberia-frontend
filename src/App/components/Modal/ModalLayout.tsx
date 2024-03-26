@@ -28,7 +28,6 @@ export const ModalLayout = ({
 }) => {
   return (
     <Modal
-      keepMounted
       open={open}
       onClose={() => setOpen(false)}
       aria-labelledby="keep-mounted-modal-title"

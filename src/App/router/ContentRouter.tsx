@@ -21,7 +21,7 @@ export const ContentRouter = () => {
           return (
             <Route
               key={_id}
-              path={convertirPath(nombre)}
+              path={convertirPath(nombre) + "/*"}
               element={ConvertirComponente(componente)}
             />
           );

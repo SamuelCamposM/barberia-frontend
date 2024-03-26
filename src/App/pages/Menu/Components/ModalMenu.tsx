@@ -36,8 +36,10 @@ export const ModalMenu = () => {
   //     </MenuItem>
   //   ))
   const { socket } = useContext(SocketContext);
-  const { openModal, onToggleOpenMenu, rowActive, setActiveRow, rowDefault } =
+  const { openModal, setOpenModalMenu, rowActive, setActiveRow, rowDefault } =
     useMenuStore();
+  const editar = useMemo(() => Boolean(rowActive._id), [rowActive]);
+
   const propsUseForm = (item: PageItem) => {
     return {
       nombre: item.nombre,
@@ -124,7 +126,7 @@ export const ModalMenu = () => {
           toast.success(
             <DataAlerta titulo={msg} subtitulo={formValues.nombre} />
           );
-          onToggleOpenMenu();
+          setOpenModalMenu(false);
           setActiveRow(rowDefault);
         }
       }
@@ -142,7 +144,7 @@ export const ModalMenu = () => {
     <>
       <ModalLayout
         open={openModal}
-        setOpen={onToggleOpenMenu}
+        setOpen={() => setOpenModalMenu(false)}
         vh={vhContainer.height}
         width={width}
         idModal={idModal}
@@ -153,12 +155,12 @@ export const ModalMenu = () => {
               color={isFormInvalid ? "error" : "primary"}
               id={idModal}
             >
-              Menu
+              Menu: {editar ? "editando" : "agregando"}
             </StyledTypographyHeader>
             <Tooltip title="Cancelar">
               <IconButton
                 aria-label="Cancelar"
-                onClick={onToggleOpenMenu}
+                onClick={() => setOpenModalMenu(false)}
                 color="error"
               >
                 <Cancel />

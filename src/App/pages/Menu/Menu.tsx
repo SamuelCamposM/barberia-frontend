@@ -3,8 +3,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import { Box, TextField, Table, Typography } from "@mui/material";
 import { Acciones } from "../../components";
-import { Cancel, CenterFocusStrong, Create } from "@mui/icons-material";
-import { ModalMenu } from "./Components/ModalMenu";
+import { Add, Cancel, CenterFocusStrong, Create } from "@mui/icons-material";
 
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../../../context";
@@ -19,6 +18,8 @@ import {
   StyledTableRow,
 } from "../../components/style";
 import { useTablePagination } from "../../hooks";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { ModalRoute } from "./Components/ModalRoute";
 
 interface Column {
   id: string;
@@ -40,6 +41,7 @@ const columns: readonly Column[] = [
 
 export const Menu = () => {
   const { socket } = useContext(SocketContext);
+  const navigate = useNavigate();
   const {
     noTienePermiso,
     onEditMenu,
@@ -48,8 +50,8 @@ export const Menu = () => {
     rowDefault,
     rows,
     setActiveRow,
+    setOpenModalMenu,
   } = useMenuStore();
-  const { onOpenModalMenu, onToggleOpenMenu } = useMenuStore();
   const {
     handleChangePage,
     handleChangeRowsPerPage,
@@ -71,7 +73,7 @@ export const Menu = () => {
           return;
         }
         if (Boolean(rowActive._id)) {
-          onToggleOpenMenu();
+          setOpenModalMenu(!openModal);
         }
       },
     },
@@ -84,10 +86,23 @@ export const Menu = () => {
       onClick: () => {
         if (Boolean(rowActive._id) && openModal) return;
         setActiveRow(rowDefault);
+        navigate("/menu", { replace: true });
       },
     },
   ];
-  const actionsRight: Action[] = [];
+  const actionsRight: Action[] = [
+    {
+      Icon: Add,
+      bgColor: "success",
+      name: "Nuevo",
+      disabled: false,
+      ocultar: false,
+      onClick: () => {
+        navigate("/menu/nuevo", { replace: true });
+        setOpenModalMenu(true);
+      },
+    },
+  ];
   useEffect(() => {
     socket?.on("cliente:page-editar", (data: PageItem) => {
       onEditMenu(data);
@@ -104,8 +119,18 @@ export const Menu = () => {
         actionsLeft[Number(e.key) - 1].onClick(null);
       }}
     >
-      <ModalMenu />
-      <TextField label="Buscar" size="small" />
+      <Routes>
+        <Route path="/" element={<></>} />
+        <Route path="/:_id" element={<ModalRoute />} />
+        <Route path="/*" element={<Navigate replace to="/" />} />
+      </Routes>
+      {/* <Routes>
+        <Route path="/" element={<></>} />
+        <Route path="modal/:item" element={<ModalMenu />} />
+        <Route path="/*" element={<Navigate replace to="/" />} />
+      </Routes> */}
+
+      <TextField label="Buscar" size="small" variant="outlined" />
       <StyledTableContainer>
         <Table size="small" stickyHeader aria-label="sticky table">
           <TableHead>
@@ -136,8 +161,9 @@ export const Menu = () => {
                       if (noTienePermiso("Menu", "update")) {
                         return;
                       }
-                      onOpenModalMenu();
-
+                      navigate(`/menu/${row._id}`);
+                      // navigate(`/menu/${row._id}?q=asdasd`);
+                      setOpenModalMenu(true);
                       // setActiveRow(row);
                     }}
                   >
