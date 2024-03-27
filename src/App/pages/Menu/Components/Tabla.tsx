@@ -1,52 +1,86 @@
-import { Box, Table, TableBody, TableHead, Typography } from "@mui/material";
-import { CenterFocusStrong } from "@mui/icons-material";
+import { Box, TableBody, TableHead, TablePagination } from "@mui/material";
+import { Create } from "@mui/icons-material";
 import { ConvertirIcono } from "../../../helpers";
-import { useMenuStore } from "..";
+import { PageItem, useMenuStore } from "..";
 import { useNavigate } from "react-router-dom";
 import {
   StyledTableCell,
-  StyledTableContainer,
   StyledTableHeaderCell,
   StyledTableRow,
 } from "../../../components/style";
 import queryString from "query-string";
 import { filterFunction } from "../helpers";
+import { usePath, useTablePagination } from "../../../hooks";
+import { useCallback } from "react";
+import "animate.css/animate.min.css";
+import { Acciones, TablaLayout } from "../../../components";
+import { Action } from "../../../../interfaces/global";
 interface Column {
-  id: string;
   label: string;
   minWidth?: number;
   align?: "right" | "center" | "left";
 }
 
 const columns: readonly Column[] = [
-  { id: "nombre", label: "Nombre", minWidth: 50 },
-  { id: "icono", label: "Icono", minWidth: 50 },
-  { id: "delete", label: "Delete", minWidth: 50 },
-  { id: "insert", label: "Insert", minWidth: 50 },
-  { id: "update", label: "Update", minWidth: 50 },
-  { id: "select", label: "Select", minWidth: 50 },
-  { id: "ver", label: "Wachar", minWidth: 50 },
+  { label: "", minWidth: 50, align: "center" },
+  { label: "Nombre", minWidth: 40 },
+  { label: "Icono", minWidth: 40 },
+  { label: "Delete", minWidth: 80 },
+  { label: "Insert", minWidth: 80 },
+  { label: "Update", minWidth: 80 },
+  { label: "Select", minWidth: 80 },
+  { label: "Wachar", minWidth: 80 },
 ];
-export const Tabla = ({
-  page,
-  rowsPerPage,
-}: {
-  page: number;
-  rowsPerPage: number;
-}) => {
+export const Tabla = ({ actions }: { actions: Action[] }) => {
   const navigate = useNavigate();
   const { rows, noTienePermiso, setOpenModalMenu, setActiveRow, rowActive } =
     useMenuStore();
-  const { q = "", buscando = "" } = queryString.parse(location.search);
+  const path = usePath();
+  const { q = "", buscando = "" } = queryString.parse(location.search) as {
+    q: string;
+    buscando: string;
+  };
+  const { handleChangePage, handleChangeRowsPerPage, page, rowsPerPage } =
+    useTablePagination();
+
+  const handleEditar = useCallback(
+    (row: PageItem) => {
+      if (noTienePermiso("Menu", "update")) {
+        return;
+      }
+      navigate(`/${path}/${row._id}${q && `?q=${q}&buscando=${buscando}`}`);
+      setActiveRow(row);
+      setOpenModalMenu(true);
+    },
+    [q]
+  );
+  // const [, setshowButtoms] = useState(false);
+
   return (
-    <StyledTableContainer>
-      <Table size="small" stickyHeader aria-label="sticky table">
+    <>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Acciones actions={actions} />
+        <TablePagination
+          className="tablePagination"
+          rowsPerPageOptions={[10, 20, 100]}
+          component="div"
+          count={filterFunction(q, buscando, rows).length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Box>
+      <TablaLayout>
         <TableHead>
           <StyledTableRow>
-            {columns.map((column, index) => (
+            {columns.map((column) => (
               <StyledTableHeaderCell
-                key={index}
-                align={column.align}
+                key={column.label}
                 style={{ minWidth: column.minWidth }}
               >
                 {column.label}
@@ -62,29 +96,39 @@ export const Tabla = ({
                 <StyledTableRow
                   crud={row.crud}
                   key={row._id}
-                  onClick={() => {
-                    setActiveRow(row);
-                  }}
                   onDoubleClick={() => {
-                    if (noTienePermiso("Menu", "update")) {
-                      return;
-                    }
-                    navigate(
-                      `/menu/${row._id}${q && `?q=${q}&buscando=${buscando}`}`
-                    );
-                    // navigate(`/menu/${row._id}?q=asdasd`);
-                    setOpenModalMenu(true);
+                    handleEditar(row);
                     // setActiveRow(row);
                   }}
+                  // onMouseEnter={() => setshowButtoms(true)}
+                  // onMouseLeave={() => setshowButtoms(false)}
+                  // className={`${
+                  //   rowActive._id === row._id &&
+                  //   "animate__animated animate__lightSpeedInRight"
+                  // }`}
                 >
-                  <StyledTableCell>
-                    <Box display={"flex"} alignItems={"center"} gap={1}>
-                      {rowActive._id === row._id && (
-                        <CenterFocusStrong color="primary" />
-                      )}
-                      <Typography variant="body1">{row.nombre}</Typography>
-                    </Box>
+                  <StyledTableCell
+                    padding="checkbox"
+                    className={`pendingActive ${
+                      rowActive._id === row._id && "active"
+                    }`}
+                  >
+                    <Acciones
+                      actions={[
+                        {
+                          color: "primary",
+                          Icon: Create,
+                          name: `Editar`,
+                          onClick: () => {
+                            handleEditar(row);
+                          },
+                          tipo: "icono",
+                          size: "small",
+                        },
+                      ]}
+                    />
                   </StyledTableCell>
+                  <StyledTableCell>{row.nombre}</StyledTableCell>
                   <StyledTableCell>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       {ConvertirIcono(row.icono, "small")}
@@ -99,7 +143,7 @@ export const Tabla = ({
               );
             })}
         </TableBody>
-      </Table>
-    </StyledTableContainer>
+      </TablaLayout>
+    </>
   );
 };

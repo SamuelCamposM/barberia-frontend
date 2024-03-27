@@ -4,9 +4,11 @@ import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import { Cancel } from "@mui/icons-material";
+import { usePath } from "../../../hooks";
 
 export const Buscador = () => {
   const navigate = useNavigate();
+  const path = usePath();
   const { q = "", buscando = "" } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
@@ -23,12 +25,12 @@ export const Buscador = () => {
     formValues,
     handleChange,
     setisSubmited,
-    onResetForm,
-    // setformValues,
+    // onResetForm,
+    setformValues,
   } = useForm(initialValues, {});
   const onLeaveSearch = () => {
-    onResetForm();
-    navigate("/menu");
+    setformValues({ search: "" });
+    navigate(`/${path}`);
   };
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();

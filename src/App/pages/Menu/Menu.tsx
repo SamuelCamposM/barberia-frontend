@@ -1,77 +1,77 @@
-import { Acciones } from "../../components";
 import { Action } from "../../../interfaces/global";
-import { Add, Cancel, Create } from "@mui/icons-material";
+import { Cancel, Create } from "@mui/icons-material";
+import { Buscador } from "./Components/Buscador";
 import { ModalRoute } from "./Components/ModalRoute";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { PaperContainerPage } from "../../components/style";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { SocketContext } from "../../../context";
 import { useContext, useEffect } from "react";
 import { useMenuStore, PageItem, Tabla } from "./";
-import { useTablePagination } from "../../hooks";
-import TablePagination from "@mui/material/TablePagination";
-import queryString from "query-string";
-import { Buscador } from "./Components/Buscador";
-import { filterFunction } from "./helpers";
+import { usePath } from "../../hooks";
 
 export const Menu = () => {
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
+  const path = usePath();
   const {
     noTienePermiso,
     onEditMenu,
     openModal,
     rowActive,
     rowDefault,
-    rows,
     setActiveRow,
     setOpenModalMenu,
   } = useMenuStore();
-  const { handleChangePage, handleChangeRowsPerPage, page, rowsPerPage } =
-    useTablePagination();
 
-  const actionsLeft: Action[] = [
+  const actions: Action[] = [
     {
-      Icon: Create,
-      bgColor: "secondary",
-      name: "Continuar Editando",
+      color: "secondary",
+      tipo: "icono",
+      variant: "contained",
+      badge: "index",
       disabled: false,
+      Icon: Create,
+      name: "Continuar Editando",
       ocultar: !Boolean(rowActive._id),
-      onClick: () => {
+      onClick() {
         if (noTienePermiso("Menu", "update")) {
           return;
         }
-        if (Boolean(rowActive._id)) {
-          setOpenModalMenu(!openModal);
-        }
+        if (this && this.ocultar) return;
+        setOpenModalMenu(!openModal);
       },
     },
     {
-      Icon: Cancel,
-      bgColor: "error",
-      name: "Cancelar Edición",
+      color: "error",
+      tipo: "icono",
+      badge: "index",
       disabled: false,
+      Icon: Cancel,
+      name: "Cancelar Edición",
       ocultar: !Boolean(rowActive._id),
       onClick: () => {
-        if (Boolean(rowActive._id) && openModal) return;
+        if (!Boolean(rowActive._id)) return;
         setActiveRow(rowDefault);
-        navigate("/menu", { replace: true });
+        navigate(`/${path}`, { replace: true });
       },
     },
-  ];
-  const actionsRight: Action[] = [
-    {
-      Icon: Add,
-      bgColor: "success",
-      name: "Nuevo",
-      disabled: false,
-      ocultar: false,
-      onClick: () => {
-        navigate(`/menu/nuevo${q && `?q=${q}&buscando=${buscando}`}`, {
-          replace: true,
-        });
-        setOpenModalMenu(true);
-      },
-    },
+    // {
+    //   badge: "index",
+    //   color: "error",
+    //   disabled: false,
+    //   Icon: Add,
+    //   name: "Nuevo",
+    //   ocultar: true,
+    //   tipo: "icono",
+    //   onClick() {
+    //     if (this.ocultar) return;
+
+    //     navigate(`/${path}/nuevo${q && `?q=${q}&buscando=${buscando}`}`, {
+    //       replace: true,
+    //     });
+    //     setOpenModalMenu(true);
+    //   },
+    // },
   ];
 
   useEffect(() => {
@@ -79,47 +79,31 @@ export const Menu = () => {
       onEditMenu(data);
     });
   }, [socket]);
-  const { q = "", buscando = "" } = queryString.parse(location.search) as {
-    q: string;
-    buscando: string;
-  };
+
+  // const { q = "", buscando = "" } = queryString.parse(location.search) as {
+  //   q: string;
+  //   buscando: string;
+  // };
 
   return (
-    <PaperContainerPage
-      tabIndex={-1}
-      onKeyDown={(e) => {
-        if (isNaN(Number(e.key)) || !e.altKey) {
-          return;
-        }
-        [...actionsLeft, ...actionsRight][Number(e.key) - 1].onClick(null);
-      }}
-    >
-      <Routes>
-        <Route path="/" element={<></>} />
-        <Route path="/:_id" element={<ModalRoute />} />
-        <Route path="/*" element={<Navigate replace to="/" />} />
-      </Routes>
-      {/* <Routes>
-        <Route path="/" element={<></>} />
-        <Route path="modal/:item" element={<ModalMenu />} />
-        <Route path="/*" element={<Navigate replace to="/" />} />
-      </Routes> */}
-      <Buscador />
-      <Tabla page={page} rowsPerPage={rowsPerPage} />
+    <>
+      <PaperContainerPage
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (isNaN(Number(e.key)) || !e.altKey) {
+            return;
+          }
+          actions[Number(e.key) - 1].onClick(null);
+        }}
+      >
+        <Routes>
+          <Route path="/:_id" element={<ModalRoute />} />
+        </Routes>
+        <Buscador />
 
-      <Acciones actionsLeft={actionsLeft} actionsRight={actionsRight} />
-
-      <TablePagination
-        className="tablePagination"
-        rowsPerPageOptions={[10, 20, 100]}
-        component="div"
-        count={filterFunction(String(q), String(buscando), rows).length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </PaperContainerPage>
+        <Tabla actions={actions} />
+      </PaperContainerPage>
+    </>
   );
 };
 export default Menu;

@@ -11,7 +11,7 @@ export const Cargando = ({ titulo = "Cargando" }: { titulo?: string }) => {
       flexDirection="column"
       alignItems="center"
     >
-      <Box sx={{ animation: "rotating 2s linear infinite" }}>
+      <Box className="animate__animated animate__infinite animate__jackInTheBox">
         <ContentCut sx={{ fontSize: "10rem" }} />
       </Box>
       <Typography

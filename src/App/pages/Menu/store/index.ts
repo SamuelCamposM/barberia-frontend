@@ -21,6 +21,7 @@ const initialState: MenuState = {
   rowActive: rowDefault,
   rowDefault,
 };
+
 export const menuSlice = createSlice({
   name: "menu",
   initialState,

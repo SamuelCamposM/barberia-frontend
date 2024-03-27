@@ -15,7 +15,7 @@ export const purpleTheme = () => {
     palette: {
       mode: "dark",
       primary: { main: blue["400"] },
-      secondary: { main: blueGrey["700"] },
+      secondary: { main: blueGrey["400"] },
       tertiary: { main: deepOrange["400"] },
       success: {
         main: green["600"],

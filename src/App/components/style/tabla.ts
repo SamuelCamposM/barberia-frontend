@@ -15,6 +15,19 @@ export const StyledTableContainer = styled(TableContainer)({
 export const StyledTableCell = styled(TableCell)(
   ({ theme }: { theme: Theme }) => ({
     padding: theme.spacing(0, 0.5),
+    ":first-of-type": {
+      borderInline: `1px solid ${agregarTransparencia(
+        theme.palette.secondary.light,
+        0.25
+      )}`,
+      borderRadius: "50px 0px 0px 50px",
+    },
+    ":last-child": {
+      borderRadius: "0px 50px 50px 0px",
+    },
+    "&.active": {
+      background: theme.palette.secondary.dark,
+    },
   })
 );
 
@@ -22,11 +35,11 @@ export const StyledTableRow = styled(TableRow)<{ crud?: Crud }>(
   ({ theme, crud }) => ({
     cursor: "pointer",
     backgroundColor: crud?.editado
-      ? agregarTransparencia(theme.palette.secondary.light, 0.6)
+      ? agregarTransparencia(theme.palette.secondary.light, 0.25)
       : crud?.eliminado
-      ? agregarTransparencia(theme.palette.error.light, 0.6)
+      ? agregarTransparencia(theme.palette.error.light, 0.25)
       : crud?.nuevo
-      ? agregarTransparencia(theme.palette.success.light, 0.6)
+      ? agregarTransparencia(theme.palette.success.light, 0.25)
       : "", // Utilizando el color aquí
   })
 );
@@ -39,5 +52,8 @@ export const StyledTableHeaderCell = styled(TableCell)(
       theme.palette.primary.dark,
       0.75
     )}, ${agregarTransparencia(theme.palette.primary.light, 1)})`,
+    cursor: "pointer",
+    fontWeight: "bold",
+    textTransform: "uppercase",
   })
 );

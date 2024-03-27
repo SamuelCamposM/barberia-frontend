@@ -32,6 +32,8 @@ export const ModalLayout = ({
       onClose={() => setOpen(false)}
       aria-labelledby="keep-mounted-modal-title"
       aria-describedby="keep-mounted-modal-description"
+      className="animate__animated animate__fadeIn"
+      sx={{ animationDuration: ".25s" }}
     >
       <Grid container>
         {/* [ "xs", "sm", "md", "lg", "xl" ] */}

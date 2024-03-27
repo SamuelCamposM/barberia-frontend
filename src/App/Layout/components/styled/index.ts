@@ -1,4 +1,4 @@
-import { AppBar, ListItem, Theme, styled } from "@mui/material";
+import { AppBar, ListItem, Paper, Theme, styled } from "@mui/material";
 import { Box } from "@mui/material";
 import { agregarTransparencia } from "../../../../helpers";
 export const LayoutBox = styled(Box)({
@@ -12,7 +12,7 @@ export const LayoutBox = styled(Box)({
   },
 });
 
-export const LayoutBox2 = styled(Box)({
+export const LayoutBox2 = styled(Paper)({
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -31,8 +31,11 @@ export const LayoutBox2 = styled(Box)({
 // }));
 
 export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
-  background: theme.palette.primary.main,
-  // background: `linear-gradient(45deg, ${theme.palette.success.dark} 30%, ${theme.palette.secondary.main} 90%)`,
+  // background: theme.palette.primary.main,
+  background: `linear-gradient(0deg, ${agregarTransparencia(
+    theme.palette.primary.dark,
+    0.4
+  )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.9)} 100%)`,
   zIndex: theme.zIndex.drawer + 1,
   paddingLeft: 24,
   ".toolbar": {
@@ -57,8 +60,11 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   },
 }));
 export const AppBarFooter = styled(AppBar)(({ theme }: { theme: Theme }) => ({
-  background: "transparent", //  theme.palette.primary.main,
-
+  // background: "transparent", //  theme.palette.primary.main,
+  background: `linear-gradient(0deg, ${agregarTransparencia(
+    theme.palette.secondary.dark,
+    0.6
+  )} 20%, ${agregarTransparencia(theme.palette.secondary.light, 0.9)} 100%)`,
   zIndex: theme.zIndex.drawer + 1,
   [theme.breakpoints.down("md")]: {
     zIndex: theme.zIndex.drawer,

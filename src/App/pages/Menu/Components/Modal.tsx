@@ -27,6 +27,8 @@ import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "../../../../hooks";
 import { IconosFiltered } from "../helpers";
 import { ConvertirIcono } from "../../../helpers";
+// import { useNavigate } from "react-router-dom";
+// import { usePath } from "../../../hooks";
 
 const idModal = "modalMenu";
 const columns = {
@@ -40,8 +42,8 @@ const vhContainer = {
   footer_height: 40,
 };
 const width = {
-  lg: "60",
-  md: "80",
+  lg: "40",
+  md: "70",
   xs: "100",
 };
 
@@ -50,7 +52,6 @@ export const ModalMenu = () => {
   const { openModal, setOpenModalMenu, rowActive, setActiveRow, rowDefault } =
     useMenuStore();
   const editar = useMemo(() => Boolean(rowActive._id), [rowActive]);
-
   const propsUseForm = (item: PageItem) => {
     return {
       nombre: item.nombre,
@@ -119,12 +120,13 @@ export const ModalMenu = () => {
     );
   };
 
-  const awaitActive = async () => {
-    await onNewForm(rowActive);
-    handleBlur();
-  };
+  // const awaitActive = async () => {
+  //   await ;
+
+  //   handleBlur();
+  // };
   useEffect(() => {
-    awaitActive();
+    onNewForm(rowActive);
   }, [rowActive]);
   return (
     <>
@@ -172,7 +174,7 @@ export const ModalMenu = () => {
                   getOptionLabel={(nombreIcono) =>
                     nombreIcono.replace("Rounded", "")
                   }
-                  value={formValues.icono}
+                  value={formValues.icono === "" ? null : formValues.icono}
                   onChange={(_, newValue) => {
                     if (!newValue) return;
 
@@ -193,9 +195,7 @@ export const ModalMenu = () => {
                               <IconButton
                                 aria-label=""
                                 onClick={() => {
-                                  window.open(
-                                    "https://fonts.google.com/icons "
-                                  );
+                                  window.open("https://fonts.google.com/icons");
                                 }}
                               >
                                 {ConvertirIcono(formValues.icono)}

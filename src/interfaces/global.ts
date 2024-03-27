@@ -1,5 +1,5 @@
-import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { SvgIconTypeMap } from "@mui/material";
 
 export interface Crud {
   editado?: boolean;
@@ -8,22 +8,26 @@ export interface Crud {
 }
 
 export interface Action {
+  badge?: string;
+  color: "primary" | "secondary" | "error" | "success";
+  disabled?: boolean;
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   name: string;
-  disabled?: boolean;
   ocultar?: boolean;
   onClick: (arg: any) => void;
-  bgColor: "primary" | "secondary" | "error" | "success";
+  size?: "small" | "medium" | "large";
+  tipo: "icono" | "boton";
+  variant?: "text" | "outlined" | "contained";
 }
 
 export type Components =
-  | "Menu"
-  | "Sucursal"
-  | "Valoraciones"
+  | "Categoria"
+  | "Cita"
+  | "Depto"
   | "Marca"
+  | "Menu"
   | "Municipio"
   | "Productos"
-  | "Categoria"
-  | "Depto"
-  | "Cita";
+  | "Sucursal"
+  | "Valoraciones";
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";

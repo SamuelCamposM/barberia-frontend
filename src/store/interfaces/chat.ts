@@ -2,16 +2,16 @@ import { User } from "./auth";
 
 export interface Mensaje {
   _id: string;
-  de: string;
-  para: string;
-  mensaje: string;
   createdAt: string;
+  de: string;
+  mensaje: string;
+  para: string;
   updatedAt: string;
 }
 
 export interface ChatState {
-  uid: string;
   chatActivo: string | null;
-  usuarios: User[];
   mensajes: Mensaje[];
+  uid: string;
+  usuarios: User[];
 }

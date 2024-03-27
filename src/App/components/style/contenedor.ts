@@ -1,13 +1,12 @@
-import { Box, Theme, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 
-export const PaperContainerPage = styled(Box)(({ theme }: { theme: Theme }) => {
+export const PaperContainerPage = styled(Box)(() => {
   return {
     height: "100%",
     display: "flex",
     flexDirection: "column",
     // overflow: "auto",
     // position: "relative",
-    background: theme.palette.background.paper,
     ".tablePagination": { minHeight: "52px" },
   };
 });
