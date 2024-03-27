@@ -47,7 +47,7 @@ export const Accion = ({
 export const Acciones = ({ actionsLeft, actionsRight }: AccionesProps) => {
   return (
     <Box
-    ml={2}
+      ml={2}
       display={"flex"}
       justifyContent={"space-between"}
       sx={{
@@ -65,7 +65,11 @@ export const Acciones = ({ actionsLeft, actionsRight }: AccionesProps) => {
       </Box>
       <Box>
         {actionsRight.map((action, index) => (
-          <Accion action={action} key={action.name} index={index} />
+          <Accion
+            action={action}
+            key={action.name}
+            index={actionsLeft.length + index}
+          />
         ))}
       </Box>
     </Box>

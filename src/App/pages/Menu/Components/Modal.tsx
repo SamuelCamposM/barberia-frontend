@@ -17,7 +17,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-
 import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout, DataAlerta } from "../../../components";
 import { PageItem, useMenuStore } from "../index";
@@ -29,12 +28,24 @@ import { useForm } from "../../../../hooks";
 import { IconosFiltered } from "../helpers";
 import { ConvertirIcono } from "../../../helpers";
 
+const idModal = "modalMenu";
+const columns = {
+  lg: 2,
+  md: 2,
+  xs: 1,
+};
+const vhContainer = {
+  height: 60,
+  header_height: 40,
+  footer_height: 40,
+};
+const width = {
+  lg: "60",
+  md: "80",
+  xs: "100",
+};
+
 export const ModalMenu = () => {
-  //   .map(([nombreIcono, ComponenteIcono]) => (
-  //     <MenuItem key={nombreIcono} value={nombreIcono}>
-  //       <ComponenteIcono />
-  //     </MenuItem>
-  //   ))
   const { socket } = useContext(SocketContext);
   const { openModal, setOpenModalMenu, rowActive, setActiveRow, rowDefault } =
     useMenuStore();
@@ -53,31 +64,6 @@ export const ModalMenu = () => {
     };
   };
 
-  const idModal = useMemo(() => "modalMenu", []);
-  const columns = useMemo(
-    () => ({
-      lg: 2,
-      md: 2,
-      xs: 1,
-    }),
-    []
-  );
-  const vhContainer = useMemo(
-    () => ({
-      height: 60,
-      header_height: 40,
-      footer_height: 40,
-    }),
-    []
-  );
-  const width = useMemo(
-    () => ({
-      lg: "60",
-      md: "80",
-      xs: "100",
-    }),
-    []
-  );
   const config = useMemo(
     () => ({
       nombre: [required],

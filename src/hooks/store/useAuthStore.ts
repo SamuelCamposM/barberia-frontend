@@ -83,7 +83,6 @@ export const useAuthStore = () => {
       dispatch(onSliceLogin(usuarioSinToken));
     } catch (error: any) {
       localStorage.clear();
-
       dispatch(onSliceLogout(error?.response?.data?.msg || "Sesión expirada"));
     }
   };
