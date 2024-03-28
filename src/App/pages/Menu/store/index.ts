@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { MenuState, PageItem } from "../";
 
-export const rowDefault: PageItem = {
+const rowDefault: PageItem = {
   _id: "",
   nombre: "",
   icono: "",
@@ -17,9 +17,9 @@ export const rowDefault: PageItem = {
 };
 const initialState: MenuState = {
   openModal: false,
-  rows: [],
   rowActive: rowDefault,
   rowDefault,
+  rows: [],
 };
 
 export const menuSlice = createSlice({

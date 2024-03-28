@@ -31,3 +31,9 @@ export type Components =
   | "Sucursal"
   | "Valoraciones";
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";
+
+export interface Column {
+  label: string;
+  minWidth?: number;
+  align?: "right" | "center" | "left";
+}

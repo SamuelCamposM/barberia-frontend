@@ -22,7 +22,7 @@ export const Accion = ({
   if (ocultar) return null;
   if (tipo === "boton") {
     return (
-      <Tooltip title={name} arrow followCursor>
+      <Tooltip title={name} arrow>
         <Badge
           badgeContent={!badge ? null : badge === "index" ? index + 1 : badge}
           color={color}
@@ -31,7 +31,10 @@ export const Accion = ({
             aria-label={name}
             color={color}
             disabled={disabled}
-            onClick={onClick}
+            onClick={() => {
+              if (ocultar) return;
+              onClick(null);
+            }}
             size={size}
             variant={variant}
           >
@@ -43,7 +46,7 @@ export const Accion = ({
   }
   if (tipo === "icono") {
     return (
-      <Tooltip title={name} arrow followCursor>
+      <Tooltip title={name} arrow>
         <Badge
           badgeContent={!badge ? null : badge === "index" ? index + 1 : badge}
           color={color}
@@ -52,7 +55,10 @@ export const Accion = ({
             aria-label={name}
             color={color}
             disabled={disabled}
-            onClick={onClick}
+            onClick={() => {
+              if (ocultar) return;
+              onClick(null);
+            }}
             size={size}
           >
             <Icon fontSize={size} />

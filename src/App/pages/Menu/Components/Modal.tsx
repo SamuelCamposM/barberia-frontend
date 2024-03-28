@@ -29,7 +29,6 @@ import { IconosFiltered } from "../helpers";
 import { ConvertirIcono } from "../../../helpers";
 // import { useNavigate } from "react-router-dom";
 // import { usePath } from "../../../hooks";
-
 const idModal = "modalMenu";
 const columns = {
   lg: 2,
@@ -128,14 +127,15 @@ export const ModalMenu = () => {
   useEffect(() => {
     onNewForm(rowActive);
   }, [rowActive]);
+
   return (
     <>
       <ModalLayout
+        idModal={idModal}
         open={openModal}
         setOpen={() => setOpenModalMenu(false)}
         vh={vhContainer.height}
         width={width}
-        idModal={idModal}
       >
         <>
           <StyledModalBoxHeader>

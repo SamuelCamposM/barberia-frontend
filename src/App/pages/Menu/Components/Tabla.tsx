@@ -1,4 +1,11 @@
-import { Box, TableBody, TableHead, TablePagination } from "@mui/material";
+import {
+  Box,
+  Divider,
+  TableBody,
+  TableHead,
+  TablePagination,
+  Typography,
+} from "@mui/material";
 import { Create } from "@mui/icons-material";
 import { ConvertirIcono } from "../../../helpers";
 import { PageItem, useMenuStore } from "..";
@@ -13,13 +20,9 @@ import { filterFunction } from "../helpers";
 import { usePath, useTablePagination } from "../../../hooks";
 import { useCallback } from "react";
 import "animate.css/animate.min.css";
-import { Acciones, TablaLayout } from "../../../components";
-import { Action } from "../../../../interfaces/global";
-interface Column {
-  label: string;
-  minWidth?: number;
-  align?: "right" | "center" | "left";
-}
+import { Acciones, TablaLayout, Title } from "../../../components";
+import { Action, Column } from "../../../../interfaces/global";
+import { labelRowsPerPage } from "../../../../helpers";
 
 const columns: readonly Column[] = [
   { label: "", minWidth: 50, align: "center" },
@@ -58,6 +61,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
 
   return (
     <>
+      <Title path={path} />
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -66,6 +70,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
         <Acciones actions={actions} />
         <TablePagination
           className="tablePagination"
+          labelRowsPerPage={labelRowsPerPage}
           rowsPerPageOptions={[10, 20, 100]}
           component="div"
           count={filterFunction(q, buscando, rows).length}

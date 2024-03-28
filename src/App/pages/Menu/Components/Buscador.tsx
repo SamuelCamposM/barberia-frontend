@@ -41,7 +41,7 @@ export const Buscador = () => {
     navigate(`?q=${formValues.search}&buscando=true`);
   };
   return (
-    <Box component={"form"} onSubmit={onSubmit} mt={0.75}>
+    <Box component={"form"} onSubmit={onSubmit}>
       <TextField
         autoFocus
         fullWidth

@@ -1,13 +1,13 @@
 import { Action } from "../../../interfaces/global";
 import { Cancel, Create } from "@mui/icons-material";
-import { Buscador } from "./Components/Buscador";
-import { ModalRoute } from "./Components/ModalRoute";
+
 import { PaperContainerPage } from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { SocketContext } from "../../../context";
 import { useContext, useEffect } from "react";
-import { useMenuStore, PageItem, Tabla } from "./";
+import { useMenuStore, PageItem, Tabla, Buscador, ModalRoute } from "./";
 import { usePath } from "../../hooks";
+import { validateFunction } from "../../../helpers";
 
 export const Menu = () => {
   const { socket } = useContext(SocketContext);
@@ -34,10 +34,10 @@ export const Menu = () => {
       name: "Continuar Editando",
       ocultar: !Boolean(rowActive._id),
       onClick() {
+        if (this && this.ocultar) return;
         if (noTienePermiso("Menu", "update")) {
           return;
         }
-        if (this && this.ocultar) return;
         setOpenModalMenu(!openModal);
       },
     },
@@ -49,7 +49,8 @@ export const Menu = () => {
       Icon: Cancel,
       name: "Cancelar Edición",
       ocultar: !Boolean(rowActive._id),
-      onClick: () => {
+      onClick() {
+        if (this && this.ocultar) return;
         if (!Boolean(rowActive._id)) return;
         setActiveRow(rowDefault);
         navigate(`/${path}`, { replace: true });
@@ -90,9 +91,7 @@ export const Menu = () => {
       <PaperContainerPage
         tabIndex={-1}
         onKeyDown={(e) => {
-          if (isNaN(Number(e.key)) || !e.altKey) {
-            return;
-          }
+          if (validateFunction(e)) return;
           actions[Number(e.key) - 1].onClick(null);
         }}
       >

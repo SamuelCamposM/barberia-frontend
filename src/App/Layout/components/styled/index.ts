@@ -37,7 +37,6 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
     0.4
   )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.9)} 100%)`,
   zIndex: theme.zIndex.drawer + 1,
-  paddingLeft: 24,
   ".toolbar": {
     height: theme.mixins.toolbar.minHeight,
     display: "flex",
@@ -54,7 +53,7 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
       mr: 2,
       fontFamily: "monospace",
       fontWeight: 700,
-      letterSpacing: ".3rem",
+      letterSpacing: ".2rem",
       textDecoration: "none",
     },
   },
