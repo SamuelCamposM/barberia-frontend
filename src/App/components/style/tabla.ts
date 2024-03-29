@@ -31,7 +31,7 @@ export const StyledTableCell = styled(TableCell)(
   })
 );
 
-export const StyledTableRow = styled(TableRow)<{ crud?: Crud }>(
+export const StyledTableRow = styled(TableRow)<{ crud?: Crud; component?: string }>(
   ({ theme, crud }) => ({
     cursor: "pointer",
     backgroundColor: crud?.editado

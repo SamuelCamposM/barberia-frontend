@@ -14,12 +14,12 @@ import { useMenuStore } from "../../pages/Menu";
 import { StyledListItem } from "./styled";
 
 export const ListSidebar = ({ openSidebar = true }) => {
-  const { rows } = useMenuStore();
+  const { data } = useMenuStore();
   const { user } = useAuthStore();
   return (
     <Box sx={{ overflow: "auto" }}>
       <List>
-        {rows
+        {data
           .filter(({ ver }) => ver.includes(user.rol))
           .map(({ nombre, _id, icono }) => (
             <Tooltip key={_id} title={nombre} followCursor placement="right">

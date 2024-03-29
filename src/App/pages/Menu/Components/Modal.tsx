@@ -18,15 +18,15 @@ import {
   Typography,
 } from "@mui/material";
 import { Cancel, Save } from "@mui/icons-material";
-import { ModalLayout, DataAlerta } from "../../../components";
+import { ModalLayout } from "../../../components";
 import { PageItem, useMenuStore } from "../index";
-import { required, roles } from "../../../../helpers";
+import { handleSocket, required, roles } from "../../../../helpers";
 import { SocketContext } from "../../../../context";
-import { toast } from "react-toastify";
 import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "../../../../hooks";
 import { IconosFiltered } from "../helpers";
 import { ConvertirIcono } from "../../../helpers";
+import { ErrorSocket } from "../../../../interfaces/global";
 // import { useNavigate } from "react-router-dom";
 // import { usePath } from "../../../hooks";
 const idModal = "modalMenu";
@@ -104,17 +104,12 @@ export const ModalMenu = () => {
     socket?.emit(
       "server:page-editar",
       formValues,
-      ({ error, msg }: { error: boolean; msg: string }) => {
-        if (error) {
-          toast.error(<DataAlerta titulo={msg} />);
-        }
-        if (!error) {
-          toast.success(
-            <DataAlerta titulo={msg} subtitulo={formValues.nombre} />
-          );
-          setOpenModalMenu(false);
-          setActiveRow(rowDefault);
-        }
+      ({ error, msg }: ErrorSocket) => {
+        handleSocket({ error, msg, subtitulo: formValues.nombre });
+        if (error) return;
+
+        setOpenModalMenu(false);
+        setActiveRow(rowDefault);
       }
     );
   };

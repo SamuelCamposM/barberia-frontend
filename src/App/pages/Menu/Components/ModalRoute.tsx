@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePath } from "../../../hooks";
 
 export const ModalRoute = () => {
-  const { rowActive, rows, setActiveRow, setOpenModalMenu, rowDefault } =
+  const { rowActive, data, setActiveRow, setOpenModalMenu, rowDefault } =
     useMenuStore();
   const { _id } = useParams();
 
@@ -19,7 +19,7 @@ export const ModalRoute = () => {
       setOpenModalMenu(true);
     } else {
       if (rowActive._id !== _id) {
-        const itemF = rows.find((row) => row._id === _id);
+        const itemF = data.find((row) => row._id === _id);
         if (itemF) {
           setActiveRow(itemF);
           setOpenModalMenu(true);

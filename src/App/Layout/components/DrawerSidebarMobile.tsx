@@ -1,4 +1,4 @@
-import { Drawer, Toolbar } from "@mui/material";
+import { Drawer } from "@mui/material";
 import { ListSidebar } from "./ListSidebar";
 import { useUiStore } from "../../../hooks";
 export const DrawerSidebarMobile = ({
@@ -26,7 +26,6 @@ export const DrawerSidebarMobile = ({
         },
       }}
     >
-      <Toolbar />
       <ListSidebar />
     </Drawer>
   );

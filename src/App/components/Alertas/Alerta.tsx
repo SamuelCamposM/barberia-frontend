@@ -2,15 +2,48 @@ import "react-toastify/dist/ReactToastify.css";
 import { Bounce, ToastContainer } from "react-toastify";
 
 export const Alerta = () => {
-  // const notify = () =>
-  //   toast.success(
-  //     <DataAlerta titulo="Si" subtitulo="no" enlace="sucursal_editado" />
-  //   );
   return (
     <>
-      {/* <IconButton aria-label="" onClick={notify}>
+      {/* asdsad
+      <IconButton
+        aria-label=""
+        onClick={() => {
+          toast.error(
+            <Confirm
+              titulo="Probando"
+              actions={[
+                {
+                  color: "error",
+                  Icon: Check,
+                  name: "Si",
+                  onClick() {
+                    console.log("Confirmando");
+                  },
+                  size: "small",
+                  tipo: "boton",
+                },
+              ]}
+            />
+          );
+        }}
+      >
         <NotificationAdd />
       </IconButton> */}
+      {/* <ToastContainer
+        containerId={"confirm"}
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+        limit={1}
+      /> */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -23,6 +56,7 @@ export const Alerta = () => {
         pauseOnHover
         theme="dark"
         transition={Bounce}
+        limit={1}
       />
     </>
   );

@@ -19,7 +19,7 @@ const initialState: MenuState = {
   openModal: false,
   rowActive: rowDefault,
   rowDefault,
-  rows: [],
+  data: [],
 };
 
 export const menuSlice = createSlice({
@@ -27,7 +27,7 @@ export const menuSlice = createSlice({
   initialState,
   reducers: {
     getSliceDataMenu: (state, action: PayloadAction<PageItem[]>) => {
-      state.rows = action.payload;
+      state.data = action.payload;
     },
     setSliceOpenModalMenu: (state, action: PayloadAction<boolean>) => {
       state.openModal = action.payload;
@@ -36,7 +36,7 @@ export const menuSlice = createSlice({
       state.rowActive = action.payload;
     },
     onSliceEditMenu: (state, action: PayloadAction<PageItem>) => {
-      state.rows = state.rows.map((row) =>
+      state.data = state.data.map((row) =>
         row._id === action.payload._id
           ? { crud: { editado: true }, ...action.payload }
           : row

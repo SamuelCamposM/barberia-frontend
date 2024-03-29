@@ -1,11 +1,4 @@
-import {
-  Box,
-  Divider,
-  TableBody,
-  TableHead,
-  TablePagination,
-  Typography,
-} from "@mui/material";
+import { Box, TableBody, TableHead, TablePagination } from "@mui/material";
 import { Create } from "@mui/icons-material";
 import { ConvertirIcono } from "../../../helpers";
 import { PageItem, useMenuStore } from "..";
@@ -36,7 +29,7 @@ const columns: readonly Column[] = [
 ];
 export const Tabla = ({ actions }: { actions: Action[] }) => {
   const navigate = useNavigate();
-  const { rows, noTienePermiso, setOpenModalMenu, setActiveRow, rowActive } =
+  const { data, noTienePermiso, setOpenModalMenu, setActiveRow, rowActive } =
     useMenuStore();
   const path = usePath();
   const { q = "", buscando = "" } = queryString.parse(location.search) as {
@@ -73,7 +66,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
           labelRowsPerPage={labelRowsPerPage}
           rowsPerPageOptions={[10, 20, 100]}
           component="div"
-          count={filterFunction(q, buscando, rows).length}
+          count={filterFunction(q, buscando, data).length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -94,7 +87,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {filterFunction(String(q), String(buscando), rows)
+          {filterFunction(String(q), String(buscando), data)
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row) => {
               return (

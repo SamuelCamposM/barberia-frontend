@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Components, tipoPermiso } from "../../../../interfaces/global";
 import { toast } from "react-toastify";
 export const useMenuStore = () => {
-  const { openModal, rowActive, rows, rowDefault } = useSelector(
+  const { openModal, rowActive, data, rowDefault } = useSelector(
     (state: RootState) => state.menu
   );
   const {
@@ -39,7 +39,7 @@ export const useMenuStore = () => {
     dispatch(onSliceEditMenu(item));
   };
   const noTienePermiso = (component: Components, tipoPermiso: tipoPermiso) => {
-    const pageFind = rows.find((page) => page.componente === component);
+    const pageFind = data.find((page) => page.componente === component);
     if (!pageFind) {
       toast.error(`Error al validar permiso`);
       return false;
@@ -54,7 +54,7 @@ export const useMenuStore = () => {
     //Propiedades
     openModal,
     rowActive,
-    rows,
+    data,
     //Metodos
     getDataMenu,
     onEditMenu,

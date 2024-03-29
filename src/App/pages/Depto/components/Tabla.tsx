@@ -1,4 +1,10 @@
-import { Box, TableBody, TableHead } from "@mui/material";
+import {
+  Box,
+  TableBody,
+  TableHead,
+  TablePagination,
+  Typography,
+} from "@mui/material";
 import { Action, Column } from "../../../../interfaces/global";
 import { Acciones, TablaLayout, Title } from "../../../components";
 import {
@@ -6,13 +12,26 @@ import {
   StyledTableRow,
 } from "../../../components/style";
 import { usePath } from "../../../hooks";
+import { useDeptoStore } from "..";
+import { Row } from "./Row";
+import { ChangeEvent } from "react";
+import { ArrowDownward } from "@mui/icons-material";
 const columns: readonly Column[] = [
   { label: "", minWidth: 50, align: "center" },
   { label: "Nombre", minWidth: 40 },
+  { label: "Municipios", minWidth: 40 },
 ];
 export const Tabla = ({ actions }: { actions: Action[] }) => {
   // const { handleChangePage, handleChangeRowsPerPage, page, rowsPerPage } =
   //   useTablePagination();
+  const { data, pagination, getDataDepto, rowDefault, agregando } =
+    useDeptoStore();
+  const handleChangePage = (_: unknown, newPage: number) => {
+    getDataDepto({ ...pagination, page: newPage + 1 }, "");
+  };
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    getDataDepto({ ...pagination, page: 1, limit: +event.target.value }, "");
+  };
   const path = usePath();
   return (
     <>
@@ -23,16 +42,16 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
         alignItems={"center"}
       >
         <Acciones actions={actions} />
-        {/* <TablePagination
+        <TablePagination
           className="tablePagination"
           rowsPerPageOptions={[10, 20, 100]}
           component="div"
-          count={filterFunction(q, buscando, rows).length}
-          rowsPerPage={rowsPerPage}
-          page={page}
+          count={pagination.totalDocs}
+          rowsPerPage={pagination.limit}
+          page={pagination.page - 1}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        /> */}
+        />
       </Box>
       <TablaLayout>
         <TableHead>
@@ -42,54 +61,27 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
                 key={column.label}
                 style={{ minWidth: column.minWidth }}
               >
-                {column.label}
+                <Box display={"flex"} alignItems={"center"}>
+                  <Typography
+                    variant="body1"
+                    color="initial"
+                    component={"span"}
+                  >
+                    {column.label}
+                  </Typography>
+                  <ArrowDownward fontSize="small" />
+                </Box>
               </StyledTableHeaderCell>
             ))}
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {[]
-            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map(() => {
-              return (
-                <StyledTableRow
-                  // crud={row.crud}
-                  // key={row._id}
-                  onDoubleClick={() => {
-                    // handleEditar(row);
-                    // setActiveRow(row);
-                  }}
-                  // onMouseEnter={() => setshowButtoms(true)}
-                  // onMouseLeave={() => setshowButtoms(false)}
-                  // className={`${
-                  //   rowActive._id === row._id &&
-                  //   "animate__animated animate__lightSpeedInRight"
-                  // }`}
-                >
-                  {/* <StyledTableCell
-                    padding="checkbox"
-                    className={`pendingActive ${
-                      rowActive._id === row._id && "active"
-                    }`}
-                  >
-                    <Acciones
-                      actions={[
-                        {
-                          color: "primary",
-                          Icon: Create,
-                          name: `Editar`,
-                          onClick: () => {
-                            handleEditar(row);
-                          },
-                          tipo: "icono",
-                          size: "small",
-                        },
-                      ]}
-                    />
-                  </StyledTableCell> */}
-                </StyledTableRow>
-              );
-            })}
+          {agregando && (
+            <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
+          )}
+          {data.map((depto) => {
+            return <Row key={depto._id} depto={depto} />;
+          })}
         </TableBody>
       </TablaLayout>
     </>

@@ -8,14 +8,14 @@ import { useMenuStore } from "../pages/Menu";
 const ChatPage = lazy(() => import("../pages/Chat/ChatPage"));
 
 export const ContentRouter = () => {
-  const { rows } = useMenuStore();
+  const { data } = useMenuStore();
   const { user } = useAuthStore();
-  if (rows.length === 0) {
+  if (data.length === 0) {
     return "CARGANDO";
   }
   return (
     <Routes>
-      {rows
+      {data
         .filter(({ ver }) => ver.includes(user.rol))
         .map(({ nombre, _id, componente }) => {
           return (
@@ -31,7 +31,7 @@ export const ContentRouter = () => {
       {/* Aquí se redirige a la primera página si la ruta no coincide */}
       <Route
         path="*"
-        element={<Navigate replace to={convertirPath(rows[0].nombre)} />}
+        element={<Navigate replace to={convertirPath(data[0].nombre)} />}
       />
     </Routes>
   );

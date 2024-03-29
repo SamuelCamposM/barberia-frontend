@@ -4,8 +4,8 @@ export const IconosFiltered = Object.keys(Iconos).filter((nombreIcono) =>
   nombreIcono.endsWith("Rounded")
 );
 
-export const filterFunction = (q: string, buscando: string, rows: PageItem[]) =>
-  rows.filter((row) =>
+export const filterFunction = (q: string, buscando: string, data: PageItem[]) =>
+  data.filter((row) =>
     buscando === "true"
       ? row.nombre.toLowerCase().includes(q.toLowerCase())
       : true

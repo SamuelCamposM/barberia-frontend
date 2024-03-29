@@ -71,7 +71,7 @@ export const Accion = ({
 
 export const Acciones = ({ actions }: { actions: Action[] }) => {
   return (
-    <Box display={"flex"} alignItems={"center"} gap={1}>
+    <Box display={"flex"} alignItems={"center"}>
       {actions.map((action, index) => (
         <Accion action={action} key={action.name} index={index} />
       ))}
