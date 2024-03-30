@@ -1,28 +1,26 @@
+import { KeyboardEvent, useCallback, useMemo, useState } from "react";
+import { Acciones } from "../../../components";
+import { DeptoItem, useDeptoStore } from "..";
+import { ErrorSocket } from "../../../../interfaces/global";
+import { handleSocket, required } from "../../../../helpers";
+import { SocketEmitEvent } from "../helpers";
+import { StyledTableCell, StyledTableRow } from "../../../components/style";
+import { TextField } from "@mui/material";
+import { useForm, useProvideSocket } from "../../../../hooks";
+import Swal from "sweetalert2";
 import {
-  Cancel,
   CancelOutlined,
   Check,
   Create,
-  Delete,
   DeleteForever,
   ExpandMore,
 } from "@mui/icons-material";
-import { DeptoItem, useDeptoStore } from "..";
-import { StyledTableCell, StyledTableRow } from "../../../components/style";
-import { Acciones, Confirm, confirmConfiguration } from "../../../components";
-import { useForm, useProvideSocket } from "../../../../hooks";
-import { KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { handleSocket, required } from "../../../../helpers";
-import { TextField } from "@mui/material";
-import { ErrorSocket } from "../../../../interfaces/global";
-import { SocketEmitEvent } from "../helpers";
-import { toast } from "react-toastify";
-
+import { useThemeSwal } from "../../../hooks";
 export const Row = ({ depto }: { depto: DeptoItem }) => {
   const { socket } = useProvideSocket();
   const { setAgregando } = useDeptoStore();
+  const themeSwal = useThemeSwal();
   const [editando, setEditando] = useState(!Boolean(depto._id));
-
   const esNuevo = useMemo(() => !Boolean(depto._id), []);
 
   const config = useMemo(
@@ -86,14 +84,24 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
   };
 
   const handleEliminar = useCallback(() => {
-    socket?.emit(
-      SocketEmitEvent.eliminar,
-      { _id: depto._id },
-      ({ error, msg }: ErrorSocket) => {
-        handleSocket({ error, msg });
-        if (error) return;
+    Swal.fire({
+      title: `Desea eliminar el Depto`,
+      text: depto.name,
+      icon: "warning",
+      confirmButtonText: "Confirmar",
+      ...themeSwal,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        socket?.emit(
+          SocketEmitEvent.eliminar,
+          { _id: depto._id },
+          ({ error, msg }: ErrorSocket) => {
+            handleSocket({ error, msg });
+            if (error) return;
+          }
+        );
       }
-    );
+    });
   }, []);
   const defaultProps = {
     fullWidth: true,
@@ -104,6 +112,7 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
     },
     autoComplete: "false",
   };
+
   return (
     <StyledTableRow
       key={depto._id}
@@ -155,36 +164,17 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
               Icon: DeleteForever,
               name: `Eliminar`,
               onClick: () => {
-                toast.error(
-                  <Confirm
-                    titulo="Esta seguro de eliminar el departamento?"
-                    actions={[
-                      {
-                        color: "error",
-                        Icon: Check,
-                        name: "Si",
-                        onClick() {
-                          handleEliminar();
-                        },
-                        size: "small",
-                        tipo: "boton",
-                      },
-                    ]}
-                  />,
-                  confirmConfiguration
-                );
+                handleEliminar();
               },
               tipo: "icono",
               size: "small",
-              ocultar: esNuevo,
+              ocultar: esNuevo || editando,
             },
             {
               color: "secondary",
               Icon: ExpandMore,
               name: `Ver municipios`,
-              onClick: () => {
-                // handleEditar(row);
-              },
+              onClick: () => {},
               tipo: "icono",
               size: "small",
               ocultar: esNuevo,

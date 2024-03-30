@@ -26,13 +26,45 @@ export const deptoSlice = createSlice({
         paginationResult: Pagination;
       }>
     ) => {
+      // state.data = [
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      //   ...action.payload.docs,
+      // ].map((item, index) => ({
+      //   ...item,
+      //   _id: item._id + "a" + index,
+      // }));
       state.data = action.payload.docs;
       state.pagination = action.payload.paginationResult;
+      state.cargando = false;
     },
     onSliceEditDepto: (state, action: PayloadAction<DeptoItem>) => {
       state.data = state.data.map((item) =>
         item._id === action.payload._id
-          ? { crud: { editado: true }, ...action.payload }
+          ? { ...action.payload, crud: { editado: true } }
           : item
       );
     },
@@ -50,11 +82,11 @@ export const deptoSlice = createSlice({
       };
     },
     onSliceEliminarDepto: (state, action: PayloadAction<string>) => {
-      state.data = state.data.map((item) =>
-        item._id === action.payload
-          ? { crud: { eliminado: true }, ...item }
-          : item
-      );
+      state.data = state.data.filter((item) => item._id !== action.payload);
+      state.pagination = {
+        ...state.pagination,
+        totalDocs: state.pagination.totalDocs - 1,
+      };
     },
     setSliceAgregando: (state, action: PayloadAction<boolean>) => {
       state.agregando = action.payload;

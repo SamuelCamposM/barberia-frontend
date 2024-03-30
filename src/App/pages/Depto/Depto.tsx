@@ -4,23 +4,35 @@ import { validateFunction } from "../../../helpers";
 import { Action } from "../../../interfaces/global";
 import { PaperContainerPage } from "../../components/style";
 import TextField from "@mui/material/TextField";
-import { AddCircle, Cancel } from "@mui/icons-material";
+import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { useProvideSocket } from "../../../hooks";
 import { SocketOnEvent } from "./helpers";
+import { Cargando } from "../../components";
 
 export const Depto = () => {
   const { socket } = useProvideSocket();
   const {
-    getDataDepto,
-    pagination,
-    onEditDepto,
-    setAgregando,
     agregando,
+    getDataDepto,
     onAgregarDepto,
+    onEditDepto,
+    pagination,
     rowDefault,
+    setAgregando,
+    onEliminarDepto,
+    cargando,
   } = useDeptoStore();
 
   const actions: Action[] = [
+    {
+      color: "primary",
+      Icon: Refresh,
+      name: "Actualizar",
+      onClick() {
+        getDataDepto(pagination, searchText);
+      },
+      tipo: "icono",
+    },
     {
       color: agregando ? "error" : "success",
       Icon: agregando ? Cancel : AddCircle,
@@ -52,7 +64,9 @@ export const Depto = () => {
       onEditDepto(item);
     }
     if (tipo === SocketOnEvent.eliminar) {
-      console.log("eliminado");
+      console.log(item);
+
+      onEliminarDepto(item._id || "");
     }
   }, [itemEffectSocket]);
 
@@ -70,14 +84,18 @@ export const Depto = () => {
         tipo: SocketOnEvent.editar,
       });
     });
-    socket?.on(SocketOnEvent.eliminar, (data: string) => {
+    socket?.on(SocketOnEvent.eliminar, (data: { _id: string }) => {
+      console.log(data);
+
       setItemEffectSocket({
-        item: { ...rowDefault, _id: data },
+        item: { ...rowDefault, ...data },
         tipo: SocketOnEvent.eliminar,
       });
     });
   }, [socket]);
-
+  if (cargando) {
+    return <Cargando titulo="Cargando deptos" />;
+  }
   return (
     <PaperContainerPage
       tabIndex={-1}

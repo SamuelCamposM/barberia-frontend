@@ -32,3 +32,6 @@ body {
   color: RED;
   background-color: grey;
 }
+.swal2-container {
+  z-index: 1301;
+}

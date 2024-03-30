@@ -2,6 +2,7 @@ import {
   getSliceDataDepto,
   onSliceAgregarDepto,
   onSliceEditDepto,
+  onSliceEliminarDepto,
   setSliceAgregando,
 } from "../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,9 +15,8 @@ import { DeptoItem } from "..";
 export const useDeptoStore = () => {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const { data, pagination, isSearching, rowDefault, agregando } = useSelector(
-    (state: RootState) => state.depto
-  );
+  const { data, pagination, isSearching, rowDefault, agregando, cargando } =
+    useSelector((state: RootState) => state.depto);
 
   const getDataDepto = async (pagination: Pagination, busqueda: string) => {
     const {
@@ -40,17 +40,25 @@ export const useDeptoStore = () => {
     dispatch(setSliceAgregando(valorAgregando));
   };
 
+  const onEliminarDepto = (_id: string) => {
+    console.log(_id);
+
+    dispatch(onSliceEliminarDepto(_id));
+  };
+
   return {
     //* METODOS
     getDataDepto,
     onEditDepto,
     setAgregando,
     onAgregarDepto,
+    onEliminarDepto,
     //*VALORES
     agregando,
     data,
     isSearching,
     pagination,
     rowDefault,
+    cargando,
   };
 };

@@ -19,6 +19,13 @@ export const LayoutBox2 = styled(Paper)({
   width: "100%",
   height: "100%",
   overflow: "auto",
+
+  ".swal2-container": {
+    zIndex: 1301,
+  },
+  ".swal2-popup": {
+    background: "red",
+  },
 });
 
 // export const ContentBox = styled(Box)<{
