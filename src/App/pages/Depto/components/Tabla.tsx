@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Action, Column } from "../../../../interfaces/global";
-import { Acciones, TablaLayout, Title } from "../../../components";
+import { Acciones, Cargando, TablaLayout, Title } from "../../../components";
 import {
   StyledTableHeaderCell,
   StyledTableRow,
@@ -24,7 +24,7 @@ const columns: readonly Column[] = [
 export const Tabla = ({ actions }: { actions: Action[] }) => {
   // const { handleChangePage, handleChangeRowsPerPage, page, rowsPerPage } =
   //   useTablePagination();
-  const { data, pagination, getDataDepto, rowDefault, agregando } =
+  const { data, pagination, getDataDepto, rowDefault, agregando, cargando } =
     useDeptoStore();
   const handleChangePage = (_: unknown, newPage: number) => {
     getDataDepto({ ...pagination, page: newPage + 1 }, "");
@@ -53,37 +53,41 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
-      <TablaLayout>
-        <TableHead>
-          <StyledTableRow>
-            {columns.map((column) => (
-              <StyledTableHeaderCell
-                key={column.label}
-                style={{ minWidth: column.minWidth }}
-              >
-                <Box display={"flex"} alignItems={"center"}>
-                  <Typography
-                    variant="body1"
-                    color="initial"
-                    component={"span"}
-                  >
-                    {column.label}
-                  </Typography>
-                  <ArrowDownward fontSize="small" />
-                </Box>
-              </StyledTableHeaderCell>
-            ))}
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-          {agregando && (
-            <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
-          )}
-          {data.map((depto) => {
-            return <Row key={depto._id} depto={depto} />;
-          })}
-        </TableBody>
-      </TablaLayout>
+      {cargando ? (
+        <Cargando titulo="Cargando Deptos" />
+      ) : (
+        <TablaLayout>
+          <TableHead>
+            <StyledTableRow>
+              {columns.map((column) => (
+                <StyledTableHeaderCell
+                  key={column.label}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  <Box display={"flex"} alignItems={"center"}>
+                    <Typography
+                      variant="body1"
+                      color="initial"
+                      component={"span"}
+                    >
+                      {column.label}
+                    </Typography>
+                    <ArrowDownward fontSize="small" />
+                  </Box>
+                </StyledTableHeaderCell>
+              ))}
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {agregando && (
+              <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
+            )}
+            {data.map((depto) => {
+              return <Row key={depto._id} depto={depto} />;
+            })}
+          </TableBody>
+        </TablaLayout>
+      )}
     </>
   );
 };

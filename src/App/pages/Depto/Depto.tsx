@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { useProvideSocket } from "../../../hooks";
 import { SocketOnEvent } from "./helpers";
-import { Cargando } from "../../components";
+import { Box } from "@mui/material";
 
 export const Depto = () => {
   const { socket } = useProvideSocket();
@@ -45,7 +45,9 @@ export const Depto = () => {
   ];
   const [searchText] = useState("");
   useEffect(() => {
-    getDataDepto(pagination, searchText);
+    if (cargando) {
+      getDataDepto(pagination, searchText);
+    }
   }, []);
 
   const [itemEffectSocket, setItemEffectSocket] = useState<{
@@ -64,8 +66,6 @@ export const Depto = () => {
       onEditDepto(item);
     }
     if (tipo === SocketOnEvent.eliminar) {
-      console.log(item);
-
       onEliminarDepto(item._id || "");
     }
   }, [itemEffectSocket]);
@@ -85,17 +85,10 @@ export const Depto = () => {
       });
     });
     socket?.on(SocketOnEvent.eliminar, (data: { _id: string }) => {
-      console.log(data);
-
-      setItemEffectSocket({
-        item: { ...rowDefault, ...data },
-        tipo: SocketOnEvent.eliminar,
-      });
+      onEliminarDepto(data._id);
     });
   }, [socket]);
-  if (cargando) {
-    return <Cargando titulo="Cargando deptos" />;
-  }
+
   return (
     <PaperContainerPage
       tabIndex={-1}
@@ -105,7 +98,15 @@ export const Depto = () => {
         actions[Number(e.key) - 1].onClick(null);
       }}
     >
-      <TextField label="Buscar" />
+      <Box component={"form"}>
+        <TextField
+          label="Buscar"
+          autoFocus
+          variant="outlined"
+          fullWidth
+          size="small"
+        />
+      </Box>
       <Tabla actions={actions} />
     </PaperContainerPage>
   );

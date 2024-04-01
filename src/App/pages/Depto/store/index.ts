@@ -19,6 +19,9 @@ export const deptoSlice = createSlice({
   name: "depto",
   initialState,
   reducers: {
+    setSliceCargando: (state, action: PayloadAction<boolean>) => {
+      state.cargando = action.payload;
+    },
     getSliceDataDepto: (
       state,
       action: PayloadAction<{
@@ -97,6 +100,7 @@ export const {
   getSliceDataDepto,
   onSliceAgregarDepto,
   onSliceEditDepto,
-  setSliceAgregando,
   onSliceEliminarDepto,
+  setSliceAgregando,
+  setSliceCargando,
 } = deptoSlice.actions;

@@ -20,29 +20,28 @@ export const StyledTableCell = styled(TableCell)(
         theme.palette.secondary.light,
         0.25
       )}`,
-      borderRadius: "50px 0px 0px 50px",
     },
-    ":last-child": {
-      borderRadius: "0px 50px 50px 0px",
-    },
+
     "&.active": {
       background: theme.palette.secondary.dark,
     },
   })
 );
 
-export const StyledTableRow = styled(TableRow)<{ crud?: Crud; component?: string }>(
-  ({ theme, crud }) => ({
-    cursor: "pointer",
-    backgroundColor: crud?.editado
-      ? agregarTransparencia(theme.palette.secondary.light, 0.25)
-      : crud?.eliminado
-      ? agregarTransparencia(theme.palette.error.light, 0.25)
-      : crud?.nuevo
-      ? agregarTransparencia(theme.palette.success.light, 0.25)
-      : "", // Utilizando el color aquí
-  })
-);
+export const StyledTableRow = styled(TableRow)<{
+  crud?: Crud;
+  component?: string;
+}>(({ theme, crud }) => ({
+  cursor: "pointer",
+  "& > *": { borderBottom: "unset" },
+  backgroundColor: crud?.editado
+    ? agregarTransparencia(theme.palette.secondary.light, 0.25)
+    : crud?.eliminado
+    ? agregarTransparencia(theme.palette.error.light, 0.25)
+    : crud?.nuevo
+    ? agregarTransparencia(theme.palette.success.light, 0.25)
+    : "", // Utilizando el color aquí
+}));
 
 export const StyledTableHeaderCell = styled(TableCell)(
   ({ theme }: { theme: Theme }) => ({

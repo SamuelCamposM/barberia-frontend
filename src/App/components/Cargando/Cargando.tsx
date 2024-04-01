@@ -16,11 +16,13 @@ export const Cargando = ({ titulo = "Cargando" }: { titulo?: string }) => {
       </Box>
       <Typography
         marginTop={3}
-        variant="h3"
+        variant="h4"
         color="primary"
         width="100%"
         textAlign="center"
         textTransform="uppercase"
+        fontWeight={"bold"}
+        fontStyle={"italic"}
       >
         {titulo}
       </Typography>

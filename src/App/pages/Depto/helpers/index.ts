@@ -4,6 +4,8 @@ import { Pagination } from "../../../../interfaces/global";
 export const getDepto = async (pagination: Pagination, busqueda: string) => {
   try {
     const res = await chatApi.post("/depto", { pagination, busqueda });
+    console.log(res);
+
     return { error: false, result: res.data.result };
   } catch (error) {
     return { error: true };

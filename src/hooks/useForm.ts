@@ -10,9 +10,10 @@ export const useForm = <
   InitialValues: ValueTypes,
   ObjectValidations: ConfigTypes
 ) => {
+  const [cargandoSubmit, setCargandoSubmit] = useState<boolean>(false);
   const [formValues, setformValues] = useState(InitialValues);
-  const [isSubmited, setisSubmited] = useState(false);
   const [isFormInvalid, setisFormInvalid] = useState(false);
+  const [isSubmited, setisSubmited] = useState(false);
   const [onBlur, setonBlur] = useState(0);
 
   const errorValues = useMemo<Record<keyof ConfigTypes, string[]>>(() => {
@@ -49,12 +50,14 @@ export const useForm = <
   }, []);
 
   const onResetForm = useCallback(() => {
+    setCargandoSubmit(false);
     setformValues(InitialValues);
     setisSubmited(false);
     setonBlur(0);
   }, []);
 
   const onNewForm = useCallback((newValues: ValueTypes) => {
+    setCargandoSubmit(false);
     setformValues(newValues);
     setisSubmited(false);
     setonBlur(0);
@@ -73,15 +76,17 @@ export const useForm = <
   }, []);
 
   return {
-    handleChange,
-    setisSubmited,
-    isFormInvalid,
-    formValues,
+    cargandoSubmit,
     errorValues,
+    formValues,
     handleBlur,
-    onResetForm,
+    handleChange,
+    isFormInvalid,
     isFormInvalidSubmit,
-    setformValues,
     onNewForm,
+    onResetForm,
+    setCargandoSubmit,
+    setformValues,
+    setisSubmited,
   };
 };

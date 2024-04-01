@@ -4,6 +4,7 @@ import {
   onSliceEditDepto,
   onSliceEliminarDepto,
   setSliceAgregando,
+  setSliceCargando,
 } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/interfaces";
@@ -19,6 +20,7 @@ export const useDeptoStore = () => {
     useSelector((state: RootState) => state.depto);
 
   const getDataDepto = async (pagination: Pagination, busqueda: string) => {
+    dispatch(setSliceCargando(true));
     const {
       error,
       result: { docs, ...paginationResult },
@@ -41,8 +43,6 @@ export const useDeptoStore = () => {
   };
 
   const onEliminarDepto = (_id: string) => {
-    console.log(_id);
-
     dispatch(onSliceEliminarDepto(_id));
   };
 
