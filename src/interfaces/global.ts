@@ -10,7 +10,7 @@ export interface Crud {
 export interface Action {
   badge?: string;
   color: "primary" | "secondary" | "error" | "success";
-  disabled?: boolean; 
+  disabled?: boolean;
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   name: string;
   ocultar?: boolean;
@@ -34,9 +34,11 @@ export type Components =
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";
 
 export interface Column {
+  align?: "right" | "center" | "left";
+  campo?: string;
   label: string;
   minWidth?: number;
-  align?: "right" | "center" | "left";
+  sortable: boolean;
 }
 
 export interface Pagination {
@@ -44,6 +46,10 @@ export interface Pagination {
   limit: number;
   page: number;
   totalPages: number;
+}
+export interface Sort {
+  asc: boolean;
+  campo: string;
 }
 export interface ErrorSocket {
   error: boolean;

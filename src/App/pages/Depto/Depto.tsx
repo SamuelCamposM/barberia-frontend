@@ -21,6 +21,7 @@ export const Depto = () => {
     setAgregando,
     onEliminarDepto,
     cargando,
+    sort,
   } = useDeptoStore();
 
   const actions: Action[] = [
@@ -29,7 +30,7 @@ export const Depto = () => {
       Icon: Refresh,
       name: "Actualizar",
       onClick() {
-        getDataDepto(pagination, searchText);
+        getDataDepto({ pagination, sort, busqueda: searchText });
       },
       tipo: "icono",
     },
@@ -46,7 +47,7 @@ export const Depto = () => {
   const [searchText] = useState("");
   useEffect(() => {
     if (cargando) {
-      getDataDepto(pagination, searchText);
+      getDataDepto({ pagination, sort, busqueda: "" });
     }
   }, []);
 

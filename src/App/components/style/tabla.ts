@@ -10,6 +10,7 @@ import { agregarTransparencia } from "../../../helpers";
 
 export const StyledTableContainer = styled(TableContainer)({
   flexGrow: 1,
+  animationDuration: "0.5s",
 });
 
 export const StyledTableCell = styled(TableCell)(
@@ -42,17 +43,27 @@ export const StyledTableRow = styled(TableRow)<{
     ? agregarTransparencia(theme.palette.success.light, 0.25)
     : "", // Utilizando el color aquí
 }));
+export const StyledTableHeaderCell = styled(TableCell)<{
+  sorteable?: 1 | 0;
+  active?: 1 | 0;
+}>(({ theme, sorteable, active }) => ({
+  padding: theme.spacing(0, 0.5),
+  cursor: "pointer",
+  fontWeight: "bold",
+  textTransform: "uppercase",
+  color: active
+    ? theme.palette.secondary.contrastText
+    : theme.palette.primary.contrastText,
 
-export const StyledTableHeaderCell = styled(TableCell)(
-  ({ theme }: { theme: Theme }) => ({
-    padding: theme.spacing(0, 0.5),
-    color: theme.palette.primary.contrastText,
-    background: `linear-gradient(0deg, ${agregarTransparencia(
-      theme.palette.primary.dark,
-      0.75
-    )}, ${agregarTransparencia(theme.palette.primary.light, 1)})`,
-    cursor: "pointer",
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  })
-);
+  background: active
+    ? sorteable
+      ? theme.palette.secondary.dark
+      : ""
+    : agregarTransparencia(theme.palette.primary.light, 0.7),
+
+  transition: "background 0.3s",
+  ":hover": {
+    color: sorteable ? theme.palette.secondary.contrastText : "",
+    background: sorteable ? theme.palette.secondary.dark : "",
+  },
+}));

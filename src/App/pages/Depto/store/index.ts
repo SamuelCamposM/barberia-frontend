@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DeptoItem, DeptoState } from "../interfaces";
-import { Pagination } from "../../../../interfaces/global";
+import { Pagination, Sort } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers";
 
 const rowDefault: DeptoItem = {
@@ -14,6 +14,10 @@ const initialState: DeptoState = {
   data: [],
   isSearching: false,
   pagination: paginationDefault,
+  sort: {
+    asc: true,
+    campo: "name",
+  },
 };
 export const deptoSlice = createSlice({
   name: "depto",
@@ -27,6 +31,7 @@ export const deptoSlice = createSlice({
       action: PayloadAction<{
         docs: DeptoItem[];
         paginationResult: Pagination;
+        sort: Sort;
       }>
     ) => {
       // state.data = [
@@ -62,6 +67,7 @@ export const deptoSlice = createSlice({
       // }));
       state.data = action.payload.docs;
       state.pagination = action.payload.paginationResult;
+      state.sort = action.payload.sort;
       state.cargando = false;
     },
     onSliceEditDepto: (state, action: PayloadAction<DeptoItem>) => {

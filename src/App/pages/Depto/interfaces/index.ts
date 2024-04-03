@@ -1,4 +1,4 @@
-import { Crud, Pagination } from "../../../../interfaces/global";
+import { Crud, Pagination, Sort } from "../../../../interfaces/global";
 
 export interface DeptoItem {
   name: string;
@@ -14,4 +14,5 @@ export interface DeptoState {
   data: DeptoItem[];
   isSearching: boolean;
   pagination: Pagination;
+  sort: Sort;
 }

@@ -1,9 +1,17 @@
 import { chatApi } from "../../../../api";
-import { Pagination } from "../../../../interfaces/global";
+import { Pagination, Sort } from "../../../../interfaces/global";
 
-export const getDepto = async (pagination: Pagination, busqueda: string) => {
+export const getDeptos = async ({
+  pagination,
+  busqueda,
+  sort,
+}: {
+  pagination: Pagination;
+  busqueda: string;
+  sort: Sort;
+}) => {
   try {
-    const res = await chatApi.post("/depto", { pagination, busqueda });
+    const res = await chatApi.post("/depto", { pagination, sort, busqueda });
     console.log(res);
 
     return { error: false, result: res.data.result };

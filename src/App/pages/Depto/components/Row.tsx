@@ -1,18 +1,17 @@
 import { KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { Acciones, Cargando, TablaLayout } from "../../../components";
+import { Acciones, TablaLayout } from "../../../components";
 import { DeptoItem, useDeptoStore } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { handleSocket, required } from "../../../../helpers";
 import { SocketEmitEvent } from "../helpers";
 import {
   StyledTableCell,
-  StyledTableContainer,
+  StyledTableHeaderCell,
   StyledTableRow,
 } from "../../../components/style";
 import {
   Box,
   Collapse,
-  Table,
   TableBody,
   TableHead,
   TableRow,
@@ -241,469 +240,133 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
               }}
             >
               <Typography variant="h6" gutterBottom component="div">
-                History
-              </Typography>{" "}
+                Municipios
+              </Typography>
               {/* <Cargando/> */}
-              <StyledTableContainer
-                className="animate__animated animate__slideInRight"
-                sx={{ maxHeight: "30vh", overflow: "scroll" }}
-              >
-                <Table size="small" stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <StyledTableRow>
-                      <StyledTableCell>Date</StyledTableCell>
-                      <StyledTableCell>Customer</StyledTableCell>
+              <TablaLayout maxHeight="30vh">
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableHeaderCell>Date</StyledTableHeaderCell>
+                    <StyledTableHeaderCell>Customer</StyledTableHeaderCell>
+                  </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                  {[
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10xd",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10xd",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10xdxd",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10xd2",
+                    },
+                    {
+                      data: "asad",
+                      price: 8,
+                      amount: 5,
+                      customerId: 5,
+                      date: "15-50- 10xd2xd",
+                    },
+                  ].map((historyRow) => (
+                    <StyledTableRow key={historyRow.date}>
+                      <StyledTableCell component="th" scope="row">
+                        {historyRow.date}
+                      </StyledTableCell>
+                      <StyledTableCell>{historyRow.customerId}</StyledTableCell>
                     </StyledTableRow>
-                  </TableHead>
-                  <TableBody>
-                    {[
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-1",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-1xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-1xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-1xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-1xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-1xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-2xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-2xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-2xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-3",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-3xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-3xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-3xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-3xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-3xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-4",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-4xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-4xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-4xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-4xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-4xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-5",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-5xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-5xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-5xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-5xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-5xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-6",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-6xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-6xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-6xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-6xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-6xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-7",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-7xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-7xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-7xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-7xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-7xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-8",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-8xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-8xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-8xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-8xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-8xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-9",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-9xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-9xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-9xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-9xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50-9xd2xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50- 10",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50- 10xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50- 10xd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50- 10xdxd",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50- 10xd2",
-                      },
-                      {
-                        data: "asad",
-                        price: 8,
-                        amount: 5,
-                        customerId: 5,
-                        date: "15-50- 10xd2xd",
-                      },
-                    ].map((historyRow) => (
-                      <StyledTableRow key={historyRow.date}>
-                        <StyledTableCell component="th" scope="row">
-                          {historyRow.date}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {historyRow.customerId}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </StyledTableContainer>
+                  ))}
+                </TableBody>
+              </TablaLayout>
             </Box>
           </Collapse>
         </StyledTableCell>

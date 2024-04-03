@@ -1,38 +1,63 @@
 import {
   Box,
   TableBody,
-  TableHead,
+  TableCell,
   TablePagination,
-  Typography,
+  TableRow,
 } from "@mui/material";
-import { Action, Column } from "../../../../interfaces/global";
+import { Action, Column, Sort } from "../../../../interfaces/global";
 import { Acciones, Cargando, TablaLayout, Title } from "../../../components";
-import {
-  StyledTableHeaderCell,
-  StyledTableRow,
-} from "../../../components/style";
+
 import { usePath } from "../../../hooks";
 import { useDeptoStore } from "..";
 import { Row } from "./Row";
 import { ChangeEvent } from "react";
-import { ArrowDownward } from "@mui/icons-material";
-const columns: readonly Column[] = [
-  { label: "", minWidth: 50, align: "center" },
-  { label: "Nombre", minWidth: 40 },
-  { label: "Municipios", minWidth: 40 },
+import { TableHeader } from "../../../components/Tabla/TableHeader";
+const columns: Column[] = [
+  { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
+  { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
+  {
+    campo: "totalMunicipios",
+    label: "Municipios",
+    minWidth: 40,
+    sortable: true,
+  },
 ];
+
 export const Tabla = ({ actions }: { actions: Action[] }) => {
   // const { handleChangePage, handleChangeRowsPerPage, page, rowsPerPage } =
   //   useTablePagination();
-  const { data, pagination, getDataDepto, rowDefault, agregando, cargando } =
-    useDeptoStore();
+  const {
+    data,
+    pagination,
+    getDataDepto,
+    rowDefault,
+    agregando,
+    cargando,
+    sort,
+  } = useDeptoStore();
   const handleChangePage = (_: unknown, newPage: number) => {
-    getDataDepto({ ...pagination, page: newPage + 1 }, "");
+    getDataDepto({
+      pagination: { ...pagination, page: newPage + 1 },
+      sort,
+      busqueda: "",
+    });
   };
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    getDataDepto({ ...pagination, page: 1, limit: +event.target.value }, "");
+    getDataDepto({
+      pagination: { ...pagination, page: 1, limit: +event.target.value },
+      sort,
+      busqueda: "",
+    });
   };
   const path = usePath();
+  const sortFunction = (newSort: Sort) => {
+    getDataDepto({
+      pagination,
+      sort: newSort,
+      busqueda: "",
+    });
+  };
   return (
     <>
       <Title path={path} />
@@ -53,31 +78,22 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
-      {cargando ? (
-        <Cargando titulo="Cargando Deptos" />
-      ) : (
-        <TablaLayout>
-          <TableHead>
-            <StyledTableRow>
-              {columns.map((column) => (
-                <StyledTableHeaderCell
-                  key={column.label}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  <Box display={"flex"} alignItems={"center"}>
-                    <Typography
-                      variant="body1"
-                      color="initial"
-                      component={"span"}
-                    >
-                      {column.label}
-                    </Typography>
-                    <ArrowDownward fontSize="small" />
-                  </Box>
-                </StyledTableHeaderCell>
-              ))}
-            </StyledTableRow>
-          </TableHead>
+
+      <TablaLayout>
+        <TableHeader
+          columns={columns}
+          sort={sort}
+          sortFunction={sortFunction}
+        />
+        {cargando ? (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={columns.length + 1}>
+                <Cargando titulo="Cargando Deptos..." />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        ) : (
           <TableBody>
             {agregando && (
               <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
@@ -86,8 +102,8 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
               return <Row key={depto._id} depto={depto} />;
             })}
           </TableBody>
-        </TablaLayout>
-      )}
+        )}
+      </TablaLayout>
     </>
   );
 };
