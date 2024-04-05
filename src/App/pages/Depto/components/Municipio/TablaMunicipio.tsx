@@ -7,7 +7,12 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { Acciones, Cargando, TablaLayout } from "../../../../components";
+import {
+  Acciones,
+  Buscador,
+  Cargando,
+  TablaLayout,
+} from "../../../../components";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Column, Sort } from "../../../../../interfaces/global";
 import { SocketOnMunicipio, getMunicipios } from "./helpers";
@@ -32,6 +37,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { socket } = useContext(SocketContext);
   const [agregando, setAgregando] = useState(false);
   const [busqueda, setbusqueda] = useState("");
+  const [buscando, setBuscando] = useState(false);
   const [cargando, setCargando] = useState(true);
   const [municipiosData, setMunicipiosData] = useState<Municipio[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
@@ -118,6 +124,17 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
 
   return (
     <>
+      <Buscador
+        buscando={buscando}
+        onSearch={(value) => {
+          setBuscando(true);
+          setData({ pagination: paginationDefault, sort, busqueda: value });
+        }}
+        onSearchCancel={() => {
+          setBuscando(false);
+          setData({ pagination: paginationDefault, sort, busqueda: "" });
+        }}
+      /> 
       <Divider textAlign="left">
         <Typography
           variant="subtitle1"
@@ -198,6 +215,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
             {municipiosData.map((municipio) => {
               return (
                 <RowMunicipio
+                  busqueda={busqueda}
                   key={municipio._id}
                   municipio={municipio}
                   depto={depto}

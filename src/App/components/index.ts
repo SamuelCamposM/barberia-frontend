@@ -5,3 +5,5 @@ export * from "./Cargando/Cargando";
 export * from "./Modal/ModalLayout";
 export * from "./Tabla/TablaLayout";
 export * from "./Tabla/Title";
+export * from "./Search/BuscadorPath";
+export * from "./Search/Buscador";

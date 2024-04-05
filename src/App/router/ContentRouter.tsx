@@ -4,6 +4,7 @@ import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../../hooks";
 import { useMenuStore } from "../pages/Menu";
+import { Cargando } from "../components";
 
 const ChatPage = lazy(() => import("../pages/Chat/ChatPage"));
 
@@ -11,7 +12,7 @@ export const ContentRouter = () => {
   const { data } = useMenuStore();
   const { user } = useAuthStore();
   if (data.length === 0) {
-    return "CARGANDO";
+    return <Cargando titulo="Cargando"/>;
   }
   return (
     <Routes>

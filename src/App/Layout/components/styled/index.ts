@@ -19,7 +19,7 @@ export const LayoutBox2 = styled(Paper)({
   width: "100%",
   height: "100%",
   overflow: "auto",
-
+  paddingTop: ".4rem",
   ".swal2-container": {
     zIndex: 1301,
   },

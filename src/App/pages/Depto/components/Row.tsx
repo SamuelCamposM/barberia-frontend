@@ -2,7 +2,11 @@ import { KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { Acciones } from "../../../components";
 import { DeptoItem, useDeptoStore } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
-import { handleSocket, required } from "../../../../helpers";
+import {
+  agregarTransparencia,
+  handleSocket,
+  required,
+} from "../../../../helpers";
 import { SocketEmitDepto } from "../helpers";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { Box, Collapse, TableRow, TextField } from "@mui/material";
@@ -18,7 +22,8 @@ import {
 } from "@mui/icons-material";
 import { useThemeSwal } from "../../../hooks";
 import { TablaMunicipio } from "./Municipio/TablaMunicipio";
-export const Row = ({ depto }: { depto: DeptoItem }) => {
+import { useResaltarTexto } from "../../../hooks/useResaltarTexto";
+export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
   const { setAgregando } = useDeptoStore();
 
   const { socket } = useProvideSocket();
@@ -212,7 +217,9 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
           </>
         ) : (
           <>
-            <StyledTableCell>{depto.name}</StyledTableCell>
+            <StyledTableCell>
+              {useResaltarTexto({ busqueda: q, texto: depto.name })}
+            </StyledTableCell>
             <StyledTableCell>{depto.totalMunicipios}</StyledTableCell>
           </>
         )}
@@ -225,7 +232,15 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               sx={{
-                margin: 1,
+                padding: 1,
+                background: (theme) =>
+                  `linear-gradient(0deg, ${agregarTransparencia(
+                    theme.palette.primary.dark,
+                    0.075
+                  )} 20%, ${agregarTransparencia(
+                    theme.palette.primary.dark,
+                    0.15
+                  )} 100%)`,
               }}
             >
               {/* <Cargando/> */}

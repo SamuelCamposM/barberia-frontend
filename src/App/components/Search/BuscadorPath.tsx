@@ -1,12 +1,12 @@
 import { FormEvent, useMemo } from "react";
-import { useForm } from "../../../../hooks";
+import { useForm } from "../../../hooks";
 import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import { Cancel } from "@mui/icons-material";
-import { usePath } from "../../../hooks";
+import { usePath } from "../../hooks";
 
-export const Buscador = () => {
+export const BuscadorPath = ({ label = "Buscar" }: { label?: string }) => {
   const navigate = useNavigate();
   const path = usePath();
   const { q = "", buscando = "" } = queryString.parse(location.search) as {
@@ -47,7 +47,7 @@ export const Buscador = () => {
         fullWidth
         size="small"
         variant="outlined"
-        label={"Buscar"}
+        label={label}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
             onLeaveSearch();

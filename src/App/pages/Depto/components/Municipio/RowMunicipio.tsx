@@ -15,15 +15,18 @@ import {
   DeleteForever,
 } from "@mui/icons-material";
 import { TextField } from "@mui/material";
+import { useResaltarTexto } from "../../../../hooks/useResaltarTexto";
 
 export const RowMunicipio = ({
   municipio,
   depto,
   setAgregando,
+  busqueda,
 }: {
   municipio: Municipio;
   depto: string;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
+  busqueda?: string;
 }) => {
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
@@ -201,7 +204,11 @@ export const RowMunicipio = ({
         </>
       ) : (
         <>
-          <StyledTableCell>{municipio.name}</StyledTableCell>
+          <StyledTableCell>
+            {busqueda
+              ? useResaltarTexto({ busqueda: busqueda, texto: municipio.name })
+              : municipio.name}
+          </StyledTableCell>
         </>
       )}
     </StyledTableRow>

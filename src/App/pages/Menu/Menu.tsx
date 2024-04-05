@@ -1,11 +1,11 @@
 import { Action } from "../../../interfaces/global";
+import { Buscador } from "../../components";
 import { Cancel, Create } from "@mui/icons-material";
-
 import { PaperContainerPage } from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { SocketContext } from "../../../context";
 import { useContext, useEffect } from "react";
-import { useMenuStore, PageItem, Tabla, Buscador, ModalRoute } from "./";
+import { useMenuStore, PageItem, Tabla, ModalRoute } from "./";
 import { usePath } from "../../hooks";
 import { validateFunction } from "../../../helpers";
 
@@ -79,6 +79,7 @@ export const Menu = () => {
     socket?.on("cliente:page-editar", (data: PageItem) => {
       onEditMenu(data);
     });
+    socket?.off("cliente:page-editar");
   }, [socket]);
 
   // const { q = "", buscando = "" } = queryString.parse(location.search) as {
