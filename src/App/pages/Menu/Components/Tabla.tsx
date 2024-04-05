@@ -15,17 +15,16 @@ import { useCallback } from "react";
 import "animate.css/animate.min.css";
 import { Acciones, TablaLayout, Title } from "../../../components";
 import { Action, Column } from "../../../../interfaces/global";
-import { labelRowsPerPage } from "../../../../helpers";
 
 const columns: readonly Column[] = [
-  { label: "", minWidth: 50, align: "center" },
-  { label: "Nombre", minWidth: 40 },
-  { label: "Icono", minWidth: 40 },
-  { label: "Delete", minWidth: 80 },
-  { label: "Insert", minWidth: 80 },
-  { label: "Update", minWidth: 80 },
-  { label: "Select", minWidth: 80 },
-  { label: "Wachar", minWidth: 80 },
+  { label: "", minWidth: 50, align: "center", sortable: false },
+  { label: "Nombre", minWidth: 40, sortable: false },
+  { label: "Icono", minWidth: 40, sortable: false },
+  { label: "Delete", minWidth: 80, sortable: false },
+  { label: "Insert", minWidth: 80, sortable: false },
+  { label: "Update", minWidth: 80, sortable: false },
+  { label: "Select", minWidth: 80, sortable: false },
+  { label: "Wachar", minWidth: 80, sortable: false },
 ];
 export const Tabla = ({ actions }: { actions: Action[] }) => {
   const navigate = useNavigate();
@@ -63,7 +62,6 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
         <Acciones actions={actions} />
         <TablePagination
           className="tablePagination"
-          labelRowsPerPage={labelRowsPerPage}
           rowsPerPageOptions={[10, 20, 100]}
           component="div"
           count={filterFunction(q, buscando, data).length}

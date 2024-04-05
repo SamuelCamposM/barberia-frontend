@@ -1,6 +1,7 @@
+import { Pagination } from "../interfaces/global";
+
 export const roles = ["GERENTE", "EMPLEADO", "CLIENTE"];
-export const labelRowsPerPage = "Filas por página";
-export const paginationDefault = {
+export const paginationDefault: Pagination = {
   totalDocs: 0,
   limit: 10,
   page: 1,

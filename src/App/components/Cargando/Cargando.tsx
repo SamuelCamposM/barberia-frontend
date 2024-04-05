@@ -12,11 +12,11 @@ export const Cargando = ({ titulo = "Cargando" }: { titulo?: string }) => {
       alignItems="center"
     >
       <Box className="animate__animated animate__infinite animate__jackInTheBox">
-        <ContentCut sx={{ fontSize: "10rem" }} />
+        <ContentCut sx={{ fontSize: "8rem" }} />
       </Box>
       <Typography
         marginTop={3}
-        variant="h4"
+        variant="h5"
         color="primary"
         width="100%"
         textAlign="center"

@@ -6,7 +6,7 @@ import { PaperContainerPage } from "../../components/style";
 import TextField from "@mui/material/TextField";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { useProvideSocket } from "../../../hooks";
-import { SocketOnEvent } from "./helpers";
+import { SocketOnDepto } from "./helpers";
 import { Box } from "@mui/material";
 
 export const Depto = () => {
@@ -17,7 +17,6 @@ export const Depto = () => {
     onAgregarDepto,
     onEditDepto,
     pagination,
-    rowDefault,
     setAgregando,
     onEliminarDepto,
     cargando,
@@ -51,43 +50,23 @@ export const Depto = () => {
     }
   }, []);
 
-  const [itemEffectSocket, setItemEffectSocket] = useState<{
-    item: DeptoItem;
-    tipo?: string;
-  }>({ item: rowDefault });
   useEffect(() => {
-    const { item, tipo } = itemEffectSocket;
-    if (!tipo) {
-      return;
-    }
-    if (tipo === SocketOnEvent.agregar) {
-      onAgregarDepto(item);
-    }
-    if (tipo === SocketOnEvent.editar) {
-      onEditDepto(item);
-    }
-    if (tipo === SocketOnEvent.eliminar) {
-      onEliminarDepto(item._id || "");
-    }
-  }, [itemEffectSocket]);
-
-  useEffect(() => {
-    socket?.on(SocketOnEvent.agregar, (data: DeptoItem) => {
-      setItemEffectSocket({
-        item: data,
-        tipo: SocketOnEvent.agregar,
-      });
+    socket?.on(SocketOnDepto.agregar, (data: DeptoItem) => {
+      onAgregarDepto(data);
     });
 
-    socket?.on(SocketOnEvent.editar, (data: DeptoItem) => {
-      setItemEffectSocket({
-        item: data,
-        tipo: SocketOnEvent.editar,
-      });
+    socket?.on(SocketOnDepto.editar, (data: DeptoItem) => {
+      onEditDepto(data);
     });
-    socket?.on(SocketOnEvent.eliminar, (data: { _id: string }) => {
+    socket?.on(SocketOnDepto.eliminar, (data: { _id: string }) => {
       onEliminarDepto(data._id);
     });
+
+    return () => {
+      socket?.off(SocketOnDepto.agregar);
+      socket?.off(SocketOnDepto.editar);
+      socket?.off(SocketOnDepto.eliminar);
+    };
   }, [socket]);
 
   return (

@@ -1,23 +1,11 @@
 import { KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { Acciones, TablaLayout } from "../../../components";
+import { Acciones } from "../../../components";
 import { DeptoItem, useDeptoStore } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { handleSocket, required } from "../../../../helpers";
-import { SocketEmitEvent } from "../helpers";
-import {
-  StyledTableCell,
-  StyledTableHeaderCell,
-  StyledTableRow,
-} from "../../../components/style";
-import {
-  Box,
-  Collapse,
-  TableBody,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { SocketEmitDepto } from "../helpers";
+import { StyledTableCell, StyledTableRow } from "../../../components/style";
+import { Box, Collapse, TableRow, TextField } from "@mui/material";
 import { useForm, useProvideSocket } from "../../../../hooks";
 import Swal from "sweetalert2";
 import {
@@ -29,10 +17,11 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 import { useThemeSwal } from "../../../hooks";
+import { TablaMunicipio } from "./Municipio/TablaMunicipio";
 export const Row = ({ depto }: { depto: DeptoItem }) => {
-  const { socket } = useProvideSocket();
   const { setAgregando } = useDeptoStore();
 
+  const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
   const [editando, setEditando] = useState(!Boolean(depto._id));
   const esNuevo = useMemo(() => !Boolean(depto._id), []);
@@ -63,7 +52,7 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
   } = useForm(propsUseForm(depto), config);
   const handleGuardar = () => {
     socket?.emit(
-      SocketEmitEvent.agregar,
+      SocketEmitDepto.agregar,
       formValues,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
@@ -77,7 +66,7 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
   const handleEditar = () => {
     const itemToEdit: DeptoItem = { ...depto, ...formValues };
     socket?.emit(
-      SocketEmitEvent.editar,
+      SocketEmitDepto.editar,
       itemToEdit,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
@@ -111,7 +100,7 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         socket?.emit(
-          SocketEmitEvent.eliminar,
+          SocketEmitDepto.eliminar,
           { _id: depto._id },
           ({ error, msg }: ErrorSocket) => {
             handleSocket({ error, msg });
@@ -143,14 +132,14 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
         // onMouseEnter={() => setshowButtoms(true)}
         // onMouseLeave={() => setshowButtoms(false)}
         // className={`${
-        //   rowActive._id === row._id &&
-        //   "animate__animated animate__lightSpeedInRight"
+        //rowActive._id === row._id &&
+        //"animate__animated animate__lightSpeedInRight"
         // }`}
       >
         <StyledTableCell
           padding="checkbox"
           // className={`pendingActive ${
-          //   rowActive._id === row._id && "active"
+          //rowActive._id === row._id && "active"
           // }`}
         >
           <Acciones
@@ -239,134 +228,8 @@ export const Row = ({ depto }: { depto: DeptoItem }) => {
                 margin: 1,
               }}
             >
-              <Typography variant="h6" gutterBottom component="div">
-                Municipios
-              </Typography>
               {/* <Cargando/> */}
-              <TablaLayout maxHeight="30vh">
-                <TableHead>
-                  <StyledTableRow>
-                    <StyledTableHeaderCell>Date</StyledTableHeaderCell>
-                    <StyledTableHeaderCell>Customer</StyledTableHeaderCell>
-                  </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                  {[
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10xd",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10xd",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10xdxd",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10xd2",
-                    },
-                    {
-                      data: "asad",
-                      price: 8,
-                      amount: 5,
-                      customerId: 5,
-                      date: "15-50- 10xd2xd",
-                    },
-                  ].map((historyRow) => (
-                    <StyledTableRow key={historyRow.date}>
-                      <StyledTableCell component="th" scope="row">
-                        {historyRow.date}
-                      </StyledTableCell>
-                      <StyledTableCell>{historyRow.customerId}</StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </TablaLayout>
+              <TablaMunicipio depto={depto._id || ""} />
             </Box>
           </Collapse>
         </StyledTableCell>

@@ -31,6 +31,9 @@ export const purpleTheme = () => {
           variant: "standard",
         },
       },
+      MuiTablePagination: {
+        defaultProps: { labelRowsPerPage: "Registros" },
+      },
     },
     typography: {},
   });
