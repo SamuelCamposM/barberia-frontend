@@ -1,4 +1,5 @@
 import {
+  Box,
   TableCell,
   TableContainer,
   TableRow,
@@ -66,4 +67,12 @@ export const StyledTableHeaderCell = styled(TableCell)<{
     color: sorteable ? theme.palette.secondary.contrastText : "",
     background: sorteable ? theme.palette.secondary.dark : "",
   },
+}));
+
+export const StyledContainerSubTable = styled(Box)(({ theme }) => ({
+  padding: 1,
+  background: `linear-gradient(0deg, ${agregarTransparencia(
+    theme.palette.primary.dark,
+    0.075
+  )} 20%, ${agregarTransparencia(theme.palette.primary.dark, 0.15)} 100%)`,
 }));

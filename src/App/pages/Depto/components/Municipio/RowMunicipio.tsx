@@ -98,7 +98,7 @@ export const RowMunicipio = ({
 
   const handleEliminar = useCallback(() => {
     Swal.fire({
-      title: `Desea eliminar el Depto`,
+      title: `Desea eliminar el Municipio`,
       text: municipio.name,
       icon: "warning",
       confirmButtonText: "Confirmar",

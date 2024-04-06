@@ -1,5 +1,5 @@
 import { Action } from "../../../interfaces/global";
-import { Buscador } from "../../components";
+import { BuscadorPath } from "../../components";
 import { Cancel, Create } from "@mui/icons-material";
 import { PaperContainerPage } from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
@@ -79,7 +79,9 @@ export const Menu = () => {
     socket?.on("cliente:page-editar", (data: PageItem) => {
       onEditMenu(data);
     });
-    socket?.off("cliente:page-editar");
+    return () => {
+      socket?.off("cliente:page-editar");
+    };
   }, [socket]);
 
   // const { q = "", buscando = "" } = queryString.parse(location.search) as {
@@ -99,7 +101,7 @@ export const Menu = () => {
         <Routes>
           <Route path="/:_id" element={<ModalRoute />} />
         </Routes>
-        <Buscador />
+        <BuscadorPath />
 
         <Tabla actions={actions} />
       </PaperContainerPage>

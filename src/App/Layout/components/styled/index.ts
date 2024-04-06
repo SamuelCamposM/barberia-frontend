@@ -39,11 +39,11 @@ export const LayoutBox2 = styled(Paper)({
 
 export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   // background: theme.palette.primary.main,
-  // background: `linear-gradient(0deg, ${agregarTransparencia(
-  //   theme.palette.primary.dark,
-  //   0.4
-  // )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.9)} 100%)`,
-  background: "transparent",
+  background: `linear-gradient(0deg, ${agregarTransparencia(
+    theme.palette.primary.dark,
+    0.4
+  )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.9)} 100%)`,
+  // background: "transparent",
   boxShadow: "none",
   zIndex: theme.zIndex.drawer + 1,
   [theme.breakpoints.down("md")]: {
@@ -72,11 +72,11 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
 }));
 export const AppBarFooter = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   // background: "transparent", //  theme.palette.primary.main,
-  // background: `linear-gradient(0deg, ${agregarTransparencia(
-  //   theme.palette.secondary.dark,
-  //   0.6
-  // )} 20%, ${agregarTransparencia(theme.palette.secondary.light, 0.9)} 100%)`,
-  background: "transparent",
+  background: `linear-gradient(0deg, ${agregarTransparencia(
+    theme.palette.secondary.dark,
+    0.6
+  )} 20%, ${agregarTransparencia(theme.palette.secondary.light, 0.9)} 100%)`,
+  // background: "transparent",
   boxShadow: "none",
   zIndex: theme.zIndex.drawer + 1,
   [theme.breakpoints.down("md")]: {

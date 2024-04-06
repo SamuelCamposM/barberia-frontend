@@ -77,6 +77,28 @@ export const deptoSlice = createSlice({
           : item
       );
     },
+    onSliceAddOrRemoveMunicipio: (
+      state,
+      action: PayloadAction<{
+        _id: string;
+        tipo: "add" | "remove";
+      }>
+    ) => {
+      state.data = state.data.map((item) =>
+        item._id === action.payload._id
+          ? {
+              ...item,
+              crud: { editado: true },
+              totalMunicipios:
+                action.payload.tipo === "add"
+                  ? item.totalMunicipios! + 1
+                  : action.payload.tipo === "remove"
+                  ? item.totalMunicipios! - 1
+                  : item.totalMunicipios,
+            }
+          : item
+      );
+    },
     onSliceAgregarDepto: (state, action: PayloadAction<DeptoItem>) => {
       state.data.unshift({
         ...action.payload,
@@ -109,4 +131,5 @@ export const {
   onSliceEliminarDepto,
   setSliceAgregando,
   setSliceCargando,
+  onSliceAddOrRemoveMunicipio,
 } = deptoSlice.actions;

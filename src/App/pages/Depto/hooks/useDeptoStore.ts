@@ -1,5 +1,6 @@
 import {
   getSliceDataDepto,
+  onSliceAddOrRemoveMunicipio,
   onSliceAgregarDepto,
   onSliceEditDepto,
   onSliceEliminarDepto,
@@ -60,6 +61,12 @@ export const useDeptoStore = () => {
   const onEliminarDepto = (_id: string) => {
     dispatch(onSliceEliminarDepto(_id));
   };
+  const onAddOrRemoveMunicipio = (data: {
+    _id: string;
+    tipo: "add" | "remove";
+  }) => {
+    dispatch(onSliceAddOrRemoveMunicipio(data));
+  };
 
   return {
     //* METODOS
@@ -68,6 +75,7 @@ export const useDeptoStore = () => {
     setAgregando,
     onAgregarDepto,
     onEliminarDepto,
+    onAddOrRemoveMunicipio,
     //*VALORES
     agregando,
     data,

@@ -2,14 +2,14 @@ import { KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { Acciones } from "../../../components";
 import { DeptoItem, useDeptoStore } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
-import {
-  agregarTransparencia,
-  handleSocket,
-  required,
-} from "../../../../helpers";
+import { handleSocket, required } from "../../../../helpers";
 import { SocketEmitDepto } from "../helpers";
-import { StyledTableCell, StyledTableRow } from "../../../components/style";
-import { Box, Collapse, TableRow, TextField } from "@mui/material";
+import {
+  StyledContainerSubTable,
+  StyledTableCell,
+  StyledTableRow,
+} from "../../../components/style";
+import { Collapse, TableRow, TextField } from "@mui/material";
 import { useForm, useProvideSocket } from "../../../../hooks";
 import Swal from "sweetalert2";
 import {
@@ -230,22 +230,10 @@ export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
           colSpan={6}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box
-              sx={{
-                padding: 1,
-                background: (theme) =>
-                  `linear-gradient(0deg, ${agregarTransparencia(
-                    theme.palette.primary.dark,
-                    0.075
-                  )} 20%, ${agregarTransparencia(
-                    theme.palette.primary.dark,
-                    0.15
-                  )} 100%)`,
-              }}
-            >
+            <StyledContainerSubTable>
               {/* <Cargando/> */}
               <TablaMunicipio depto={depto._id || ""} />
-            </Box>
+            </StyledContainerSubTable>
           </Collapse>
         </StyledTableCell>
       </TableRow>

@@ -39,16 +39,17 @@ export const Depto = () => {
   const { socket } = useProvideSocket();
   const {
     agregando,
+    cargando,
+    data,
     getDataDepto,
+    onAddOrRemoveMunicipio,
     onAgregarDepto,
     onEditDepto,
-    pagination,
-    setAgregando,
     onEliminarDepto,
-    cargando,
-    sort,
+    pagination,
     rowDefault,
-    data,
+    setAgregando,
+    sort,
   } = useDeptoStore();
   const location = useLocation();
 
@@ -112,11 +113,18 @@ export const Depto = () => {
     socket?.on(SocketOnDepto.eliminar, (data: { _id: string }) => {
       onEliminarDepto(data._id);
     });
+    socket?.on(
+      SocketOnDepto.municipioListener,
+      (data: { _id: string; tipo: "remove" | "add" }) => {
+        onAddOrRemoveMunicipio(data);
+      }
+    );
 
     return () => {
       socket?.off(SocketOnDepto.agregar);
       socket?.off(SocketOnDepto.editar);
       socket?.off(SocketOnDepto.eliminar);
+      socket?.off(SocketOnDepto.municipioListener);
     };
   }, [socket]);
 

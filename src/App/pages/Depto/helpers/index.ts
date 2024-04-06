@@ -23,6 +23,7 @@ export const SocketOnDepto = {
   agregar: "cliente:depto-agregar",
   editar: "cliente:depto-editar",
   eliminar: "cliente:depto-eliminar",
+  municipioListener: "cliente:depto-municipio-listener",
 };
 export const SocketEmitDepto = {
   agregar: "server:depto-agregar",

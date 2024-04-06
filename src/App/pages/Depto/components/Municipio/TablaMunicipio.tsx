@@ -134,7 +134,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
           setBuscando(false);
           setData({ pagination: paginationDefault, sort, busqueda: "" });
         }}
-      /> 
+      />
       <Divider textAlign="left">
         <Typography
           variant="subtitle1"
