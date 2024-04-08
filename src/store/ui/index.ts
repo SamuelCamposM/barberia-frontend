@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UiState } from "../interfaces";
 
 const initialState: UiState = {
   openDrawerChat: false,
   openDrawerSidebar: false,
   openDrawerSidebarMobile: false,
-  
+  openModalProfile: false,
 };
 export const uiSlice = createSlice({
   name: "ui",
@@ -20,6 +20,9 @@ export const uiSlice = createSlice({
     onSliceToogleSidebarMobile: (state) => {
       state.openDrawerSidebarMobile = !state.openDrawerSidebarMobile;
     },
+    setSliceOpenProfileModal: (state, action: PayloadAction<boolean>) => {
+      state.openModalProfile = action.payload;
+    },
   },
 });
 
@@ -28,4 +31,5 @@ export const {
   onSliceToogleDrawerChat,
   onSliceToogleSidebar,
   onSliceToogleSidebarMobile,
+  setSliceOpenProfileModal,
 } = uiSlice.actions;

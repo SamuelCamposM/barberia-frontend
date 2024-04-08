@@ -3,12 +3,17 @@ import {
   onSliceToogleDrawerChat,
   onSliceToogleSidebar,
   onSliceToogleSidebarMobile,
+  setSliceOpenProfileModal,
 } from "../../store/ui";
 import { RootState } from "../../store/interfaces";
 
 export const useUiStore = () => {
-  const { openDrawerChat, openDrawerSidebar, openDrawerSidebarMobile } =
-    useSelector((state: RootState) => state.ui);
+  const {
+    openDrawerChat,
+    openDrawerSidebar,
+    openDrawerSidebarMobile,
+    openModalProfile,
+  } = useSelector((state: RootState) => state.ui);
 
   const dispatch = useDispatch();
 
@@ -22,15 +27,20 @@ export const useUiStore = () => {
   const onToogleSidebarMobile = () => {
     dispatch(onSliceToogleSidebarMobile());
   };
+  const setOpenProfileModal = (openValue: boolean) => {
+    dispatch(setSliceOpenProfileModal(openValue));
+  };
 
   return {
     //Propiedades
     openDrawerChat,
     openDrawerSidebar,
     openDrawerSidebarMobile,
+    openModalProfile,
     //Metodos
     onToogleDrawerChat,
     onToogleSidebar,
     onToogleSidebarMobile,
+    setOpenProfileModal,
   };
 };

@@ -20,12 +20,17 @@ import {
 import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout } from "../../../components";
 import { PageItem, useMenuStore } from "../index";
-import { handleSocket, required, roles } from "../../../../helpers";
+import {
+  ConvertirIcono,
+  handleSocket,
+  required,
+  roles,
+} from "../../../../helpers";
 import { SocketContext } from "../../../../context";
 import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "../../../../hooks";
 import { IconosFiltered } from "../helpers";
-import { ConvertirIcono } from "../../../helpers";
+
 import { ErrorSocket } from "../../../../interfaces/global";
 // import { useNavigate } from "react-router-dom";
 // import { usePath } from "../../../hooks";
@@ -36,7 +41,11 @@ const columns = {
   xs: 1,
 };
 const vhContainer = {
-  height: 60,
+  height: {
+    lg: "50",
+    md: "60",
+    xs: "80",
+  },
   header_height: 40,
   footer_height: 40,
 };

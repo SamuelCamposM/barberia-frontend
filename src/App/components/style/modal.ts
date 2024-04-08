@@ -20,13 +20,25 @@ export const StyledTypographyHeader = styled(Typography)(
 );
 
 export const StyledContainerForm = styled(Box)<{
-  height: number;
+  height: {
+    xs?: string;
+    md?: string;
+    lg?: string;
+  };
   header_height: number;
   footer_height: number;
-}>(({ height, header_height, footer_height, theme }) => ({
-  height: `calc(${height}vh - ${footer_height + header_height}px)`,
+}>(({ height: { lg, md, xs }, header_height, footer_height, theme }) => ({
+  [theme.breakpoints.up("xs")]: {
+    height: `calc(${xs}vh - ${footer_height + header_height}px)`,
+  },
+  [theme.breakpoints.up("md")]: {
+    height: `calc(${md}vh - ${footer_height + header_height}px)`,
+  },
+  [theme.breakpoints.up("lg")]: {
+    height: `calc(${lg}vh - ${footer_height + header_height}px)`,
+  },
   padding: theme.spacing(1),
-  overflow: "scroll",
+  overflow: "auto",
 }));
 
 export const StyledGridContainer = styled(Box)<{
@@ -64,10 +76,13 @@ export const StyledModalBoxFooter = styled(Box)(
 export const StyledTypographyFooter = styled(Typography)({
   textTransform: "uppercase",
   fontWeight: "bold",
+  fontSize: "0.75rem",
+  "& span": {
+    fontSize: "0.75rem",
+  },
 });
 
 export const StyledTypographyFooterSpan = styled(Typography)({
-  fontSize: "1.5rem",
   textTransform: "uppercase",
   fontWeight: "bold",
 });

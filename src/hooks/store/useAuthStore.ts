@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { chatApi } from "../../api";
+import { clienteAxios } from "../../api";
 import {
   clearErrorMessage,
+  onSliceEditUser,
   onSliceLogin,
   onSliceLogout,
   // onSlicechecking,
@@ -26,7 +27,7 @@ export const useAuthStore = () => {
     try {
       const {
         data: { token, ...usuarioSinToken },
-      }: { data: UserWithToken } = await chatApi.post("/auth", {
+      }: { data: UserWithToken } = await clienteAxios.post("/auth", {
         email,
         password,
       });
@@ -52,7 +53,7 @@ export const useAuthStore = () => {
     try {
       const {
         data: { token, ...usuarioSinToken },
-      }: { data: UserWithToken } = await chatApi.post("/auth/new", {
+      }: { data: UserWithToken } = await clienteAxios.post("/auth/new", {
         name,
         email,
         password,
@@ -76,7 +77,7 @@ export const useAuthStore = () => {
     try {
       const {
         data: { token, ...usuarioSinToken },
-      } = await chatApi.get("/auth/renew");
+      } = await clienteAxios.get("/auth/renew");
       localStorage.setItem("token", token);
       localStorage.setItem("token-init-data", String(new Date().getTime()));
 
@@ -91,6 +92,9 @@ export const useAuthStore = () => {
     localStorage.clear();
     dispatch(onSliceLogout(undefined));
   };
+  const onEditUser = (user: User) => {
+    dispatch(onSliceEditUser(user));
+  };
 
   return {
     //Propiedades
@@ -102,5 +106,6 @@ export const useAuthStore = () => {
     onStartLogout,
     onStartRegister,
     onStartSheckAuthToken,
+    onEditUser,
   };
 };

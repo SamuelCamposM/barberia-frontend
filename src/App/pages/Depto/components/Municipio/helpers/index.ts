@@ -1,4 +1,4 @@
-import { chatApi } from "../../../../../../api";
+import { clienteAxios } from "../../../../../../api";
 import { Pagination } from "../../../../../../interfaces/global";
 import { paginationDefault } from "../../../../../../helpers";
 import { Municipio, setDataProps } from "../interfaces";
@@ -28,7 +28,7 @@ export const getMunicipios: getMunicipiosType = async ({
   sort,
 }: setDataProps) => {
   try {
-    const data: MyResponse = await chatApi.post("/municipio", {
+    const data: MyResponse = await clienteAxios.post("/municipio", {
       pagination,
       sort,
       busqueda,

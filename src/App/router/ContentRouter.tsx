@@ -1,5 +1,4 @@
-import { ConvertirComponente } from "../helpers";
-import { convertirPath } from "../../helpers";
+import { ConvertirComponente, convertirPath } from "../../helpers";
 import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../../hooks";
@@ -12,7 +11,7 @@ export const ContentRouter = () => {
   const { data } = useMenuStore();
   const { user } = useAuthStore();
   if (data.length === 0) {
-    return <Cargando titulo="Cargando"/>;
+    return <Cargando titulo="Cargando" />;
   }
   return (
     <Routes>

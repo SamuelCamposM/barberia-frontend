@@ -1,10 +1,16 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 export const useForm = <
-  ValueTypes extends Record<string, string | string[] | number>,
+  ValueTypes extends Record<
+    string,
+    any //string | string[] | number
+  >,
   ConfigTypes extends Record<
     string,
-    ((value: string | string[] | number, allValues: ValueTypes) => string)[]
+    ((
+      value: any, // string | string[] | number
+      allValues: ValueTypes
+    ) => string)[]
   >
 >(
   InitialValues: ValueTypes,
@@ -15,6 +21,7 @@ export const useForm = <
   const [isFormInvalid, setisFormInvalid] = useState(false);
   const [isSubmited, setisSubmited] = useState(false);
   const [onBlur, setonBlur] = useState(0);
+  const [cargando, setcargando] = useState(false);
 
   const errorValues = useMemo<Record<keyof ConfigTypes, string[]>>(() => {
     const entries = Object.entries(ObjectValidations);
@@ -88,5 +95,7 @@ export const useForm = <
     setCargandoSubmit,
     setformValues,
     setisSubmited,
+    cargando,
+    setcargando,
   };
 };

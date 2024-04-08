@@ -1,1 +1,1 @@
-export { default as chatApi } from "./chatApi";
+export { default as clienteAxios } from "./clienteAxios";

@@ -14,6 +14,8 @@ export interface User {
   rol: "GERENTE" | "EMPLEADO" | "CLIENTE";
   tel: string;
   uid: string;
+  createdAt: string;
+  updatedAt: string;
 }
 // FUNCIONES
 export interface LoginParams {

@@ -1,5 +1,5 @@
 import * as Iconos from "@mui/icons-material";
-import Componentes from "../router/routes"; 
+import Componentes from "../App/router/routes"; 
 
 export const ConvertirIcono = (
   icono: string,

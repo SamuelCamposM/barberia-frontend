@@ -1,4 +1,4 @@
-import { chatApi } from "../../../../api";
+import { clienteAxios } from "../../../../api";
 import { Pagination, Sort } from "../../../../interfaces/global";
 
 export const getDeptos = async ({
@@ -11,7 +11,7 @@ export const getDeptos = async ({
   sort: Sort;
 }) => {
   try {
-    const res = await chatApi.post("/depto", { pagination, sort, busqueda });
+    const res = await clienteAxios.post("/depto", { pagination, sort, busqueda });
 
     return { error: false, result: res.data.result };
   } catch (error) {

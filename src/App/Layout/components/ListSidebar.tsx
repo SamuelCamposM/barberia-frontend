@@ -6,7 +6,7 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import { ConvertirIcono } from "../../helpers/stringToComponents";
+import { ConvertirIcono } from "../../../helpers/stringToComponents";
 import { convertirPath } from "../../../helpers";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "../../../hooks";

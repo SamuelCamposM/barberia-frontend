@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useCallback, useEffect } from "react";
 
 import queryString from "query-string";
-import { chatApi } from "../../../api";
+import { clienteAxios } from "../../../api";
 
 import { IncomingMessage, OutgoingMessage, SendMessage } from "./Components";
 import { useChatStore, useAuthStore } from "../../../hooks";
@@ -21,7 +21,7 @@ export const ChatPage = () => {
   };
   const getChat = useCallback(async (uid: string) => {
     onSelectChat(uid);
-    const res = await chatApi.get(`/mensajes/${uid}`);
+    const res = await clienteAxios.get(`/mensajes/${uid}`);
 
     await oneGetMensajes(res.data.mensajes);
   }, []);

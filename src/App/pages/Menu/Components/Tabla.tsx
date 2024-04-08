@@ -1,6 +1,6 @@
 import { Box, TableBody, TableHead, TablePagination } from "@mui/material";
 import { Create } from "@mui/icons-material";
-import { ConvertirIcono } from "../../../helpers";
+
 import { PageItem, useMenuStore } from "..";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,6 +15,7 @@ import { useCallback } from "react";
 import "animate.css/animate.min.css";
 import { Acciones, TablaLayout, Title } from "../../../components";
 import { Action, Column } from "../../../../interfaces/global";
+import { ConvertirIcono } from "../../../../helpers";
 
 const columns: readonly Column[] = [
   { label: "", minWidth: 50, align: "center", sortable: false },

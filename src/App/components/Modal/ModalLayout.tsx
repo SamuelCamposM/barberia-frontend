@@ -19,7 +19,11 @@ export const ModalLayout = ({
   idModal: string;
   open: boolean;
   setOpen: (arg: boolean) => void;
-  vh: number;
+  vh: {
+    xs?: string;
+    md?: string;
+    lg?: string;
+  };
   width?: {
     xs?: string;
     md?: string;
@@ -36,10 +40,15 @@ export const ModalLayout = ({
       sx={{ animationDuration: ".25s" }}
     >
       <Grid container>
-        {/* [ "xs", "sm", "md", "lg", "xl" ] */}
+        {/* [ "xs", "xs", "md", "lg", "xl" ] */}
         <Box
           sx={{
-            minHeight: `${vh}vh`,
+            minHeight: {
+              xs: `${vh.xs}%`,
+              md: `${vh.md}%`,
+              lg: `${vh.lg}%`,
+            },
+            // minHeight: `${vh}vh`,
             position: "absolute",
             top: "50%",
             left: "50%",

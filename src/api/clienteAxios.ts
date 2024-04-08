@@ -3,12 +3,12 @@ import { getEnvVariables, EnvVariables } from "../helpers";
 
 const { VITE_API_URL } = getEnvVariables() as EnvVariables;
 
-const chatApi = axios.create({
+const clienteAxios = axios.create({
   baseURL: VITE_API_URL + "api",
 });
 
 //todo: CONFIGURAR INTERCEPTORES
-chatApi.interceptors.request.use((config) => {
+clienteAxios.interceptors.request.use((config) => {
   config.headers = {
     ...config.headers,
     "x-token": localStorage.getItem("token") || "",
@@ -16,4 +16,4 @@ chatApi.interceptors.request.use((config) => {
   return config;
 });
 
-export default chatApi;
+export default clienteAxios;
