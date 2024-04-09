@@ -23,3 +23,43 @@ export const fileUpload = async (file: File | null) => {
     return { url: "", error: true };
   }
 };
+
+export const procesarUploadsArray = (
+  arreglo: {
+    config: {
+      error: string | boolean;
+      eliminado: boolean;
+      prevUrl: string;
+    };
+    data: {
+      [x: string]: string;
+    };
+  }[]
+) => {
+  let resultado: {
+    error: boolean;
+    eliminados: string[];
+    uploadProperties: { [x: string]: string };
+  } = {
+    error: false,
+    eliminados: [],
+    uploadProperties: {},
+  };
+
+  for (let objeto of arreglo) {
+    if (objeto.config.error) {
+      resultado.error = true;
+    }
+
+    if (objeto.config.eliminado) {
+      resultado.eliminados.push(objeto.config.prevUrl);
+    }
+
+    resultado.uploadProperties = {
+      ...resultado.uploadProperties,
+      ...objeto.data,
+    };
+  }
+
+  return resultado;
+};

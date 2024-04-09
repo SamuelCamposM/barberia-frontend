@@ -10,6 +10,19 @@ export const required = (value: string | string[] | number) => {
   return "";
 };
 
+export const minNoRequired = (
+  value: string | string[] | number,
+  min: number
+) => {
+  if (typeof value === "string" && value.trim() === "") {
+    return "";
+  }
+  if (typeof value === "string" && value.length < min) {
+    return `La contraseña debe tener minimo ${min} caracteres`;
+  }
+  return "";
+};
+
 export const validarEmail = (value: string | string[] | number) => {
   if (
     typeof value === "string" &&

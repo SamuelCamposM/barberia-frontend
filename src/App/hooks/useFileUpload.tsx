@@ -49,9 +49,13 @@ export const useFileUpload = ({
   return {
     onSubmitUpload: async () => {
       const res = await fileUpload(file);
-      setFile(null);
-      setImage(null);
-      setEliminado(false);
+
+      setTimeout(() => {
+        setFile(null);
+        setImage(null);
+        setEliminado(false);
+      }, 0);
+
       return {
         config: {
           error: res.error ? `Hubo un error al subir ${label}` : false,
@@ -61,6 +65,7 @@ export const useFileUpload = ({
         data: { [propiedad]: res.url || prevUrl },
       };
     },
+
     ComponentUpload: (
       <Box
         className="fullWidth"
@@ -87,8 +92,8 @@ export const useFileUpload = ({
             alt={label}
             src={image || prevUrl}
             sx={{
-              width: 100,
-              height: 100,
+              width: 125,
+              height: 125,
               transition: "opacity .3s",
               ":hover": {
                 opacity: 0.75,

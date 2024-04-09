@@ -7,11 +7,23 @@ import {
   StyledTypographyFooterSpan,
   StyledTypographyHeader,
 } from "../../components/style";
-import { Box, IconButton, TextField, Tooltip, Typography } from "@mui/material";
-import { Cancel, Save } from "@mui/icons-material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { Cancel, Save, Visibility, VisibilityOff } from "@mui/icons-material";
 import { ModalLayout } from "../../components";
-import { formatearFecha, required } from "../../../helpers";
-import { useMemo } from "react";
+import {
+  formatearFecha,
+  minNoRequired,
+  procesarUploadsArray,
+  required,
+} from "../../../helpers";
+import { useMemo, useState } from "react";
 import { useAuthStore, useForm, useUiStore } from "../../../hooks";
 import { clienteAxios } from "../../../api";
 import { toast } from "react-toastify";
@@ -30,9 +42,125 @@ const width = {
   xs: "100",
 };
 
+// interface CampoFormDinamyc {
+//   tipo: "numero" | "doc" | "img" | "texto";
+//   validacion: {
+//     minMax?: number;
+//     tipo: "min" | "max" | "required" | "email";
+//   };
+//   name: string;
+// }
+// function getValidations(formularioDinamico: CampoFormDinamyc[]) {
+//   const validations: any = {};
+//   formularioDinamico.forEach((campo) => {
+//     if (campo.validacion.tipo === "required") {
+//       validations[campo.name] = [required];
+//     } else {
+//       validations[campo.name] = [];
+//     }
+//   });
+
+//   return validations;
+// }
+
+// function getInitialValues(formularioDinamico: CampoFormDinamyc[]) {
+//   const initialValues: any = {};
+//   formularioDinamico.forEach((campo) => {
+//     if (campo.tipo === "numero") {
+//       initialValues[campo.name] = 0;
+//     } else {
+//       initialValues[campo.name] = "";
+//     }
+//   });
+
+//   return initialValues;
+// }
+// const formularioDinamico: CampoFormDinamyc[] = [
+//   {
+//     tipo: "img",
+//     name: "img1",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "img",
+//     name: "photo",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "texto",
+//     name: "texto1",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "numero",
+//     name: "numero1",
+//     validacion: {
+//       minMax: 10,
+//       tipo: "min",
+//     },
+//   },
+//   {
+//     tipo: "doc",
+//     name: "doc1",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "img",
+//     name: "img2",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "texto",
+//     name: "texto2",
+//     validacion: {
+//       tipo: "email",
+//     },
+//   },
+//   {
+//     tipo: "numero",
+//     name: "numero2",
+//     validacion: {
+//       minMax: 20,
+//       tipo: "max",
+//     },
+//   },
+//   {
+//     tipo: "doc",
+//     name: "doc2",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "img",
+//     name: "img3",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+//   {
+//     tipo: "texto",
+//     name: "texto3",
+//     validacion: {
+//       tipo: "required",
+//     },
+//   },
+// ];
+
 export const ModalProfile = () => {
   const { setOpenProfileModal, openModalProfile } = useUiStore();
   const { user, onEditUser } = useAuthStore();
+  const [showPass, setShowPass] = useState(false);
   const config = useMemo(
     () => ({
       email: [required],
@@ -40,6 +168,11 @@ export const ModalProfile = () => {
       name: [required],
       tel: [required],
       photo: [],
+      newPassword: [
+        (value: string) => {
+          return minNoRequired(value, 6);
+        },
+      ],
     }),
     []
   );
@@ -51,12 +184,17 @@ export const ModalProfile = () => {
     isFormInvalid,
     handleBlur,
     isFormInvalidSubmit,
-    // onResetForm,
+    onResetForm,
     onNewForm,
     setformValues,
     cargando,
     setcargando,
-  } = useForm(user, config);
+  } = useForm(
+    { ...user, newPassword: "" },
+    config
+    // getInitialValues(formularioDinamico),
+    // getValidations(formularioDinamico)
+  );
 
   const { ComponentUpload, onSubmitUpload } = useFileUpload({
     label: "Foto de perfil",
@@ -66,7 +204,19 @@ export const ModalProfile = () => {
     helperText: errorValues.photo.join(" - "),
     setformValues,
   });
-  
+  // const onSubmitUploadFunctions: Array<
+  //   () => Promise<{
+  //     config: {
+  //       error: string | boolean;
+  //       eliminado: boolean;
+  //       prevUrl: string;
+  //     };
+  //     data: {
+  //       [x: string]: string;
+  //     };
+  //   }>
+  // > = [];
+
   const onHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (cargando) return;
@@ -74,31 +224,35 @@ export const ModalProfile = () => {
     handleBlur();
     try {
       setcargando(true);
-      //SUBIR IMAGEN
-      const {
-        data,
-        config: { eliminado, prevUrl, error },
-      } = await onSubmitUpload();
 
-      if (error) {
-        return toast.error(error);
-      }
+      const onSubmitUploadFunctions = [onSubmitUpload()];
+      const docsUrls = await Promise.all(onSubmitUploadFunctions);
+
+      const { error, uploadProperties, eliminados } =
+        procesarUploadsArray(docsUrls);
+
       const formAllData = {
         ...formValues,
-        ...data,
+        ...uploadProperties,
       };
+      if (error) {
+        setcargando(false);
+        return toast.error(error);
+      }
 
       if (isFormInvalidSubmit(formAllData)) {
+        setcargando(false);
         return;
       }
       //SI CUMPLE LAS CONDICIONES PASA A ACTUALIZAR
       await clienteAxios.post("/auth/edit", {
         data: formAllData,
-        prevUrl: eliminado ? prevUrl : "",
+        eliminados,
       });
       onEditUser(formAllData);
       toast.success("¡Actualizado con exito!");
       setcargando(false);
+      onNewForm(formAllData);
       setOpenProfileModal(false);
     } catch (error) {
       setcargando(false);
@@ -130,7 +284,7 @@ export const ModalProfile = () => {
                 aria-label="Cancelar"
                 onClick={() => {
                   setOpenProfileModal(false);
-                  onNewForm(user);
+                  onResetForm();
                   // setImage(null);
                 }}
                 color="error"
@@ -143,7 +297,6 @@ export const ModalProfile = () => {
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
                 {ComponentUpload}
-
                 <TextField
                   label={"Apellido"}
                   value={formValues.lastname}
@@ -180,6 +333,67 @@ export const ModalProfile = () => {
                   helperText={errorValues.tel.join(" - ")}
                   onBlur={handleBlur}
                 />
+                <TextField
+                  type={showPass ? "text" : "password"}
+                  className="fullWidth"
+                  label={"Password"}
+                  value={formValues.newPassword}
+                  onChange={handleChange}
+                  name="newPassword"
+                  error={errorValues.newPassword.length > 0}
+                  helperText={errorValues.newPassword.join(" - ")}
+                  onBlur={handleBlur}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle-mostrar-contraseña"
+                          onClick={() => {
+                            setShowPass(!showPass);
+                          }}
+                        >
+                          {showPass ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {/* 
+{formularioDinamico.map((campo, index) => {
+                  if (campo.tipo === "img") {
+                    const { ComponentUpload, onSubmitUpload } = useFileUpload({
+                      label: campo.name,
+                      prevUrl: formValues[campo.name] || "",
+                      propiedad: campo.name,
+                      error: errorValues[campo.name].length > 0,
+                      helperText: errorValues[campo.name].join(" - "),
+                      setformValues,
+                    });
+
+                    onSubmitUploadFunctions.push(onSubmitUpload);
+
+                    return ComponentUpload;
+                  } else {
+                    return (
+                      <TextField
+                        key={index}
+                        label={campo.name}
+                        value={formValues[campo.name]}
+                        onChange={handleChange}
+                        name={campo.name}
+                        error={
+                          errorValues[campo.name] &&
+                          errorValues[campo.name].length > 0
+                        }
+                        helperText={
+                          errorValues[campo.name] &&
+                          errorValues[campo.name].join(" - ")
+                        }
+                        onBlur={handleBlur}
+                      />
+                    );
+                  }
+                })} */}
               </StyledGridContainer>
             </StyledContainerForm>
             <StyledModalBoxFooter>
