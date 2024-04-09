@@ -10,6 +10,7 @@ import { RootState } from "../../../../store/interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import { Components, tipoPermiso } from "../../../../interfaces/global";
 import { toast } from "react-toastify";
+import { useCallback } from "react";
 export const useMenuStore = () => {
   const { openModal, rowActive, data, rowDefault } = useSelector(
     (state: RootState) => state.menu
@@ -38,18 +39,22 @@ export const useMenuStore = () => {
   const onEditMenu = (item: PageItem) => {
     dispatch(onSliceEditMenu(item));
   };
-  const noTienePermiso = (component: Components, tipoPermiso: tipoPermiso) => {
-    const pageFind = data.find((page) => page.componente === component);
-    if (!pageFind) {
-      toast.error(`Error al validar permiso`);
-      return false;
-    }
-    const sinPermiso = !pageFind[tipoPermiso].includes(rol);
-    if (sinPermiso) {
-      toast.error(`No tiene permiso para  ${tipoPermiso}`);
-    }
-    return sinPermiso;
-  };
+  const noTienePermiso = useCallback(
+    (component: Components, tipoPermiso: tipoPermiso) => {
+      const pageFind = data.find((page) => page.componente === component);
+      if (!pageFind) {
+        toast.error(`Error al validar permiso`);
+        return false;
+      }
+      const sinPermiso = !pageFind[tipoPermiso].includes(rol);
+      if (sinPermiso) {
+        toast.error(`No tiene permiso para  ${tipoPermiso}`);
+      }
+      return sinPermiso;
+    },
+    [data, rol]
+  );
+
   return {
     //Propiedades
     openModal,

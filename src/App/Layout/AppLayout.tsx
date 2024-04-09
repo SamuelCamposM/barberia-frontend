@@ -9,9 +9,10 @@ import {
 import { Cargando } from "../components";
 import { LayoutBox, LayoutBox2 } from "./components/styled";
 import { Box, CssBaseline, useMediaQuery, useTheme } from "@mui/material";
-import { Suspense, useEffect } from "react";
-import { useMenuStore } from "../pages/Menu";
+import { Suspense, useContext, useEffect } from "react";
+import { PageItem, useMenuStore } from "../pages/Menu";
 import { useUiStore } from "../../hooks";
+import { SocketContext } from "../../context";
 const drawerWidthClose = 56;
 const drawerWidthOpen = 240;
 export const AppLayout = ({
@@ -19,7 +20,8 @@ export const AppLayout = ({
 }: {
   children: JSX.Element | JSX.Element[];
 }) => {
-  const { getDataMenu } = useMenuStore();
+  const { socket } = useContext(SocketContext);
+  const { getDataMenu, onEditMenu } = useMenuStore();
   const { openDrawerSidebar } = useUiStore();
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
@@ -27,6 +29,14 @@ export const AppLayout = ({
   useEffect(() => {
     getDataMenu();
   }, []);
+  useEffect(() => {
+    socket?.on("cliente:page-editar", (data: PageItem) => {
+      onEditMenu(data);
+    });
+    return () => {
+      socket?.off("cliente:page-editar");
+    };
+  }, [socket]);
   return (
     <>
       <CssBaseline />

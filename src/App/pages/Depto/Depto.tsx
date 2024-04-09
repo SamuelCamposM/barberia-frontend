@@ -25,6 +25,7 @@ import {
   TablaLayout,
   Title,
 } from "../../components";
+import { useMenuStore } from "../Menu";
 const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
   { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
@@ -37,6 +38,7 @@ const columns: Column[] = [
 ];
 export const Depto = () => {
   const { socket } = useProvideSocket();
+  const { noTienePermiso } = useMenuStore();
   const {
     agregando,
     cargando,
@@ -75,6 +77,9 @@ export const Depto = () => {
       Icon: agregando ? Cancel : AddCircle,
       name: "Agregar Departamento",
       onClick() {
+        if (noTienePermiso("Depto", "insert")) {
+          return;
+        }
         setAgregando(!agregando);
       },
       tipo: "icono",

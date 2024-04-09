@@ -3,19 +3,15 @@ import { BuscadorPath } from "../../components";
 import { Cancel, Create } from "@mui/icons-material";
 import { PaperContainerPage } from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { SocketContext } from "../../../context";
-import { useContext, useEffect } from "react";
-import { useMenuStore, PageItem, Tabla, ModalRoute } from "./";
+import { useMenuStore, Tabla, ModalRoute } from "./";
 import { usePath } from "../../hooks";
 import { validateFunction } from "../../../helpers";
 
 export const Menu = () => {
-  const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
   const path = usePath();
   const {
     noTienePermiso,
-    onEditMenu,
     openModal,
     rowActive,
     rowDefault,
@@ -74,15 +70,6 @@ export const Menu = () => {
     //   },
     // },
   ];
-
-  useEffect(() => {
-    socket?.on("cliente:page-editar", (data: PageItem) => {
-      onEditMenu(data);
-    });
-    return () => {
-      socket?.off("cliente:page-editar");
-    };
-  }, [socket]);
 
   // const { q = "", buscando = "" } = queryString.parse(location.search) as {
   //   q: string;

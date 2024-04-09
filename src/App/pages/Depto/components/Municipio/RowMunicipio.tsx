@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 import { useResaltarTexto } from "../../../../hooks/useResaltarTexto";
+import { useMenuStore } from "../../../Menu";
 
 export const RowMunicipio = ({
   municipio,
@@ -28,6 +29,7 @@ export const RowMunicipio = ({
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   busqueda?: string;
 }) => {
+  const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
   const [editando, setEditando] = useState(!Boolean(municipio._id));
@@ -56,6 +58,12 @@ export const RowMunicipio = ({
     cargandoSubmit,
     setCargandoSubmit,
   } = useForm(propsUseForm(municipio), config);
+
+  const onClickEditar = () => {
+    if (noTienePermiso("Depto", "update")) return;
+    setEditando((prev) => !prev);
+    onNewForm(propsUseForm(municipio));
+  };
   const handleGuardar = () => {
     socket?.emit(
       SocketEmitMunicipio.agregar,
@@ -97,6 +105,7 @@ export const RowMunicipio = ({
   };
 
   const handleEliminar = useCallback(() => {
+    if (noTienePermiso("Depto", "delete")) return;
     Swal.fire({
       title: `Desea eliminar el Municipio`,
       text: municipio.name,
@@ -153,10 +162,7 @@ export const RowMunicipio = ({
               disabled: cargandoSubmit,
               Icon: editando ? CancelOutlined : Create,
               name: `Editar`,
-              onClick: () => {
-                setEditando((prev) => !prev);
-                onNewForm(propsUseForm(municipio));
-              },
+              onClick: onClickEditar,
               tipo: "icono",
               size: "small",
               ocultar: esNuevo,

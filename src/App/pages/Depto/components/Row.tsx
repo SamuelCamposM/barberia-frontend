@@ -23,9 +23,10 @@ import {
 import { useThemeSwal } from "../../../hooks";
 import { TablaMunicipio } from "./Municipio/TablaMunicipio";
 import { useResaltarTexto } from "../../../hooks/useResaltarTexto";
+import { useMenuStore } from "../../Menu";
 export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
   const { setAgregando } = useDeptoStore();
-
+  const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
   const [editando, setEditando] = useState(!Boolean(depto._id));
@@ -55,6 +56,16 @@ export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
     cargandoSubmit,
     setCargandoSubmit,
   } = useForm(propsUseForm(depto), config);
+
+  const onClickEdit = () => {
+    if (noTienePermiso("Depto", "update")) {
+      setCargandoSubmit(false);
+      return;
+    }
+    setEditando((prev) => !prev);
+    onNewForm(propsUseForm(depto));
+  };
+
   const handleGuardar = () => {
     socket?.emit(
       SocketEmitDepto.agregar,
@@ -96,6 +107,9 @@ export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
   };
 
   const handleEliminar = useCallback(() => {
+    if (noTienePermiso("Depto", "delete")) {
+      return;
+    }
     Swal.fire({
       title: `Desea eliminar el Depto`,
       text: depto.name,
@@ -155,8 +169,7 @@ export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
                 Icon: editando ? CancelOutlined : Create,
                 name: `Editar`,
                 onClick: () => {
-                  setEditando((prev) => !prev);
-                  onNewForm(propsUseForm(depto));
+                  onClickEdit();
                 },
                 tipo: "icono",
                 size: "small",

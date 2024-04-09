@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import { Municipio, setDataProps } from "./interfaces";
 import { RowMunicipio } from "./RowMunicipio";
 import { SocketContext } from "../../../../../context";
+import { useMenuStore } from "../../../Menu";
 
 const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
@@ -34,6 +35,7 @@ const rowDefault: Municipio = {
 };
 
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
+  const { noTienePermiso } = useMenuStore();
   const { socket } = useContext(SocketContext);
   const [agregando, setAgregando] = useState(false);
   const [busqueda, setbusqueda] = useState("");
@@ -166,6 +168,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
               Icon: agregando ? Cancel : AddCircle,
               name: "Agregar",
               onClick() {
+                if (noTienePermiso("Depto", "insert")) return;
                 setAgregando(!agregando);
               },
               tipo: "icono",
