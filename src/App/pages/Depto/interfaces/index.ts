@@ -21,3 +21,8 @@ export interface DeptoState {
   pagination: Pagination;
   sort: Sort;
 }
+export interface setDataProps {
+  busqueda: string;
+  pagination: Pagination;
+  sort: Sort;
+}

@@ -9,10 +9,9 @@ import {
 import { Cargando } from "../components";
 import { LayoutBox, LayoutBox2 } from "./components/styled";
 import { Box, CssBaseline, useMediaQuery, useTheme } from "@mui/material";
-import { Suspense, useContext, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { PageItem, useMenuStore } from "../pages/Menu";
-import { useUiStore } from "../../hooks";
-import { SocketContext } from "../../context";
+import { useProvideSocket, useUiStore } from "../../hooks";
 const drawerWidthClose = 56;
 const drawerWidthOpen = 240;
 export const AppLayout = ({
@@ -20,7 +19,7 @@ export const AppLayout = ({
 }: {
   children: JSX.Element | JSX.Element[];
 }) => {
-  const { socket } = useContext(SocketContext);
+  const { socket } = useProvideSocket();
   const { getDataMenu, onEditMenu } = useMenuStore();
   const { openDrawerSidebar } = useUiStore();
   const theme = useTheme();

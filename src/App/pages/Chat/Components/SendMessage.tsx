@@ -1,15 +1,18 @@
 import { InputAdornment, IconButton } from "@mui/material";
-import { SocketContext } from "../../../../context";
 import { required } from "../../../../helpers";
-import { useAuthStore, useChatStore, useForm } from "../../../../hooks";
+import {
+  useAuthStore,
+  useChatStore,
+  useForm,
+  useProvideSocket,
+} from "../../../../hooks";
 import TextField from "@mui/material/TextField";
-import { useContext } from "react";
 import { Send } from "@mui/icons-material";
 
 import { useEffect, useRef } from "react";
 
 export const SendMessage = ({ name }: { name: string }) => {
-  const { socket } = useContext(SocketContext);
+  const { socket } = useProvideSocket();
   const { user } = useAuthStore();
   const { chatActivo } = useChatStore();
   const inputRef = useRef<HTMLInputElement>(null);

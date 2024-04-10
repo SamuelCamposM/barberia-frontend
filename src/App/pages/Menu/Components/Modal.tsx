@@ -26,9 +26,8 @@ import {
   required,
   roles,
 } from "../../../../helpers";
-import { SocketContext } from "../../../../context";
-import { useContext, useEffect, useMemo } from "react";
-import { useForm } from "../../../../hooks";
+import { useEffect, useMemo } from "react";
+import { useForm, useProvideSocket } from "../../../../hooks";
 import { IconosFiltered } from "../helpers";
 
 import { ErrorSocket } from "../../../../interfaces/global";
@@ -56,7 +55,7 @@ const width = {
 };
 
 export const ModalMenu = () => {
-  const { socket } = useContext(SocketContext);
+  const { socket } = useProvideSocket();
   const { openModal, setOpenModalMenu, rowActive, setActiveRow, rowDefault } =
     useMenuStore();
   const editar = useMemo(() => Boolean(rowActive._id), [rowActive]);

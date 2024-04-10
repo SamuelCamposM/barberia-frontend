@@ -1,16 +1,17 @@
-import { Action, Column, Sort } from "../../../interfaces/global";
+import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useEffect } from "react";
-import { DeptoItem, useDeptoStore } from ".";
+import { ChangeEvent, useEffect, useState } from "react";
+import { DeptoItem, setDataProps } from ".";
+import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { Row } from "./components/Row";
-import { SocketOnDepto } from "./helpers";
+import { SocketOnDepto, columns, getDeptos, rowDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { usePath } from "../../hooks";
 import { useProvideSocket } from "../../../hooks";
-import { validateFunction } from "../../../helpers";
 import queryString from "query-string";
+
 import {
   Box,
   TableBody,
@@ -24,107 +25,130 @@ import {
   Cargando,
   TablaLayout,
   Title,
-} from "../../components";
+} from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
-const columns: Column[] = [
-  { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
-  { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
-  {
-    campo: "totalMunicipios",
-    label: "Municipios",
-    minWidth: 40,
-    sortable: true,
-  },
-];
+import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
+
 export const Depto = () => {
+  // Hooks de navegación y rutas.
+  const navigate = useNavigate();
+  const path = usePath(); // Hooks personalizados para socket y permisos.
   const { socket } = useProvideSocket();
-  const { noTienePermiso } = useMenuStore();
-  const {
-    agregando,
-    cargando,
-    data,
-    getDataDepto,
-    onAddOrRemoveMunicipio,
-    onAgregarDepto,
-    onEditDepto,
-    onEliminarDepto,
-    pagination,
-    rowDefault,
-    setAgregando,
-    sort,
-  } = useDeptoStore();
-  const location = useLocation();
+  const { noTienePermiso } = useMenuStore(); // Estados locales para el manejo de la UI y datos.
+  const [agregando, setAgregando] = useState(false);
+  const [buscando, setBuscando] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
+  const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
+  const [pagination, setPagination] = useState(paginationDefault);
+  const [sort, setSort] = useState<Sort>({ asc: true, campo: "name" });
 
-  const { q = "" } = queryString.parse(location.search) as {
-    q: string;
+  // Funciones para el manejo de eventos y acciones.
+  const navigateWithParams = ({
+    newPagination,
+    newSort,
+  }: {
+    newPagination: Pagination;
+    newSort: Sort;
+  }) => {
+    const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
+      newPagination
+    )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
+    navigate(urlParams);
   };
-  useEffect(() => {
-    getDataDepto({ pagination, sort, busqueda: q });
-  }, [q]);
 
-  const actions: Action[] = [
-    {
-      color: "primary",
-      Icon: Refresh,
-      name: "Actualizar",
-      onClick() {
-        getDataDepto({ pagination, sort, busqueda: q });
-      },
-      tipo: "icono",
-    },
-    {
-      color: agregando ? "error" : "success",
-      Icon: agregando ? Cancel : AddCircle,
-      name: "Agregar Departamento",
-      onClick() {
-        if (noTienePermiso("Depto", "insert")) {
-          return;
-        }
-        setAgregando(!agregando);
-      },
-      tipo: "icono",
-    },
-  ];
   const handleChangePage = (_: unknown, newPage: number) => {
-    getDataDepto({
-      pagination: { ...pagination, page: newPage + 1 },
-      sort,
-      busqueda: "",
+    navigateWithParams({
+      newPagination: { ...pagination, page: newPage + 1 },
+      newSort: sort,
     });
   };
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    getDataDepto({
-      pagination: { ...pagination, page: 1, limit: +event.target.value },
-      sort,
-      busqueda: "",
-    });
-  };
-  const path = usePath();
-  const sortFunction = (newSort: Sort) => {
-    getDataDepto({
-      pagination,
-      sort: newSort,
-      busqueda: "",
-    });
-  };
-  useEffect(() => {
-    socket?.on(SocketOnDepto.agregar, (data: DeptoItem) => {
-      onAgregarDepto(data);
-    });
 
-    socket?.on(SocketOnDepto.editar, (data: DeptoItem) => {
-      onEditDepto(data);
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    navigateWithParams({
+      newPagination: { ...pagination, page: 1, limit: +event.target.value },
+      newSort: sort,
     });
-    socket?.on(SocketOnDepto.eliminar, (data: { _id: string }) => {
-      onEliminarDepto(data._id);
+  };
+
+  const sortFunction = (newSort: Sort) => {
+    navigateWithParams({ newPagination: pagination, newSort });
+  };
+
+  // Función asíncrona para obtener y establecer datos.
+  const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
+    setCargando(true);
+    const { error, result } = await getDeptos({ pagination, sort, busqueda });
+    if (error) {
+      toast.error("Hubo un error al traer los municipios");
+      return;
+    }
+    const { docs, ...rest } = result;
+    setPagination(rest);
+    setDeptosData(docs);
+    setSort(sort);
+    setBusqueda(busqueda);
+    setCargando(false);
+  };
+
+  // Efectos secundarios para la sincronización con la URL y sockets.
+  const {
+    q = "",
+    buscando: buscandoQuery = "",
+    pagination: paginationQuery = "",
+    sort: sortQuery = "",
+  } = queryString.parse(location.search) as {
+    q: string;
+    buscando: string;
+    pagination: string;
+    sort: string;
+  };
+
+  useEffect(() => {
+    const estaBuscando = Boolean(buscandoQuery);
+
+    setBuscando(estaBuscando);
+    setData({
+      pagination: paginationQuery
+        ? JSON.parse(paginationQuery)
+        : paginationDefault,
+      sort: sortQuery ? JSON.parse(sortQuery) : sort,
+      busqueda: estaBuscando ? q : "",
     });
+  }, [q, paginationQuery, sortQuery, buscandoQuery]);
+
+  useEffect(() => {
+    // Eventos de socket para agregar, editar y eliminar departamentos.
+    socket?.on(SocketOnDepto.agregar, (data: DeptoItem) =>
+      setDeptosData((prev) => [data, ...prev])
+    );
+    socket?.on(SocketOnDepto.editar, (data: DeptoItem) =>
+      setDeptosData((prev) =>
+        prev.map((item) => (item._id === data._id ? data : item))
+      )
+    );
+    socket?.on(SocketOnDepto.eliminar, (data: { _id: string }) =>
+      setDeptosData((prev) => prev.filter((item) => item._id !== data._id))
+    );
     socket?.on(
       SocketOnDepto.municipioListener,
-      (data: { _id: string; tipo: "remove" | "add" }) => {
-        onAddOrRemoveMunicipio(data);
-      }
+      (data: { _id: string; tipo: "remove" | "add" }) =>
+        setDeptosData((prev) =>
+          prev.map((item) =>
+            item._id === data._id
+              ? {
+                  ...item,
+                  totalMunicipios:
+                    data.tipo === "remove"
+                      ? item.totalMunicipios! - 1
+                      : item.totalMunicipios! + 1,
+                }
+              : item
+          )
+        )
     );
 
+    // Limpieza de eventos de socket al desmontar el componente.
     return () => {
       socket?.off(SocketOnDepto.agregar);
       socket?.off(SocketOnDepto.editar);
@@ -133,10 +157,34 @@ export const Depto = () => {
     };
   }, [socket]);
 
+  // Acciones disponibles en la UI.
+  const actions: Action[] = [
+    {
+      color: "primary",
+      Icon: Refresh,
+      name: "Actualizar",
+      onClick: () => setData({ pagination, sort, busqueda: q }),
+      tipo: "icono",
+    },
+    {
+      color: agregando ? "error" : "success",
+      Icon: agregando ? Cancel : AddCircle,
+      name: "Agregar Departamento",
+      onClick: () => {
+        if (noTienePermiso("Depto", "insert")) return;
+        setAgregando(!agregando);
+      },
+      tipo: "icono",
+    },
+  ];
   return (
     <PaperContainerPage
       tabIndex={-1}
       onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          return navigate(`/${path}`);
+        }
+
         if (validateFunction(e)) return;
 
         actions[Number(e.key) - 1].onClick(null);
@@ -145,6 +193,7 @@ export const Depto = () => {
       <BuscadorPath />
       <>
         <Title path={path} />
+        {buscando ? "si" : "no"}
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -182,7 +231,7 @@ export const Depto = () => {
               {agregando && (
                 <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
               )}
-              {data.map((depto) => {
+              {deptosData.map((depto) => {
                 return <Row key={depto._id} depto={depto} q={q} />;
               })}
             </TableBody>

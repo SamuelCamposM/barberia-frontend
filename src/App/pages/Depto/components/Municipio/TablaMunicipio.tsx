@@ -13,7 +13,7 @@ import {
   Cargando,
   TablaLayout,
 } from "../../../../components";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Column, Sort } from "../../../../../interfaces/global";
 import { SocketOnMunicipio, getMunicipios } from "./helpers";
 import { paginationDefault } from "../../../../../helpers";
@@ -22,8 +22,8 @@ import { TableHeader } from "../../../../components/Tabla/TableHeader";
 import { toast } from "react-toastify";
 import { Municipio, setDataProps } from "./interfaces";
 import { RowMunicipio } from "./RowMunicipio";
-import { SocketContext } from "../../../../../context";
 import { useMenuStore } from "../../../Menu";
+import { useProvideSocket } from "../../../../../hooks";
 
 const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
@@ -36,10 +36,10 @@ const rowDefault: Municipio = {
 
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { noTienePermiso } = useMenuStore();
-  const { socket } = useContext(SocketContext);
+  const { socket } = useProvideSocket();
   const [agregando, setAgregando] = useState(false);
-  const [busqueda, setbusqueda] = useState("");
   const [buscando, setBuscando] = useState(false);
+  const [busqueda, setbusqueda] = useState("");
   const [cargando, setCargando] = useState(true);
   const [municipiosData, setMunicipiosData] = useState<Municipio[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
