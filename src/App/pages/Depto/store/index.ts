@@ -24,6 +24,7 @@ export const deptoSlice = createSlice({
     ) => {
       state.data = action.payload.docs;
       state.pagination = action.payload.paginationResult;
+      state.cargando = false;
     },
     onSliceEditDepto: (state, action: PayloadAction<DeptoItem>) => {
       state.data = state.data.map((item) =>

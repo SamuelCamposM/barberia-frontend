@@ -16,7 +16,9 @@ import { paginationDefault } from "../../../../helpers";
 export const useDeptoStore = () => {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const { data, cargando } = useSelector((state: RootState) => state.depto);
+  const { data, cargando, pagination } = useSelector(
+    (state: RootState) => state.depto
+  );
 
   const getDataDepto = async ({
     pagination,
@@ -32,6 +34,8 @@ export const useDeptoStore = () => {
       error,
       result: { docs, ...paginationResult },
     } = await getDeptos({ pagination, sort, busqueda });
+
+    console.log({ error, result: { docs, ...paginationResult } });
 
     if (error) {
       return { paginationResult: paginationDefault, error: true };
@@ -72,5 +76,6 @@ export const useDeptoStore = () => {
     //*VALORES
     data,
     cargando,
+    pagination,
   };
 };

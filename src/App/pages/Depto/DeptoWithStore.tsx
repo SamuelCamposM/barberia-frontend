@@ -39,6 +39,7 @@ export const Depto = () => {
   const {
     cargando,
     data,
+    pagination,
     getDataDepto,
     onAddOrRemoveMunicipio,
     onAgregarDepto,
@@ -50,7 +51,6 @@ export const Depto = () => {
   const [buscando, setBuscando] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   // const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
-  const [pagination, setPagination] = useState(paginationDefault);
   const [sort, setSort] = useState<Sort>({ asc: true, campo: "name" });
 
   // Funciones para el manejo de eventos y acciones.
@@ -87,7 +87,7 @@ export const Depto = () => {
 
   // Función asíncrona para obtener y establecer datos.
   const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
-    const { error, paginationResult } = await getDataDepto({
+    const { error } = await getDataDepto({
       pagination,
       sort,
       busqueda,
@@ -97,7 +97,6 @@ export const Depto = () => {
       return;
     }
 
-    setPagination(paginationResult);
     setSort(sort);
     setBusqueda(busqueda);
   };
