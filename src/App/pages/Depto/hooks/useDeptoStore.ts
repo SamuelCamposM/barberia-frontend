@@ -9,7 +9,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/interfaces";
 import { getDeptos } from "../helpers";
-import { Pagination, Sort } from "../../../../interfaces/global";
+import {
+  Pagination,
+  Sort,
+  socketChildListener,
+} from "../../../../interfaces/global";
 import { DeptoItem } from "..";
 import { paginationDefault } from "../../../../helpers";
 // import { useNavigate } from "react-router-dom";
@@ -60,7 +64,7 @@ export const useDeptoStore = () => {
   };
   const onAddOrRemoveMunicipio = (data: {
     _id: string;
-    tipo: "add" | "remove";
+    tipo: socketChildListener;
   }) => {
     dispatch(onSliceAddOrRemoveMunicipio(data));
   };

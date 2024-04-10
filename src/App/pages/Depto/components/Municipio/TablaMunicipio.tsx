@@ -1,3 +1,15 @@
+import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
+import { ChangeEvent, useEffect, useState } from "react";
+import { getMunicipios, columns, rowDefault } from "./helpers";
+import { Municipio, setDataProps } from "./interfaces";
+import { paginationDefault } from "../../../../../helpers";
+import { RowMunicipio } from "./RowMunicipio";
+import { Sort } from "../../../../../interfaces/global";
+import { TableHeader } from "../../../../components/Tabla/TableHeader";
+import { toast } from "react-toastify";
+import { useCommonStates } from "../../../../hooks/useCommonStates";
+import { useMenuStore } from "../../../Menu";
+import useMunicipioSocketEvents from "./hooks/useSocketEvents";
 import {
   Box,
   Divider,
@@ -13,37 +25,23 @@ import {
   Cargando,
   TablaLayout,
 } from "../../../../components";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Column, Sort } from "../../../../../interfaces/global";
-import { SocketOnMunicipio, getMunicipios } from "./helpers";
-import { paginationDefault } from "../../../../../helpers";
-import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { TableHeader } from "../../../../components/Tabla/TableHeader";
-import { toast } from "react-toastify";
-import { Municipio, setDataProps } from "./interfaces";
-import { RowMunicipio } from "./RowMunicipio";
-import { useMenuStore } from "../../../Menu";
-import { useProvideSocket } from "../../../../../hooks";
-
-const columns: Column[] = [
-  { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
-  { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
-];
-const rowDefault: Municipio = {
-  depto: "",
-  name: "",
-};
-
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { noTienePermiso } = useMenuStore();
-  const { socket } = useProvideSocket();
-  const [agregando, setAgregando] = useState(false);
-  const [buscando, setBuscando] = useState(false);
-  const [busqueda, setbusqueda] = useState("");
-  const [cargando, setCargando] = useState(true);
+  const {
+    agregando,
+    buscando,
+    busqueda,
+    cargando,
+    setAgregando,
+    setBuscando,
+    setBusqueda,
+    setCargando,
+    setSort,
+    sort,
+  } = useCommonStates({ asc: true, campo: "name" });
+
   const [municipiosData, setMunicipiosData] = useState<Municipio[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
-  const [sort, setSort] = useState<Sort>({ asc: true, campo: "name" });
   const handleChangePage = (_: unknown, newPage: number) => {
     setData({
       pagination: { ...pagination, page: newPage + 1 },
@@ -85,7 +83,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
     setPagination(rest);
     setMunicipiosData(docs);
     setSort(sort);
-    setbusqueda(busqueda);
+    setBusqueda(busqueda);
     setCargando(false);
   };
 
@@ -93,38 +91,11 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
     setData({ pagination, sort, busqueda });
   }, []);
 
-  useEffect(() => {
-    socket?.on(`${SocketOnMunicipio.agregar}.${depto}`, (data: Municipio) => {
-      setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs + 1 }));
-      setMunicipiosData((prev) => [
-        { ...data, crud: { nuevo: true } },
-        ...prev,
-      ]);
-    });
-    socket?.on(`${SocketOnMunicipio.editar}.${depto}`, (data: Municipio) => {
-      setMunicipiosData((prev) =>
-        prev.map((municipioItem) =>
-          municipioItem._id === data._id
-            ? { ...data, crud: { editado: true } }
-            : municipioItem
-        )
-      );
-    });
-    socket?.on(
-      `${SocketOnMunicipio.eliminar}.${depto}`,
-      (data: { _id: string }) => {
-        setMunicipiosData((prev) =>
-          prev.filter((municipioItem) => municipioItem._id !== data._id)
-        );
-        setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs - 1 }));
-      }
-    );
-    return () => {
-      socket?.off(`${SocketOnMunicipio.agregar}.${depto}`);
-      socket?.off(`${SocketOnMunicipio.editar}.${depto}`);
-      socket?.off(`${SocketOnMunicipio.eliminar}.${depto}`);
-    };
-  }, []);
+  useMunicipioSocketEvents({
+    depto,
+    setPagination,
+    setMunicipiosData,
+  });
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { Action, Pagination, Sort } from "../../../interfaces/global";
+import { Action, Pagination, Sort, socketChildListener } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { DeptoItem, setDataProps, useDeptoStore } from ".";
@@ -137,7 +137,7 @@ export const Depto = () => {
     );
     socket?.on(
       SocketOnDepto.municipioListener,
-      (data: { _id: string; tipo: "remove" | "add" }) =>
+      (data: { _id: string; tipo: socketChildListener }) =>
         onAddOrRemoveMunicipio(data)
     );
 

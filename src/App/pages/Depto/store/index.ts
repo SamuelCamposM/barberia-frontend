@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DeptoItem, DeptoState } from "../interfaces";
-import { Pagination } from "../../../../interfaces/global";
+import { Pagination, socketChildListener } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers";
 
 const initialState: DeptoState = {
@@ -37,7 +37,7 @@ export const deptoSlice = createSlice({
       state,
       action: PayloadAction<{
         _id: string;
-        tipo: "add" | "remove";
+        tipo: socketChildListener;
       }>
     ) => {
       state.data = state.data.map((item) =>

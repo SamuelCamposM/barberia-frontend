@@ -56,3 +56,5 @@ export interface ErrorSocket {
   msg: string;
   subtitulo?: string;
 }
+
+export type socketChildListener = "remove" | "add";

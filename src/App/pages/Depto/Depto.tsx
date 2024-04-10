@@ -28,19 +28,31 @@ import {
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import useSocketEvents from "./hooks/useSocketEvents";
+import { useCommonStates } from "../../hooks/useCommonStates";
 
 export const Depto = () => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
-  const path = usePath(); // Hooks personalizados para socket y permisos.
-  const { noTienePermiso } = useMenuStore(); // Estados locales para el manejo de la UI y datos.
-  const [agregando, setAgregando] = useState(false);
-  const [buscando, setBuscando] = useState(false);
-  const [busqueda, setBusqueda] = useState("");
-  const [cargando, setCargando] = useState(true);
+  const path = usePath();
+
+  // Hooks personalizados para permisos.
+  const { noTienePermiso } = useMenuStore();
+
+  // Estados locales para el manejo de la UI y datos.
+  const {
+    agregando,
+    buscando,
+    busqueda,
+    cargando,
+    setAgregando,
+    setBuscando,
+    setBusqueda,
+    setCargando,
+    setSort,
+    sort,
+  } = useCommonStates({ asc: true, campo: "name" });
   const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
-  const [sort, setSort] = useState<Sort>({ asc: true, campo: "name" });
 
   // Funciones para el manejo de eventos y acciones.
   const navigateWithParams = ({
@@ -55,7 +67,6 @@ export const Depto = () => {
     )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
     navigate(urlParams);
   };
-
   const handleChangePage = (_: unknown, newPage: number) => {
     navigateWithParams({
       newPagination: { ...pagination, page: newPage + 1 },
@@ -79,7 +90,7 @@ export const Depto = () => {
     setCargando(true);
     const { error, result } = await getDeptos({ pagination, sort, busqueda });
     if (error) {
-      toast.error("Hubo un error al traer los municipios");
+      toast.error("Hubo un error al traer los Departamentos");
       return;
     }
     const { docs, ...rest } = result;
@@ -115,7 +126,7 @@ export const Depto = () => {
     });
   }, [q, paginationQuery, sortQuery, buscandoQuery]);
 
-  useSocketEvents(setDeptosData, setPagination);
+  useSocketEvents({ setDeptosData, setPagination });
   // Acciones disponibles en la UI.
   const actions: Action[] = [
     {
@@ -141,10 +152,6 @@ export const Depto = () => {
     <PaperContainerPage
       tabIndex={-1}
       onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          return navigate(`/${path}`);
-        }
-
         if (validateFunction(e)) return;
 
         actions[Number(e.key) - 1].onClick(null);

@@ -1,7 +1,27 @@
 import { clienteAxios } from "../../../../../../api";
-import { Pagination } from "../../../../../../interfaces/global";
+import { Column, Pagination } from "../../../../../../interfaces/global";
 import { paginationDefault } from "../../../../../../helpers";
 import { Municipio, setDataProps } from "../interfaces";
+export enum SocketOnMunicipio {
+  agregar = "cliente:municipio-agregar",
+  editar = "cliente:municipio-editar",
+  eliminar = "cliente:municipio-eliminar",
+}
+
+export enum SocketEmitMunicipio {
+  agregar = "server:municipio-agregar",
+  editar = "server:municipio-editar",
+  eliminar = "server:municipio-eliminar",
+}
+
+export const columns: Column[] = [
+  { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
+  { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
+];
+export const rowDefault: Municipio = {
+  depto: "",
+  name: "",
+};
 
 interface Result extends Pagination {
   docs: Municipio[];
@@ -41,15 +61,4 @@ export const getMunicipios: getMunicipiosType = async ({
   } catch (error) {
     return { error: true, result: { docs: [], ...paginationDefault } };
   }
-};
-
-export const SocketOnMunicipio = {
-  agregar: "cliente:municipio-agregar",
-  editar: "cliente:municipio-editar",
-  eliminar: "cliente:municipio-eliminar",
-};
-export const SocketEmitMunicipio = {
-  agregar: "server:municipio-agregar",
-  editar: "server:municipio-editar",
-  eliminar: "server:municipio-eliminar",
 };

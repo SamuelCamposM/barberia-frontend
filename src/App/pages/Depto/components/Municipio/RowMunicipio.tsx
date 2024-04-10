@@ -139,6 +139,7 @@ export const RowMunicipio = ({
       key={municipio._id}
       crud={municipio.crud}
       onDoubleClick={() => {
+        onClickEditar();
         // handleEditar(row);
         // setActiveRow(row);
       }}
