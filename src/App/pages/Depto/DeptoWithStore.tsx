@@ -1,14 +1,15 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
-import { DeptoItem, setDataProps } from ".";
+import { DeptoItem, setDataProps, useDeptoStore } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { Row } from "./components/Row";
-import { columns, getDeptos, rowDefault } from "./helpers";
+import { SocketOnDepto, columns, rowDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
 import { usePath } from "../../hooks";
+import { useProvideSocket } from "../../../hooks";
 import queryString from "query-string";
 
 import {
@@ -27,18 +28,28 @@ import {
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
-import useSocketEvents from "./hooks/useSocketEvents";
 
 export const Depto = () => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
-  const path = usePath(); // Hooks personalizados para socket y permisos.
-  const { noTienePermiso } = useMenuStore(); // Estados locales para el manejo de la UI y datos.
+  const path = usePath();
+  // Hooks personalizados para socket y permisos.
+  const { socket } = useProvideSocket();
+  const { noTienePermiso } = useMenuStore();
+  const {
+    cargando,
+    data,
+    getDataDepto,
+    onAddOrRemoveMunicipio,
+    onAgregarDepto,
+    onEditDepto,
+    onEliminarDepto,
+  } = useDeptoStore();
+  // Estados locales para el manejo de la UI y datos.
   const [agregando, setAgregando] = useState(false);
   const [buscando, setBuscando] = useState(false);
   const [busqueda, setBusqueda] = useState("");
-  const [cargando, setCargando] = useState(true);
-  const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
+  // const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
   const [sort, setSort] = useState<Sort>({ asc: true, campo: "name" });
 
@@ -76,18 +87,19 @@ export const Depto = () => {
 
   // Función asíncrona para obtener y establecer datos.
   const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
-    setCargando(true);
-    const { error, result } = await getDeptos({ pagination, sort, busqueda });
+    const { error, paginationResult } = await getDataDepto({
+      pagination,
+      sort,
+      busqueda,
+    });
     if (error) {
       toast.error("Hubo un error al traer los municipios");
       return;
     }
-    const { docs, ...rest } = result;
-    setPagination(rest);
-    setDeptosData(docs);
+
+    setPagination(paginationResult);
     setSort(sort);
     setBusqueda(busqueda);
-    setCargando(false);
   };
 
   // Efectos secundarios para la sincronización con la URL y sockets.
@@ -102,9 +114,9 @@ export const Depto = () => {
     pagination: string;
     sort: string;
   };
+
   useEffect(() => {
     const estaBuscando = Boolean(buscandoQuery);
-
     setBuscando(estaBuscando);
     setData({
       pagination: paginationQuery
@@ -115,7 +127,30 @@ export const Depto = () => {
     });
   }, [q, paginationQuery, sortQuery, buscandoQuery]);
 
-  useSocketEvents(setDeptosData, setPagination);
+  useEffect(() => {
+    // Eventos de socket para agregar, editar y eliminar departamentos.
+    socket?.on(SocketOnDepto.agregar, (data: DeptoItem) =>
+      onAgregarDepto(data)
+    );
+    socket?.on(SocketOnDepto.editar, (data: DeptoItem) => onEditDepto(data));
+    socket?.on(SocketOnDepto.eliminar, (data: { _id: string }) =>
+      onEliminarDepto(data._id)
+    );
+    socket?.on(
+      SocketOnDepto.municipioListener,
+      (data: { _id: string; tipo: "remove" | "add" }) =>
+        onAddOrRemoveMunicipio(data)
+    );
+
+    // Limpieza de eventos de socket al desmontar el componente.
+    return () => {
+      socket?.off(SocketOnDepto.agregar);
+      socket?.off(SocketOnDepto.editar);
+      socket?.off(SocketOnDepto.eliminar);
+      socket?.off(SocketOnDepto.municipioListener);
+    };
+  }, [socket]);
+
   // Acciones disponibles en la UI.
   const actions: Action[] = [
     {
@@ -153,6 +188,7 @@ export const Depto = () => {
       <BuscadorPath />
       <>
         <Title path={path} />
+        {buscando ? "si" : "no"}
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -188,12 +224,9 @@ export const Depto = () => {
           ) : (
             <TableBody>
               {agregando && (
-                <Row
-                  depto={{ ...rowDefault, crud: { nuevo: true } }}
-                  setAgregando={setAgregando}
-                />
+                <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
               )}
-              {deptosData.map((depto) => {
+              {data.map((depto) => {
                 return <Row key={depto._id} depto={depto} q={q} />;
               })}
             </TableBody>

@@ -2,18 +2,18 @@ import { clienteAxios } from "../../../../api";
 import { Column, Pagination } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import { DeptoItem, setDataProps } from "../interfaces";
+export enum SocketOnDepto {
+  agregar = "cliente:depto-agregar",
+  editar = "cliente:depto-editar",
+  eliminar = "cliente:depto-eliminar",
+  municipioListener = "cliente:depto-municipio-listener",
+}
 
-export const SocketOnDepto = {
-  agregar: "cliente:depto-agregar",
-  editar: "cliente:depto-editar",
-  eliminar: "cliente:depto-eliminar",
-  municipioListener: "cliente:depto-municipio-listener",
-};
-export const SocketEmitDepto = {
-  agregar: "server:depto-agregar",
-  editar: "server:depto-editar",
-  eliminar: "server:depto-eliminar",
-};
+export enum SocketEmitDepto {
+  agregar = "server:depto-agregar",
+  editar = "server:depto-editar",
+  eliminar = "server:depto-eliminar",
+}
 
 export const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },

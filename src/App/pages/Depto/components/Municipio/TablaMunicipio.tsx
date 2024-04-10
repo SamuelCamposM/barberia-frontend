@@ -95,6 +95,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
 
   useEffect(() => {
     socket?.on(`${SocketOnMunicipio.agregar}.${depto}`, (data: Municipio) => {
+      setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs + 1 }));
       setMunicipiosData((prev) => [
         { ...data, crud: { nuevo: true } },
         ...prev,
@@ -115,6 +116,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
         setMunicipiosData((prev) =>
           prev.filter((municipioItem) => municipioItem._id !== data._id)
         );
+        setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs - 1 }));
       }
     );
     return () => {

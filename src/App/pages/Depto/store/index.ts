@@ -1,23 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DeptoItem, DeptoState } from "../interfaces";
-import { Pagination, Sort } from "../../../../interfaces/global";
+import { Pagination } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers";
-
-const rowDefault: DeptoItem = {
-  name: "",
-};
 
 const initialState: DeptoState = {
   cargando: true,
-  agregando: false,
-  rowDefault: rowDefault,
   data: [],
-  isSearching: false,
   pagination: paginationDefault,
-  sort: {
-    asc: true,
-    campo: "name",
-  },
 };
 export const deptoSlice = createSlice({
   name: "depto",
@@ -31,44 +20,10 @@ export const deptoSlice = createSlice({
       action: PayloadAction<{
         docs: DeptoItem[];
         paginationResult: Pagination;
-        sort: Sort;
       }>
     ) => {
-      // state.data = [
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      //   ...action.payload.docs,
-      // ].map((item, index) => ({
-      //   ...item,
-      //   _id: item._id + "a" + index,
-      // }));
       state.data = action.payload.docs;
       state.pagination = action.payload.paginationResult;
-      state.sort = action.payload.sort;
-      state.cargando = false;
     },
     onSliceEditDepto: (state, action: PayloadAction<DeptoItem>) => {
       state.data = state.data.map((item) =>
@@ -119,9 +74,9 @@ export const deptoSlice = createSlice({
         totalDocs: state.pagination.totalDocs - 1,
       };
     },
-    setSliceAgregando: (state, action: PayloadAction<boolean>) => {
-      state.agregando = action.payload;
-    },
+    // setSliceAgregando: (state, action: PayloadAction<boolean>) => {
+    //   state.agregando = action.payload;
+    // },
   },
 });
 export const {
@@ -129,7 +84,7 @@ export const {
   onSliceAgregarDepto,
   onSliceEditDepto,
   onSliceEliminarDepto,
-  setSliceAgregando,
+  // setSliceAgregando,
   setSliceCargando,
   onSliceAddOrRemoveMunicipio,
 } = deptoSlice.actions;

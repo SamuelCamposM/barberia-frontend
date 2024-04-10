@@ -4,28 +4,19 @@ import {
   onSliceAgregarDepto,
   onSliceEditDepto,
   onSliceEliminarDepto,
-  setSliceAgregando,
   setSliceCargando,
 } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/interfaces";
 import { getDeptos } from "../helpers";
 import { Pagination, Sort } from "../../../../interfaces/global";
-import { toast } from "react-toastify";
 import { DeptoItem } from "..";
+import { paginationDefault } from "../../../../helpers";
 // import { useNavigate } from "react-router-dom";
 export const useDeptoStore = () => {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const {
-    data,
-    pagination,
-    isSearching,
-    rowDefault,
-    agregando,
-    cargando,
-    sort,
-  } = useSelector((state: RootState) => state.depto);
+  const { data, cargando } = useSelector((state: RootState) => state.depto);
 
   const getDataDepto = async ({
     pagination,
@@ -43,9 +34,11 @@ export const useDeptoStore = () => {
     } = await getDeptos({ pagination, sort, busqueda });
 
     if (error) {
-      return toast.error("Hubo un error al obtener los departamentos");
+      return { paginationResult: paginationDefault, error: true };
     }
-    dispatch(getSliceDataDepto({ docs, paginationResult, sort }));
+
+    dispatch(getSliceDataDepto({ docs, paginationResult }));
+    return { paginationResult, error: false };
     // navigate(`?pagination=${JSON.stringify(pagination)}`);
   };
   const onEditDepto = (item: DeptoItem) => {
@@ -54,9 +47,9 @@ export const useDeptoStore = () => {
   const onAgregarDepto = (item: DeptoItem) => {
     dispatch(onSliceAgregarDepto(item));
   };
-  const setAgregando = (valorAgregando: boolean) => {
-    dispatch(setSliceAgregando(valorAgregando));
-  };
+  // const setAgregando = (valorAgregando: boolean) => {
+  // dispatch(setSliceAgregando(valorAgregando));
+  // };
 
   const onEliminarDepto = (_id: string) => {
     dispatch(onSliceEliminarDepto(_id));
@@ -72,17 +65,12 @@ export const useDeptoStore = () => {
     //* METODOS
     getDataDepto,
     onEditDepto,
-    setAgregando,
+    // setAgregando,
     onAgregarDepto,
     onEliminarDepto,
     onAddOrRemoveMunicipio,
     //*VALORES
-    agregando,
     data,
-    isSearching,
-    pagination,
-    rowDefault,
     cargando,
-    sort,
   };
 };

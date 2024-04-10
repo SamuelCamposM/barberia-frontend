@@ -1,6 +1,12 @@
-import { KeyboardEvent, useCallback, useMemo, useState } from "react";
+import React, {
+  Dispatch,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { Acciones } from "../../../components";
-import { DeptoItem, useDeptoStore } from "..";
+import { DeptoItem } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { handleSocket, required } from "../../../../helpers";
 import { SocketEmitDepto } from "../helpers";
@@ -24,8 +30,15 @@ import { useThemeSwal } from "../../../hooks";
 import { TablaMunicipio } from "./Municipio/TablaMunicipio";
 import { useResaltarTexto } from "../../../hooks/useResaltarTexto";
 import { useMenuStore } from "../../Menu";
-export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
-  const { setAgregando } = useDeptoStore();
+export const Row = ({
+  depto,
+  q = "",
+  setAgregando,
+}: {
+  depto: DeptoItem;
+  q?: string;
+  setAgregando?: Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
@@ -75,7 +88,7 @@ export const Row = ({ depto, q = "" }: { depto: DeptoItem; q?: string }) => {
         setCargandoSubmit(false);
         if (error) return;
 
-        setAgregando(false);
+        setAgregando!(false);
       }
     );
   };

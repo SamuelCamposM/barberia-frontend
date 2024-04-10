@@ -14,12 +14,8 @@ export interface DeptoItem {
 
 export interface DeptoState {
   cargando: boolean;
-  agregando: boolean;
-  rowDefault: DeptoItem;
   data: DeptoItem[];
-  isSearching: boolean;
   pagination: Pagination;
-  sort: Sort;
 }
 export interface setDataProps {
   busqueda: string;
