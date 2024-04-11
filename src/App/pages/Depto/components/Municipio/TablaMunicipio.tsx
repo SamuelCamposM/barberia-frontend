@@ -7,9 +7,8 @@ import { RowMunicipio } from "./RowMunicipio";
 import { Sort } from "../../../../../interfaces/global";
 import { TableHeader } from "../../../../components/Tabla/TableHeader";
 import { toast } from "react-toastify";
-import { useCommonStates } from "../../../../hooks/useCommonStates";
 import { useMenuStore } from "../../../Menu";
-import useMunicipioSocketEvents from "./hooks/useSocketEvents";
+import { useMunicipioSocketEvents } from "./hooks/useSocketEvents";
 import {
   Box,
   Divider,
@@ -25,6 +24,7 @@ import {
   Cargando,
   TablaLayout,
 } from "../../../../components";
+import { useCommonStates } from "../../../../hooks";
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { noTienePermiso } = useMenuStore();
   const {
@@ -77,7 +77,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
       busqueda,
     });
     if (error) {
-      return toast.error("Hubo un error al traer los municipios");
+      return toast.error("Hubo un error al consultar los municipios");
     }
     const { docs, ...rest } = result;
     setPagination(rest);

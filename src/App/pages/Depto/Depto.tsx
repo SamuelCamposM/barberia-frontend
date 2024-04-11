@@ -1,14 +1,14 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
-import { DeptoItem, setDataProps } from ".";
+import { DeptoItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { Row } from "./components/Row";
-import { columns, getDeptos, rowDefault } from "./helpers";
+import { columns, getDeptos, rowDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
-import { usePath } from "../../hooks";
+import { useCommonStates, usePath } from "../../hooks";
 import queryString from "query-string";
 
 import {
@@ -27,8 +27,7 @@ import {
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
-import useSocketEvents from "./hooks/useSocketEvents";
-import { useCommonStates } from "../../hooks/useCommonStates";
+ 
 
 export const Depto = () => {
   // Hooks de navegación y rutas.
@@ -50,7 +49,7 @@ export const Depto = () => {
     setCargando,
     setSort,
     sort,
-  } = useCommonStates({ asc: true, campo: "name" });
+  } = useCommonStates(sortDefault);
   const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
@@ -66,6 +65,12 @@ export const Depto = () => {
       newPagination
     )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
     navigate(urlParams);
+    // let params = new URLSearchParams(window.location.search);
+    // params.set("q", busqueda);
+    // params.set("buscando", String(buscando));
+    // params.set("pagination", JSON.stringify(newPagination));
+    // params.set("sort", JSON.stringify(newSort));
+    // navigate(`?${params.toString()}`);
   };
   const handleChangePage = (_: unknown, newPage: number) => {
     navigateWithParams({
@@ -90,7 +95,7 @@ export const Depto = () => {
     setCargando(true);
     const { error, result } = await getDeptos({ pagination, sort, busqueda });
     if (error) {
-      toast.error("Hubo un error al traer los Departamentos");
+      toast.error("Hubo un error al consultar los Departamentos");
       return;
     }
     const { docs, ...rest } = result;

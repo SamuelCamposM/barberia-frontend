@@ -38,7 +38,10 @@ export const BuscadorPath = ({ label = "Buscar" }: { label?: string }) => {
     if (formValues.search === "") {
       return onLeaveSearch();
     }
-    navigate(`?q=${formValues.search}&buscando=true`);
+    let params = new URLSearchParams(window.location.search);
+    params.set("q", formValues.search);
+    params.set("buscando", "true");
+    navigate(`?${params.toString()}`);
   };
   return (
     <Box component={"form"} onSubmit={onSubmit}>

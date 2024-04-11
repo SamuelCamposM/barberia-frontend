@@ -3,7 +3,7 @@ import { StyledTableCell, StyledTableRow } from "../../../../components/style";
 import { Municipio } from "./interfaces";
 import { SocketEmitMunicipio } from "./helpers";
 import { useForm, useProvideSocket } from "../../../../../hooks";
-import { useThemeSwal } from "../../../../hooks";
+import { useResaltarTexto, useThemeSwal } from "../../../../hooks";
 import { Dispatch, KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { handleSocket, required } from "../../../../../helpers";
 import { ErrorSocket } from "../../../../../interfaces/global";
@@ -15,7 +15,7 @@ import {
   DeleteForever,
 } from "@mui/icons-material";
 import { TextField } from "@mui/material";
-import { useResaltarTexto } from "../../../../hooks/useResaltarTexto";
+
 import { useMenuStore } from "../../../Menu";
 
 export const RowMunicipio = ({

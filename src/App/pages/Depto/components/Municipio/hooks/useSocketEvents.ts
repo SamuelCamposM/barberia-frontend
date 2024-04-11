@@ -10,7 +10,7 @@ type HandleAgregar = (data: Municipio) => void;
 type HandleEditar = (data: Municipio) => void;
 type HandleEliminar = (data: { _id: string }) => void;
 
-const useMunicipioSocketEvents = ({
+export const useMunicipioSocketEvents = ({
   setMunicipiosData,
   setPagination,
   depto,
@@ -21,10 +21,7 @@ const useMunicipioSocketEvents = ({
 }) => {
   const handleAgregar: HandleAgregar = (data) => {
     setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs + 1 }));
-    setMunicipiosData((prev) => [
-      { ...data, crud: { nuevo: true } },
-      ...prev,
-    ]);
+    setMunicipiosData((prev) => [{ ...data, crud: { nuevo: true } }, ...prev]);
   };
   const handleEditar: HandleEditar = (data) =>
     setMunicipiosData((prev) =>
@@ -50,5 +47,3 @@ const useMunicipioSocketEvents = ({
     };
   }, [socket, setMunicipiosData, depto]);
 };
-
-export default useMunicipioSocketEvents;

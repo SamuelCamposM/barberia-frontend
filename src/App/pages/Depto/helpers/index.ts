@@ -24,7 +24,10 @@ export const columns: Column[] = [
     minWidth: 40,
     sortable: true,
   },
-]; // Definición del objeto por defecto para un nuevo departamento.
+];
+export const sortDefault = { asc: true, campo: "name" };
+
+// Definición del objeto por defecto para un nuevo departamento.
 export const rowDefault: DeptoItem = {
   name: "",
 };

@@ -13,7 +13,7 @@ type HandleMunicipioChange = (data: {
   tipo: socketChildListener;
 }) => void;
 
-const useSocketEvents = ({
+export const useSocketEvents = ({
   setDeptosData,
   setPagination,
 }: {
@@ -22,7 +22,10 @@ const useSocketEvents = ({
 }) => {
   const handleAgregar: HandleAgregar = (data) => {
     setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs + 1 }));
-    setDeptosData((prev) => [{ ...data, crud: { nuevo: true } }, ...prev]);
+    setDeptosData((prev) => [
+      { ...data, crud: { nuevo: true }, totalMunicipios: 0 },
+      ...prev,
+    ]);
   };
   const handleEditar: HandleEditar = (data) =>
     setDeptosData((prev) =>
@@ -64,5 +67,3 @@ const useSocketEvents = ({
     };
   }, [socket, setDeptosData]);
 };
-
-export default useSocketEvents;

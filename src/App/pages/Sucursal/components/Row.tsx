@@ -6,16 +6,12 @@ import React, {
   useState,
 } from "react";
 import { Acciones } from "../../../components";
-import { DeptoItem } from "..";
+import { SucursalItem } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { handleSocket, required } from "../../../../helpers";
-import { SocketEmitDepto } from "../helpers";
-import {
-  StyledContainerSubTable,
-  StyledTableCell,
-  StyledTableRow,
-} from "../../../components/style";
-import { Collapse, TableRow, TextField } from "@mui/material";
+import { SocketEmitSucursal } from "../helpers";
+import { StyledTableCell, StyledTableRow } from "../../../components/style";
+import { TextField } from "@mui/material";
 import { useForm, useProvideSocket } from "../../../../hooks";
 import Swal from "sweetalert2";
 import {
@@ -23,37 +19,30 @@ import {
   Check,
   Create,
   DeleteForever,
-  ExpandLess,
-  ExpandMore,
 } from "@mui/icons-material";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { TablaMunicipio } from "./Municipio/TablaMunicipio";
- 
 import { useMenuStore } from "../../Menu";
+
 export const Row = ({
-  depto,
+  sucursal,
   q = "",
   setAgregando,
 }: {
-  depto: DeptoItem;
+  sucursal: SucursalItem;
   q?: string;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
-  const [editando, setEditando] = useState(!Boolean(depto._id));
-  const esNuevo = useMemo(() => !Boolean(depto._id), []);
-  const [open, setopen] = useState(false);
+  const [editando, setEditando] = useState(!Boolean(sucursal._id));
+  const esNuevo = useMemo(() => !Boolean(sucursal._id), []);
   const config = useMemo(
     () => ({
+      municipio: [required],
       name: [required],
-    }),
-    []
-  );
-  const propsUseForm = useCallback(
-    (item: DeptoItem) => ({
-      name: item.name,
+      tel: [required],
+      direccion: [required],
     }),
     []
   );
@@ -68,20 +57,20 @@ export const Row = ({
     setisSubmited,
     cargandoSubmit,
     setCargandoSubmit,
-  } = useForm(propsUseForm(depto), config);
+  } = useForm(sucursal, config);
 
   const onClickEdit = () => {
-    if (noTienePermiso("Depto", "update")) {
+    if (noTienePermiso("Sucursal", "update")) {
       setCargandoSubmit(false);
       return;
     }
     setEditando((prev) => !prev);
-    onNewForm(propsUseForm(depto));
+    onNewForm(sucursal);
   };
 
   const handleGuardar = () => {
     socket?.emit(
-      SocketEmitDepto.agregar,
+      SocketEmitSucursal.agregar,
       formValues,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
@@ -93,15 +82,14 @@ export const Row = ({
     );
   };
   const handleEditar = () => {
-    const itemToEdit: DeptoItem = { ...depto, ...formValues };
+    const itemToEdit: SucursalItem = { ...sucursal, ...formValues };
     socket?.emit(
-      SocketEmitDepto.editar,
+      SocketEmitSucursal.editar,
       itemToEdit,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);
         if (error) return;
-
         setEditando(false);
       }
     );
@@ -120,20 +108,20 @@ export const Row = ({
   };
 
   const handleEliminar = useCallback(() => {
-    if (noTienePermiso("Depto", "delete")) {
+    if (noTienePermiso("Sucursal", "delete")) {
       return;
     }
     Swal.fire({
-      title: `Desea eliminar el Depto`,
-      text: depto.name,
+      title: `Desea eliminar el Sucursal`,
+      text: sucursal.name,
       icon: "warning",
       confirmButtonText: "Confirmar",
       ...themeSwal,
     }).then((result) => {
       if (result.isConfirmed) {
         socket?.emit(
-          SocketEmitDepto.eliminar,
-          { _id: depto._id },
+          SocketEmitSucursal.eliminar,
+          { _id: sucursal._id },
           ({ error, msg }: ErrorSocket) => {
             handleSocket({ error, msg });
             if (error) return;
@@ -155,8 +143,8 @@ export const Row = ({
   return (
     <>
       <StyledTableRow
-        key={depto._id}
-        crud={depto.crud}
+        key={sucursal._id}
+        crud={sucursal.crud}
         onDoubleClick={() => {
           // handleEditar(row);
           // setActiveRow(row);
@@ -211,17 +199,6 @@ export const Row = ({
                 size: "small",
                 ocultar: esNuevo || editando,
               },
-              {
-                color: "secondary",
-                Icon: open ? ExpandLess : ExpandMore,
-                name: `Ver municipios`,
-                onClick: () => {
-                  setopen(!open);
-                },
-                tipo: "icono",
-                size: "small",
-                ocultar: esNuevo,
-              },
             ]}
           />
         </StyledTableCell>
@@ -231,6 +208,17 @@ export const Row = ({
               <TextField
                 {...defaultProps}
                 autoFocus
+                value={formValues.municipio}
+                onChange={handleChange}
+                name="municipio"
+                error={errorValues.municipio.length > 0}
+                onBlur={handleBlur}
+                helperText={errorValues.municipio.join(" - ")}
+              />
+            </StyledTableCell>
+            <StyledTableCell>
+              <TextField
+                {...defaultProps}
                 value={formValues.name}
                 onChange={handleChange}
                 name="name"
@@ -239,30 +227,44 @@ export const Row = ({
                 helperText={errorValues.name.join(" - ")}
               />
             </StyledTableCell>
-            <StyledTableCell>{depto.totalMunicipios}</StyledTableCell>
+            <StyledTableCell>
+              <TextField
+                {...defaultProps}
+                value={formValues.tel}
+                onChange={handleChange}
+                name="tel"
+                error={errorValues.tel.length > 0}
+                onBlur={handleBlur}
+                helperText={errorValues.tel.join(" - ")}
+              />
+            </StyledTableCell>
+            <StyledTableCell>
+              <TextField
+                {...defaultProps}
+                value={formValues.direccion}
+                onChange={handleChange}
+                name="direccion"
+                error={errorValues.direccion.length > 0}
+                onBlur={handleBlur}
+                helperText={errorValues.direccion.join(" - ")}
+              />
+            </StyledTableCell>
           </>
         ) : (
           <>
+            <StyledTableCell>{sucursal.municipio.toString()}</StyledTableCell>
             <StyledTableCell>
-              {useResaltarTexto({ busqueda: q, texto: depto.name })}
+              {useResaltarTexto({ busqueda: q, texto: sucursal.name })}
             </StyledTableCell>
-            <StyledTableCell>{depto.totalMunicipios}</StyledTableCell>
+            <StyledTableCell>
+              {useResaltarTexto({ busqueda: q, texto: sucursal.tel })}
+            </StyledTableCell>
+            <StyledTableCell>
+              {useResaltarTexto({ busqueda: q, texto: sucursal.direccion })}
+            </StyledTableCell>
           </>
         )}
       </StyledTableRow>
-      <TableRow>
-        <StyledTableCell
-          style={{ paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
-        >
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <StyledContainerSubTable>
-              {/* <Cargando/> */}
-              <TablaMunicipio depto={depto._id || ""} />
-            </StyledContainerSubTable>
-          </Collapse>
-        </StyledTableCell>
-      </TableRow>
     </>
   );
 };
