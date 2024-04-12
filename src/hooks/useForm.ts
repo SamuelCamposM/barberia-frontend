@@ -1,16 +1,21 @@
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
+// Función recursiva para obtener el valor de una propiedad anidada
+const getNestedProperty = (obj: any, properties: string[]): any => {
+  let property = properties.shift() as string;
+
+  if (properties.length === 0) {
+    return obj[property];
+  } else {
+    return getNestedProperty(obj[property], properties);
+  }
+};
+
 export const useForm = <
-  ValueTypes extends Record<
-    string,
-    any //string | string[] | number
-  >,
+  ValueTypes extends Record<string, any>,
   ConfigTypes extends Record<
     string,
-    ((
-      value: any, // string | string[] | number
-      allValues: ValueTypes
-    ) => string)[]
+    ((value: any, allValues: ValueTypes) => string)[]
   >
 >(
   InitialValues: ValueTypes,
@@ -25,18 +30,24 @@ export const useForm = <
 
   const errorValues = useMemo<Record<keyof ConfigTypes, string[]>>(() => {
     const entries = Object.entries(ObjectValidations);
+
     let hayError = false;
     const res = entries.map(([name]) => {
       const errores = ObjectValidations[name]
         .map((validation) => {
-          const result = validation(formValues[name], formValues);
+          const properties = name.split(".");
+          const value = getNestedProperty(formValues, [...properties]);
+
+          const result = validation(value, formValues);
 
           if (result) {
             hayError = true;
           }
+
           return result;
         })
         .filter((err) => err !== "");
+
       setisFormInvalid(hayError);
 
       return [name, isSubmited ? errores : []];
@@ -75,11 +86,28 @@ export const useForm = <
   }, []);
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setformValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+    setformValues((prevValues) => {
+      const { name, value } = event.target;
+      const properties = name.split(".");
+      let updatedValues = { ...prevValues };
+
+      // Función recursiva para manejar la actualización de propiedades anidadas
+      const updateNestedProperty = (obj: any, value: any) => {
+        let property = properties.shift() as string;
+
+        // Si la propiedad no existe en el objeto, la inicializamos como un objeto vacío
+
+        if (properties.length === 0) {
+          obj[property] = value;
+        } else {
+          updateNestedProperty(obj[property], value);
+        }
+      };
+
+      updateNestedProperty(updatedValues, value);
+
+      return updatedValues;
+    });
   }, []);
 
   return {

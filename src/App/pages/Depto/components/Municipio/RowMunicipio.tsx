@@ -39,13 +39,7 @@ export const RowMunicipio = ({
       name: [required],
     }),
     []
-  );
-  const propsUseForm = useCallback(
-    (item: Municipio) => ({
-      name: item.name,
-    }),
-    []
-  );
+  ); 
 
   const {
     formValues,
@@ -57,12 +51,12 @@ export const RowMunicipio = ({
     setisSubmited,
     cargandoSubmit,
     setCargandoSubmit,
-  } = useForm(propsUseForm(municipio), config);
+  } = useForm(municipio, config);
 
   const onClickEditar = () => {
     if (noTienePermiso("Depto", "update")) return;
     setEditando((prev) => !prev);
-    onNewForm(propsUseForm(municipio));
+    onNewForm(municipio);
   };
   const handleGuardar = () => {
     socket?.emit(

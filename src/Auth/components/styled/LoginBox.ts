@@ -52,7 +52,7 @@ export const LoginBox = styled(Box)(({ theme }: { theme: Theme }) => ({
       [theme.breakpoints.down("md")]: {
         padding: "40px",
         width: "100%",
-        // background: agregarTransparencia("rgb(18, 18, 18)", 0.9),
+      //  background: agregarTransparencia(theme.palette.primary.dark, 0.9),
         margin: "2%",
       },
       width: "80%",

@@ -61,7 +61,7 @@ export const Appbar = () => {
           <Box className="boxEmpresa">
             <ContentCut className="logoEmpresa" />
             <Typography variant="h6" noWrap className="textoEmpresa">
-              PIBES' BARBERS
+              PIBES' BARBERSHOP
             </Typography>
           </Box>
           <Box>

@@ -55,8 +55,6 @@ export const getMunicipios: getMunicipiosType = async ({
       depto,
     });
 
-    console.log(data);
-
     return { error: false, result: data.data.result };
   } catch (error) {
     return { error: true, result: { docs: [], ...paginationDefault } };

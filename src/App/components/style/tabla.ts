@@ -70,7 +70,8 @@ export const StyledTableHeaderCell = styled(TableCell)<{
 }));
 
 export const StyledContainerSubTable = styled(Box)(({ theme }) => ({
-  padding: 1,
+  paddingLeft: theme.spacing(2),
+  paddingTop: theme.spacing(1),
   background: `linear-gradient(0deg, ${agregarTransparencia(
     theme.palette.primary.dark,
     0.075

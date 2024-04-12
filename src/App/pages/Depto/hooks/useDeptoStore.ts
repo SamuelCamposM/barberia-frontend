@@ -39,8 +39,6 @@ export const useDeptoStore = () => {
       result: { docs, ...paginationResult },
     } = await getDeptos({ pagination, sort, busqueda });
 
-    console.log({ error, result: { docs, ...paginationResult } });
-
     if (error) {
       return { paginationResult: paginationDefault, error: true };
     }

@@ -39,7 +39,8 @@ export const Row = ({
   const esNuevo = useMemo(() => !Boolean(sucursal._id), []);
   const config = useMemo(
     () => ({
-      municipio: [required],
+      "municipio.name": [required],
+      "municipio.deptoName": [required],
       name: [required],
       tel: [required],
       direccion: [required],
@@ -140,6 +141,7 @@ export const Row = ({
     autoComplete: "false",
   };
 
+
   return (
     <>
       <StyledTableRow
@@ -208,12 +210,24 @@ export const Row = ({
               <TextField
                 {...defaultProps}
                 autoFocus
-                value={formValues.municipio}
+                value={formValues.municipio.deptoName}
                 onChange={handleChange}
-                name="municipio"
-                error={errorValues.municipio.length > 0}
+                name="municipio.deptoName"
+                error={errorValues["municipio.deptoName"].length > 0}
                 onBlur={handleBlur}
-                helperText={errorValues.municipio.join(" - ")}
+                helperText={errorValues["municipio.deptoName"].join(" - ")}
+              />
+            </StyledTableCell>
+            <StyledTableCell>
+              <TextField
+                {...defaultProps}
+                autoFocus
+                value={formValues.municipio.name}
+                onChange={handleChange}
+                name="municipio.name"
+                error={errorValues["municipio.name"].length > 0}
+                onBlur={handleBlur}
+                helperText={errorValues["municipio.name"].join(" - ")}
               />
             </StyledTableCell>
             <StyledTableCell>
@@ -252,7 +266,8 @@ export const Row = ({
           </>
         ) : (
           <>
-            <StyledTableCell>{sucursal.municipio.toString()}</StyledTableCell>
+            <StyledTableCell>{sucursal.municipio.deptoName}</StyledTableCell>
+            <StyledTableCell>{sucursal.municipio.name}</StyledTableCell>
             <StyledTableCell>
               {useResaltarTexto({ busqueda: q, texto: sucursal.name })}
             </StyledTableCell>

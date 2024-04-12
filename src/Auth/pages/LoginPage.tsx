@@ -24,30 +24,13 @@ export const LoginPage = () => {
     }),
     []
   );
-
   const config = useMemo(
     () => ({
-      password: [required],
       email: [required],
-      // campoTexto: [
-      //   required,
-      //   (a: string | string[] ) => {
-      //     const res =
-      //       typeof a === "object" &&
-      //       a.some((campo: string) => {
-      //         return Number(campo) < 5;
-      //       });
-
-      //     if (res) {
-      //       return "Los campos tienen tener valor mayor a 5";
-      //     }
-      //     return "";
-      //   },
-      // ],
+      password: [required],
     }),
     []
   );
-  const { onStartLogin, errorMessage } = useAuthStore();
   const {
     formValues,
     errorValues,
@@ -58,6 +41,7 @@ export const LoginPage = () => {
     isFormInvalidSubmit,
     // setformValues,
   } = useForm(initialValues, config);
+  const { onStartLogin, errorMessage } = useAuthStore();
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisSubmited(true);

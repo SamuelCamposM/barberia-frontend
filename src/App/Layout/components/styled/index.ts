@@ -62,10 +62,16 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
       mr: 1,
     },
     ".textoEmpresa": {
+      [theme.breakpoints.down("md")]: {
+        zIndex: theme.zIndex.drawer,
+        fontSize: "1rem",
+      },
+      fontSize: "1.5rem",
+
       mr: 2,
       fontFamily: "monospace",
       fontWeight: 700,
-      letterSpacing: ".2rem",
+      letterSpacing: ".1rem",
       textDecoration: "none",
     },
   },

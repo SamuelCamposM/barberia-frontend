@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import bgImage from "../../assets/dog4.jpg";
+import bgImage from "../../assets/Designer.png";
 import { memo } from "react";
 import { LoginBox } from "../components/styled/LoginBox";
 

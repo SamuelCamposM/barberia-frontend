@@ -16,9 +16,14 @@ export enum SocketEmitSucursal {
 
 export const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
-  { campo: "", label: "departamento", minWidth: 40, sortable: false },
-  { campo: "municipio", label: "municipio", minWidth: 40, sortable: true },
-  { campo: "name", label: "name", minWidth: 40, sortable: true },
+  {
+    campo: "municipio.depto.name",
+    label: "Departamento",
+    minWidth: 40,
+    sortable: true,
+  },
+  { campo: "municipio.name", label: "Municipio", minWidth: 40, sortable: true },
+  { campo: "name", label: "Sucursal", minWidth: 40, sortable: true },
   { campo: "tel", label: "tel", minWidth: 40, sortable: true },
   { campo: "direccion", label: "direccion", minWidth: 40, sortable: true },
 ];
@@ -29,12 +34,9 @@ export const rowDefault: SucursalItem = {
   direccion: "",
   estado: true,
   municipio: {
-    depto: {
-      name: "",
-      _id: "",
-    },
-    name: "",
-    _id: "",
+    id: "", //ID MUNICIPIO
+    name: "", // Aquí se almacena el nombre del municipio
+    deptoName: "", // Aquí se almacena el nombre del departamento
   },
   name: "",
   tel: "",
