@@ -1,10 +1,14 @@
-import { Action, Pagination, Sort, socketChildListener } from "../../../interfaces/global";
+import {
+  Action,
+  Pagination,
+  Sort,
+  socketChildListener,
+} from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { DeptoItem, setDataProps, useDeptoStore } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { Row } from "./components/Row";
 import { SocketOnDepto, columns, rowDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +32,8 @@ import {
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
+import { EditableDepto } from "./components/EditableDepto";
+import { RowDepto } from "./components/RowDepto";
 
 export const Depto = () => {
   // Hooks de navegación y rutas.
@@ -223,10 +229,16 @@ export const Depto = () => {
           ) : (
             <TableBody>
               {agregando && (
-                <Row depto={{ ...rowDefault, crud: { nuevo: true } }} />
+                <EditableDepto
+                  setEditando={() => {}}
+                  depto={{ ...rowDefault, crud: { nuevo: true } }}
+                  setAgregando={setAgregando}
+                />
               )}
               {data.map((depto) => {
-                return <Row key={depto._id} depto={depto} q={q} />;
+                return (
+                  <RowDepto key={depto._id} depto={depto} busqueda={busqueda} />
+                );
               })}
             </TableBody>
           )}

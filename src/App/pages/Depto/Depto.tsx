@@ -4,7 +4,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { DeptoItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { Row } from "./components/Row";
 import { columns, getDeptos, rowDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +26,8 @@ import {
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
- 
+import { RowDepto } from "./components/RowDepto";
+import { EditableDepto } from "./components/EditableDepto";
 
 export const Depto = () => {
   // Hooks de navegación y rutas.
@@ -94,8 +94,7 @@ export const Depto = () => {
   const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
     setCargando(true);
     const { error, result } = await getDeptos({ pagination, sort, busqueda });
-    console.log(error);
-    
+
     if (error) {
       toast.error(error);
       return;
@@ -202,13 +201,16 @@ export const Depto = () => {
           ) : (
             <TableBody>
               {agregando && (
-                <Row
+                <EditableDepto
+                  setEditando={() => {}}
                   depto={{ ...rowDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}
                 />
               )}
               {deptosData.map((depto) => {
-                return <Row key={depto._id} depto={depto} q={q} />;
+                return (
+                  <RowDepto key={depto._id} depto={depto} busqueda={busqueda} />
+                );
               })}
             </TableBody>
           )}
