@@ -11,18 +11,17 @@ import { useMenuStore } from "../../../Menu";
 import { useMunicipioSocketEvents } from "./hooks/useSocketEvents";
 import {
   Box,
-  Divider,
   TableBody,
   TableCell,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
 import {
   Acciones,
   Buscador,
   Cargando,
   TablaLayout,
+  Title,
 } from "../../../../components";
 import { useCommonStates } from "../../../../hooks";
 import { EditableMunicipio } from "./components/EditableMunicipio";
@@ -111,16 +110,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
           setData({ pagination: paginationDefault, sort, busqueda: "" });
         }}
       />
-      <Divider textAlign="left">
-        <Typography
-          variant="subtitle1"
-          textTransform={"uppercase"}
-          color={"secondary"}
-        >
-          Municipios
-        </Typography>
-      </Divider>
-      <Divider />
+      <Title path={"Municipios"}  align="left"/>
       <Box
         display={"flex"}
         justifyContent={"space-between"}

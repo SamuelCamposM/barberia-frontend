@@ -55,17 +55,23 @@ export const StyledTableHeaderCell = styled(TableCell)<{
   color: active
     ? theme.palette.secondary.contrastText
     : theme.palette.primary.contrastText,
-
+  border: sorteable
+    ? `1px solid ${agregarTransparencia(theme.palette.secondary.light, 0.5)}`
+    : "", // Añade un borde a las columnas ordenables
+  boxShadow: active
+    ? `0 0 10px ${agregarTransparencia(theme.palette.secondary.main, 0.5)}`
+    : "", // Añade un sombreado a las columnas activas
   background: active
     ? sorteable
-      ? theme.palette.secondary.dark
+      ? agregarTransparencia(theme.palette.secondary.dark, 0.5)
       : ""
-    : agregarTransparencia(theme.palette.primary.light, 0.7),
-
-  transition: "background 0.3s",
+    : agregarTransparencia(theme.palette.primary.light, 0.5),
+  transition: "background 0.3s, box-shadow 0.3s", // Añade transición al sombreado
   ":hover": {
     color: sorteable ? theme.palette.secondary.contrastText : "",
-    background: sorteable ? theme.palette.secondary.dark : "",
+    background: sorteable
+      ? agregarTransparencia(theme.palette.secondary.dark, 0.5)
+      : "",
   },
 }));
 

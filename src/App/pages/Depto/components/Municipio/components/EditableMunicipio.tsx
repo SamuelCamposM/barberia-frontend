@@ -1,13 +1,16 @@
 import { Acciones } from "../../../../../components";
-import { StyledTableCell, StyledTableRow } from "../../../../../components/style";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../../../../components/style";
+import { CancelOutlined, Check } from "@mui/icons-material";
+import { Dispatch, KeyboardEvent, useMemo } from "react";
+import { ErrorSocket } from "../../../../../../interfaces/global";
+import { handleSocket, required } from "../../../../../../helpers";
 import { MunicipioItem } from "../interfaces";
 import { SocketEmitMunicipio } from "../helpers";
-import { useForm, useProvideSocket } from "../../../../../../hooks";
-import { Dispatch, KeyboardEvent, useMemo } from "react";
-import { handleSocket, required } from "../../../../../../helpers";
-import { ErrorSocket } from "../../../../../../interfaces/global";
-import { CancelOutlined, Check } from "@mui/icons-material";
 import { TextField } from "@mui/material";
+import { useForm, useProvideSocket } from "../../../../../../hooks";
 
 import { useMenuStore } from "../../../../Menu";
 
@@ -48,7 +51,7 @@ export const EditableMunicipio = ({
     if (esNuevo) {
       return setAgregando!(false);
     }
-    setEditando((prev) => !prev);
+    setEditando(false);
   };
 
   const handleGuardar = () => {
@@ -97,6 +100,9 @@ export const EditableMunicipio = ({
       if (e.key === "Enter") {
         onSubmit();
       }
+      if (e.key === "Escape") {
+        onClickEditar();
+      }
     },
     autoComplete: "false",
   };
@@ -106,22 +112,9 @@ export const EditableMunicipio = ({
       crud={municipio.crud}
       onDoubleClick={() => {
         onClickEditar();
-        // handleEditar(row);
-        // setActiveRow(row);
       }}
-      // onMouseEnter={() => setshowButtoms(true)}
-      // onMouseLeave={() => setshowButtoms(false)}
-      // className={`${
-      //   rowActive._id === row._id &&
-      //   "animate__animated animate__lightSpeedInRight"
-      // }`}
     >
-      <StyledTableCell
-        padding="checkbox"
-        // className={`pendingActive ${
-        //   rowActive._id === row._id && "active"
-        // }`}
-      >
+      <StyledTableCell padding="checkbox">
         <Acciones
           actions={[
             {

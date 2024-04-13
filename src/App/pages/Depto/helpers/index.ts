@@ -17,7 +17,13 @@ export enum SocketEmitDepto {
 
 export const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
-  { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
+  {
+    campo: "name",
+    label: "Nombre",
+    required: true,
+    minWidth: 40,
+    sortable: true,
+  },
   {
     campo: "totalMunicipios",
     label: "Municipios",

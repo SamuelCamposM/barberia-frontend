@@ -16,12 +16,12 @@ export const EditableDepto = ({
   depto,
   setAgregando,
   setEditando,
-  esNuevo = true,
+  esNuevo,
   actionsJoins = [],
 }: {
   actionsJoins?: Action[];
   depto: DeptoItem;
-  esNuevo?: boolean;
+  esNuevo: boolean;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -97,6 +97,9 @@ export const EditableDepto = ({
       if (e.key === "Enter") {
         onSubmit();
       }
+      if (e.key === "Escape") {
+        onClickEditar();
+      }
     },
     autoComplete: "false",
   };
@@ -106,22 +109,9 @@ export const EditableDepto = ({
       crud={depto.crud}
       onDoubleClick={() => {
         onClickEditar();
-        // handleEditar(row);
-        // setActiveRow(row);
       }}
-      // onMouseEnter={() => setshowButtoms(true)}
-      // onMouseLeave={() => setshowButtoms(false)}
-      // className={`${
-      //   rowActive._id === row._id &&
-      //   "animate__animated animate__lightSpeedInRight"
-      // }`}
     >
-      <StyledTableCell
-        padding="checkbox"
-        // className={`pendingActive ${
-        //   rowActive._id === row._id && "active"
-        // }`}
-      >
+      <StyledTableCell padding="checkbox">
         <Acciones
           actions={[
             {

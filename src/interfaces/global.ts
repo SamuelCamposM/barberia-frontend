@@ -36,6 +36,7 @@ export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";
 export interface Column {
   align?: "right" | "center" | "left";
   campo?: string;
+  required?: boolean;
   label: string;
   minWidth?: number;
   sortable: boolean;

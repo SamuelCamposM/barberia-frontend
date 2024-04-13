@@ -5,12 +5,12 @@ import { DeptoItem } from "../interfaces";
 import {
   StyledContainerSubTable,
   StyledTableCell,
-  StyledTableRow,
 } from "../../../components/style";
-import { Collapse } from "@mui/material";
+import { Collapse, TableRow } from "@mui/material";
 import { TablaMunicipio } from "./Municipio/Municipio";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Action } from "../../../../interfaces/global";
+import { columns } from "../helpers";
 
 export const RowDepto = ({
   busqueda,
@@ -41,6 +41,7 @@ export const RowDepto = ({
       {editando ? (
         <EditableDepto
           {...rest}
+          esNuevo={esNuevo}
           setEditando={setEditando}
           actionsJoins={actionsJoins}
         />
@@ -52,11 +53,8 @@ export const RowDepto = ({
           actionsJoins={actionsJoins}
         />
       )}
-      <StyledTableRow>
-        <StyledTableCell
-          style={{ paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
-        >
+      <TableRow sx={{ padding: 0 }}>
+        <StyledTableCell colSpan={columns.length}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <StyledContainerSubTable>
               {/* <Cargando/> */}
@@ -64,7 +62,7 @@ export const RowDepto = ({
             </StyledContainerSubTable>
           </Collapse>
         </StyledTableCell>
-      </StyledTableRow>
+      </TableRow>
     </>
   );
 };

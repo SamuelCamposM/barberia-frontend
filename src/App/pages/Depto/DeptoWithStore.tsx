@@ -193,7 +193,6 @@ export const Depto = () => {
       <BuscadorPath />
       <>
         <Title path={path} />
-        {buscando ? "si" : "no"}
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -230,6 +229,7 @@ export const Depto = () => {
             <TableBody>
               {agregando && (
                 <EditableDepto
+                  esNuevo
                   setEditando={() => {}}
                   depto={{ ...rowDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}

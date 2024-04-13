@@ -202,6 +202,7 @@ export const Depto = () => {
             <TableBody>
               {agregando && (
                 <EditableDepto
+                  esNuevo
                   setEditando={() => {}}
                   depto={{ ...rowDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}

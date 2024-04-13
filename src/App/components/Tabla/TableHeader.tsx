@@ -1,7 +1,7 @@
-import { Box, TableHead } from "@mui/material";
+import { Box, TableHead, Tooltip, Typography } from "@mui/material";
 import { StyledTableHeaderCell, StyledTableRow } from "../style";
 import { Column, Sort } from "../../../interfaces/global";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, ErrorOutline } from "@mui/icons-material";
 
 export const TableHeader = ({
   columns,
@@ -18,7 +18,9 @@ export const TableHeader = ({
         {columns.map((column) => (
           <StyledTableHeaderCell
             key={column.label}
-            style={{ minWidth: column.minWidth }}
+            sx={{
+              minWidth: column.minWidth,
+            }}
             sorteable={column.sortable ? 1 : 0}
             active={column.campo === sort.campo ? 1 : 0}
             onClick={() => {
@@ -31,7 +33,18 @@ export const TableHeader = ({
             }}
           >
             <Box display={"flex"} alignItems={"center"}>
-              {column.label}
+              <Typography
+                component={"span"}
+                sx={{ fontWeight: column.required ? "bold" : "normal" }}
+              >
+                {column.label}
+              </Typography>
+
+              {column.required && (
+                <Tooltip title="Este campo es requerido">
+                  <ErrorOutline sx={{color: theme => theme.palette.tertiary.main}} fontSize="small" />
+                </Tooltip>
+              )}
 
               {sort.campo === column.campo &&
                 (sort.asc ? (
