@@ -1,13 +1,13 @@
 import { Dispatch, useEffect } from "react";
 import { SocketOnMunicipio } from "../helpers"; // Asegúrate de importar el enum correcto
 
-import { Municipio } from "../interfaces"; // Asegúrate de importar la interfaz correcta
+import { MunicipioItem } from "../interfaces"; // Asegúrate de importar la interfaz correcta
 import { Pagination } from "../../../../../../interfaces/global";
 import { useProvideSocket } from "../../../../../../hooks";
 
 // Tipos para las funciones de manejo de eventos
-type HandleAgregar = (data: Municipio) => void;
-type HandleEditar = (data: Municipio) => void;
+type HandleAgregar = (data: MunicipioItem) => void;
+type HandleEditar = (data: MunicipioItem) => void;
 type HandleEliminar = (data: { _id: string }) => void;
 
 export const useMunicipioSocketEvents = ({
@@ -15,7 +15,7 @@ export const useMunicipioSocketEvents = ({
   setPagination,
   depto,
 }: {
-  setMunicipiosData: React.Dispatch<React.SetStateAction<Municipio[]>>;
+  setMunicipiosData: React.Dispatch<React.SetStateAction<MunicipioItem[]>>;
   setPagination: Dispatch<React.SetStateAction<Pagination>>;
   depto: string;
 }) => {

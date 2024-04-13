@@ -1,7 +1,7 @@
 import { clienteAxios } from "../../../../../../api";
 import { Column, Pagination } from "../../../../../../interfaces/global";
 import { paginationDefault } from "../../../../../../helpers";
-import { Municipio, setDataProps } from "../interfaces";
+import { MunicipioItem, setDataProps } from "../interfaces";
 export enum SocketOnMunicipio {
   agregar = "cliente:municipio-agregar",
   editar = "cliente:municipio-editar",
@@ -18,13 +18,13 @@ export const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
   { campo: "name", label: "Nombre", minWidth: 40, sortable: true },
 ];
-export const rowDefault: Municipio = {
+export const rowDefault: MunicipioItem = {
   depto: "",
   name: "",
 };
 
 interface Result extends Pagination {
-  docs: Municipio[];
+  docs: MunicipioItem[];
 }
 
 interface MyResponse {

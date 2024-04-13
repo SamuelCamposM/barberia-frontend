@@ -27,7 +27,7 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { TablaMunicipio } from "./Municipio/TablaMunicipio";
+import { TablaMunicipio } from "./Municipio/Municipio";
  
 import { useMenuStore } from "../../Menu";
 export const Row = ({

@@ -7,7 +7,7 @@ export interface setDataProps {
   sort: Sort;
 }
 
-export interface Municipio {
+export interface MunicipioItem {
   depto: string;
   name: string;
   _id?: string;

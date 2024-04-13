@@ -1,15 +1,15 @@
-import { Acciones } from "../../../../components";
-import { StyledTableCell, StyledTableRow } from "../../../../components/style";
-import { Municipio } from "./interfaces";
-import { SocketEmitMunicipio } from "./helpers";
-import { useForm, useProvideSocket } from "../../../../../hooks";
+import { Acciones } from "../../../../../components";
+import { StyledTableCell, StyledTableRow } from "../../../../../components/style";
+import { MunicipioItem } from "../interfaces";
+import { SocketEmitMunicipio } from "../helpers";
+import { useForm, useProvideSocket } from "../../../../../../hooks";
 import { Dispatch, KeyboardEvent, useMemo } from "react";
-import { handleSocket, required } from "../../../../../helpers";
-import { ErrorSocket } from "../../../../../interfaces/global";
+import { handleSocket, required } from "../../../../../../helpers";
+import { ErrorSocket } from "../../../../../../interfaces/global";
 import { CancelOutlined, Check } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
-import { useMenuStore } from "../../../Menu";
+import { useMenuStore } from "../../../../Menu";
 
 export const EditableMunicipio = ({
   municipio,
@@ -17,7 +17,7 @@ export const EditableMunicipio = ({
   setAgregando,
   setEditando,
 }: {
-  municipio: Municipio;
+  municipio: MunicipioItem;
   depto: string;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
@@ -65,7 +65,7 @@ export const EditableMunicipio = ({
     );
   };
   const handleEditar = () => {
-    const itemToEdit: Municipio = { ...municipio, ...formValues };
+    const itemToEdit: MunicipioItem = { ...municipio, ...formValues };
     socket?.emit(
       SocketEmitMunicipio.editar,
       itemToEdit,

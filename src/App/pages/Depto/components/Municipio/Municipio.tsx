@@ -1,9 +1,9 @@
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { getMunicipios, columns, rowDefault } from "./helpers";
-import { Municipio, setDataProps } from "./interfaces";
+import { MunicipioItem, setDataProps } from "./interfaces";
 import { paginationDefault } from "../../../../../helpers";
-import { RowMunicipio } from "./RowMunicipio";
+import { RowMunicipio } from "./components/RowMunicipio";
 import { Sort } from "../../../../../interfaces/global";
 import { TableHeader } from "../../../../components/Tabla/TableHeader";
 import { toast } from "react-toastify";
@@ -25,7 +25,7 @@ import {
   TablaLayout,
 } from "../../../../components";
 import { useCommonStates } from "../../../../hooks";
-import { EditableMunicipio } from "./EditableMunicipio";
+import { EditableMunicipio } from "./components/EditableMunicipio";
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { noTienePermiso } = useMenuStore();
   const {
@@ -41,7 +41,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
     sort,
   } = useCommonStates({ asc: true, campo: "name" });
 
-  const [municipiosData, setMunicipiosData] = useState<Municipio[]>([]);
+  const [municipiosData, setMunicipiosData] = useState<MunicipioItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
   const handleChangePage = (_: unknown, newPage: number) => {
     setData({

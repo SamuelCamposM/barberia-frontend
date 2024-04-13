@@ -1,14 +1,14 @@
 import { Dispatch, useCallback } from "react";
-import { StyledTableCell, StyledTableRow } from "../../../../components/style";
-import { useResaltarTexto, useThemeSwal } from "../../../../hooks";
-import { useMenuStore } from "../../../Menu";
-import { Municipio } from "./interfaces";
+import { StyledTableCell, StyledTableRow } from "../../../../../components/style";
+import { useResaltarTexto, useThemeSwal } from "../../../../../hooks";
+import { useMenuStore } from "../../../../Menu";
+import { MunicipioItem } from "../interfaces";
 import Swal from "sweetalert2";
-import { useProvideSocket } from "../../../../../hooks";
-import { SocketEmitMunicipio } from "./helpers";
-import { ErrorSocket } from "../../../../../interfaces/global";
-import { handleSocket } from "../../../../../helpers";
-import { Acciones } from "../../../../components";
+import { useProvideSocket } from "../../../../../../hooks";
+import { SocketEmitMunicipio } from "../helpers";
+import { ErrorSocket } from "../../../../../../interfaces/global";
+import { handleSocket } from "../../../../../../helpers";
+import { Acciones } from "../../../../../components";
 import { Create, DeleteForever } from "@mui/icons-material";
 
 export const StaticMunicipio = ({
@@ -17,7 +17,7 @@ export const StaticMunicipio = ({
   setEditando,
   depto,
 }: {
-  municipio: Municipio;
+  municipio: MunicipioItem;
   busqueda: string;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
   depto: string;

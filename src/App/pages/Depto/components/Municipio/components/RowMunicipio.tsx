@@ -1,14 +1,15 @@
-import { Municipio } from "./interfaces";
+ 
 import { useState } from "react";
 import { StaticMunicipio } from "./StaticMunicipio";
 import { EditableMunicipio } from "./EditableMunicipio";
+import { MunicipioItem } from "../interfaces";
 
 export const RowMunicipio = ({
   busqueda,
   //separo busqueda por que es el unico que no pasare el editable
   ...rest
 }: {
-  municipio: Municipio;
+  municipio: MunicipioItem;
   depto: string;
   busqueda?: string;
 }) => {
