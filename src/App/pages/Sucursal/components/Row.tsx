@@ -3,26 +3,43 @@ import React, {
   KeyboardEvent,
   useCallback,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { Acciones } from "../../../components";
-import { SucursalItem } from "..";
+import { DeptoSuc, MunicipioSuc, SucursalItem } from "..";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { handleSocket, required } from "../../../../helpers";
-import { SocketEmitSucursal } from "../helpers";
+import {
+  SocketEmitSucursal,
+  searchDeptoProps,
+  searchMunicipio,
+  searchDepto,
+  searchMunicipioProps,
+} from "../helpers";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
-import { TextField } from "@mui/material";
+import {
+  Autocomplete,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import { useForm, useProvideSocket } from "../../../../hooks";
 import Swal from "sweetalert2";
 import {
+  Add,
   CancelOutlined,
   Check,
   Create,
   DeleteForever,
 } from "@mui/icons-material";
-import { useResaltarTexto, useThemeSwal } from "../../../hooks";
+import {
+  useResaltarTexto,
+  useThemeSwal,
+  useDebouncedCallback,
+} from "../../../hooks";
 import { useMenuStore } from "../../Menu";
-
 export const Row = ({
   sucursal,
   q = "",
@@ -40,7 +57,7 @@ export const Row = ({
   const config = useMemo(
     () => ({
       "municipio.name": [required],
-      "municipio.deptoName": [required],
+      "depto.name": [required],
       name: [required],
       tel: [required],
       direccion: [required],
@@ -58,6 +75,7 @@ export const Row = ({
     setisSubmited,
     cargandoSubmit,
     setCargandoSubmit,
+    setformValues,
   } = useForm(sucursal, config);
 
   const onClickEdit = () => {
@@ -140,8 +158,26 @@ export const Row = ({
     },
     autoComplete: "false",
   };
+  const [deptosData, setDeptosData] = useState<DeptoSuc[]>([]);
+  const handleSearchDepto = async ({ search }: searchDeptoProps) => {
+    if (required(search) !== "") return;
 
+    const { data } = await searchDepto({ search });
+    setDeptosData(data);
+  };
+  const debounceSearchDepto = useDebouncedCallback(handleSearchDepto);
 
+  const [municipiosData, setMunicipiosData] = useState<MunicipioSuc[]>([]);
+  const handleSearchMunicipio = async ({
+    search,
+    deptoId,
+  }: searchMunicipioProps) => {
+    if (required(search) !== "") return;
+
+    const { data } = await searchMunicipio({ search, deptoId });
+    setMunicipiosData(data);
+  };
+  const debounceSearchMunicipio = useDebouncedCallback(handleSearchMunicipio);
   return (
     <>
       <StyledTableRow
@@ -207,29 +243,90 @@ export const Row = ({
         {editando ? (
           <>
             <StyledTableCell>
-              <TextField
-                {...defaultProps}
-                autoFocus
-                value={formValues.municipio.deptoName}
-                onChange={handleChange}
-                name="municipio.deptoName"
-                error={errorValues["municipio.deptoName"].length > 0}
-                onBlur={handleBlur}
-                helperText={errorValues["municipio.deptoName"].join(" - ")}
+              <Autocomplete
+                options={deptosData}
+                disableClearable={false}
+                value={formValues.depto}
+                getOptionLabel={(value) => value.name}
+                onChange={(_, newValue) => {
+                  if (!newValue) return;
+                  setformValues((prev) => ({
+                    ...prev,
+                    depto: newValue,
+                  }));
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    autoFocus
+                    error={errorValues["depto.name"].length > 0}
+                    onBlur={handleBlur}
+                    helperText={errorValues["depto.name"].join(" - ")}
+                    onChange={({ target }) => {
+                      debounceSearchDepto({ search: target.value });
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: { paddingRight: "0px !important" },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Tooltip title="Ver iconos">
+                            <IconButton aria-label="" onClick={() => {}}>
+                              <Add />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </StyledTableCell>
             <StyledTableCell>
-              <TextField
-                {...defaultProps}
-                autoFocus
-                value={formValues.municipio.name}
-                onChange={handleChange}
-                name="municipio.name"
-                error={errorValues["municipio.name"].length > 0}
-                onBlur={handleBlur}
-                helperText={errorValues["municipio.name"].join(" - ")}
+              <Autocomplete
+                options={municipiosData}
+                disableClearable={false}
+                value={formValues.municipio}
+                getOptionLabel={(value) => value.name}
+                disabled={formValues.depto._id === ""}
+                onChange={(_, newValue) => {
+                  if (!newValue) return;
+                  setformValues((prev) => ({
+                    ...prev,
+                    municipio: newValue,
+                  }));
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    autoFocus
+                    error={errorValues["municipio.name"].length > 0}
+                    onBlur={handleBlur}
+                    helperText={errorValues["municipio.name"].join(" - ")}
+                    onChange={({ target }) => {
+                      debounceSearchMunicipio({
+                        search: target.value,
+                        deptoId: formValues.depto._id,
+                      });
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: { paddingRight: "0px !important" },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Tooltip title="Ver iconos">
+                            <IconButton aria-label="" onClick={() => {}}>
+                              <Add />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </StyledTableCell>
+
             <StyledTableCell>
               <TextField
                 {...defaultProps}
@@ -266,7 +363,7 @@ export const Row = ({
           </>
         ) : (
           <>
-            <StyledTableCell>{sucursal.municipio.deptoName}</StyledTableCell>
+            <StyledTableCell>{sucursal.municipio.name}</StyledTableCell>
             <StyledTableCell>{sucursal.municipio.name}</StyledTableCell>
             <StyledTableCell>
               {useResaltarTexto({ busqueda: q, texto: sucursal.name })}

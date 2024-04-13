@@ -1,7 +1,13 @@
 import { clienteAxios } from "../../../../api";
 import { Column, Pagination } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
-import { SucursalItem, setDataProps } from "../interfaces";
+import {
+  DeptoSuc,
+  MunicipioSuc,
+  SucursalItem,
+  setDataProps,
+} from "../interfaces";
+import { toast } from "react-toastify";
 export enum SocketOnSucursal {
   agregar = "cliente:sucursal-agregar",
   editar = "cliente:sucursal-editar",
@@ -15,17 +21,22 @@ export enum SocketEmitSucursal {
 }
 
 export const columns: Column[] = [
-  { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
+  { campo: "", label: "", minWidth: 10, align: "center", sortable: false },
   {
-    campo: "municipio.depto.name",
+    campo: "municipio.name",
     label: "Departamento",
-    minWidth: 40,
+    minWidth: 175,
     sortable: true,
   },
-  { campo: "municipio.name", label: "Municipio", minWidth: 40, sortable: true },
-  { campo: "name", label: "Sucursal", minWidth: 40, sortable: true },
-  { campo: "tel", label: "tel", minWidth: 40, sortable: true },
-  { campo: "direccion", label: "direccion", minWidth: 40, sortable: true },
+  {
+    campo: "depto.name",
+    label: "Municipio",
+    minWidth: 175,
+    sortable: true,
+  },
+  { campo: "name", label: "Sucursal", minWidth: 175, sortable: true },
+  { campo: "tel", label: "tel", minWidth: 100, sortable: true },
+  { campo: "direccion", label: "direccion", minWidth: 200, sortable: true },
 ];
 
 export const sortDefault = { asc: true, campo: "municipio" };
@@ -34,9 +45,12 @@ export const rowDefault: SucursalItem = {
   direccion: "",
   estado: true,
   municipio: {
-    id: "", //ID MUNICIPIO
+    _id: "", //ID MUNICIPIO
     name: "", // Aquí se almacena el nombre del municipio
-    deptoName: "", // Aquí se almacena el nombre del departamento
+  },
+  depto: {
+    _id: "", //ID MUNICIPIO
+    name: "", // Aquí se almacena el nombre del municipio
   },
   name: "",
   tel: "",
@@ -80,5 +94,60 @@ export const getSucursals: getSucursalsType = async ({
     };
   } catch (error) {
     return { error: true, result: { docs: [], ...paginationDefault } };
+  }
+};
+
+// Define la estructura de la respuesta
+interface searchDeptoResponse {
+  data: DeptoSuc[];
+  error: boolean;
+}
+
+export interface searchDeptoProps {
+  search: string;
+}
+export const searchDepto = async (
+  searchProps: searchDeptoProps
+): Promise<searchDeptoResponse> => {
+  try {
+    console.log(searchProps);
+
+    const res: searchDeptoResponse = await clienteAxios.post(
+      "/depto/search",
+      searchProps
+    );
+    // return { data: [], error: true };
+    return res;
+  } catch (error) {
+    console.log({ error });
+
+    toast.error("Hubo un error al consultar los departamentos");
+    return { data: [], error: true };
+  }
+};
+
+// Define la estructura de la respuesta
+interface searchMunicipioResponse {
+  data: MunicipioSuc[];
+  error: boolean;
+}
+
+export interface searchMunicipioProps {
+  search: string;
+  deptoId: string;
+}
+export const searchMunicipio = async (
+  searchProps: searchMunicipioProps
+): Promise<searchMunicipioResponse> => {
+  try {
+    const res: searchMunicipioResponse = await clienteAxios.post(
+      "/municipio/searchByDepto",
+      searchProps
+    );
+    // return { data: [], error: true };
+    return res;
+  } catch (error) {
+    toast.error("Hubo un error al consultar los municipios");
+    return { data: [], error: true };
   }
 };

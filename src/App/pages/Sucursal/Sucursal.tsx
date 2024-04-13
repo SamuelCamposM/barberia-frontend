@@ -144,7 +144,7 @@ export const Sucursal = () => {
     {
       color: agregando ? "error" : "success",
       Icon: agregando ? Cancel : AddCircle,
-      name: "Agregar Departamento",
+      name: "Agregar Sucursal",
       onClick: () => {
         if (noTienePermiso("Sucursal", "insert")) return;
         setAgregando(!agregando);
