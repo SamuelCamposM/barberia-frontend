@@ -160,7 +160,6 @@ export const Row = ({
   const [deptosData, setDeptosData] = useState<DeptoSuc[]>([]);
   const handleSearchDepto = async ({ search }: searchDeptoProps) => {
     if (required(search) !== "") return;
-
     const { data } = await searchDepto({ search });
     setDeptosData(data);
   };
@@ -171,14 +170,11 @@ export const Row = ({
     search,
     deptoId,
   }: searchMunicipioProps) => {
-    if (required(search) !== "") return;
-
     const { data } = await searchMunicipio({ search, deptoId });
- 
-
     setMunicipiosData(data);
   };
   const debounceSearchMunicipio = useDebouncedCallback(handleSearchMunicipio);
+
   return (
     <>
       <StyledTableRow
@@ -255,6 +251,10 @@ export const Row = ({
                     ...prev,
                     depto: newValue,
                   }));
+                  handleSearchMunicipio({
+                    search: "",
+                    deptoId: newValue._id,
+                  });
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -327,7 +327,6 @@ export const Row = ({
                 )}
               />
             </StyledTableCell>
-
             <StyledTableCell>
               <TextField
                 {...defaultProps}
@@ -364,8 +363,15 @@ export const Row = ({
           </>
         ) : (
           <>
-            <StyledTableCell>{sucursal.municipio.name}</StyledTableCell>
-            <StyledTableCell>{sucursal.municipio.name}</StyledTableCell>
+            <StyledTableCell>
+              {useResaltarTexto({ busqueda: q, texto: sucursal.depto.name })}
+            </StyledTableCell>
+            <StyledTableCell>
+              {useResaltarTexto({
+                busqueda: q,
+                texto: sucursal.municipio.name,
+              })}
+            </StyledTableCell>
             <StyledTableCell>
               {useResaltarTexto({ busqueda: q, texto: sucursal.name })}
             </StyledTableCell>

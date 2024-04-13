@@ -25,6 +25,7 @@ import {
   TablaLayout,
 } from "../../../../components";
 import { useCommonStates } from "../../../../hooks";
+import { EditableMunicipio } from "./EditableMunicipio";
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { noTienePermiso } = useMenuStore();
   const {
@@ -182,7 +183,8 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
         ) : (
           <TableBody>
             {agregando && (
-              <RowMunicipio
+              <EditableMunicipio
+                setEditando={() => {}}
                 municipio={{ ...rowDefault, crud: { nuevo: true } }}
                 depto={depto}
                 setAgregando={setAgregando}
