@@ -1,5 +1,8 @@
 import { Dispatch, useCallback } from "react";
-import { StyledTableCell, StyledTableRow } from "../../../../../components/style";
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../../../hooks";
 import { useMenuStore } from "../../../../Menu";
 import { MunicipioItem } from "../interfaces";
@@ -54,14 +57,11 @@ export const StaticMunicipio = ({
     <StyledTableRow
       key={municipio._id}
       crud={municipio.crud}
-      onDoubleClick={() => {}}
+      onDoubleClick={() => {
+        setEditando(true);
+      }}
     >
-      <StyledTableCell
-        padding="checkbox"
-        // className={`pendingActive ${
-        //   rowActive._id === row._id && "active"
-        // }`}
-      >
+      <StyledTableCell padding="checkbox">
         <Acciones
           actions={[
             {

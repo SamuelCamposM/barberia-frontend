@@ -21,7 +21,7 @@ export const EditableDepto = ({
 }: {
   actionsJoins?: Action[];
   depto: DeptoItem;
-  esNuevo: boolean;
+  esNuevo?: boolean;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -43,6 +43,7 @@ export const EditableDepto = ({
     setisSubmited,
     cargandoSubmit,
     setCargandoSubmit,
+    onNewForm,
   } = useForm(depto, config);
 
   const onClickEditar = () => {
@@ -61,7 +62,7 @@ export const EditableDepto = ({
         handleSocket({ error, msg });
         setCargandoSubmit(false);
         if (error) return;
-        setAgregando!(false);
+        onNewForm(depto);
         // setSliceAgregando(false);
       }
     );
@@ -74,7 +75,6 @@ export const EditableDepto = ({
         handleSocket({ error, msg });
         setCargandoSubmit(false);
         if (error) return;
-        setEditando(false);
       }
     );
   };

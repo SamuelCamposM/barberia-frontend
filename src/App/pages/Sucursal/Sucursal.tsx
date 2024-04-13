@@ -23,7 +23,7 @@ import {
   BuscadorPath,
   Cargando,
   TablaLayout,
-  Title,
+  TableTitle,
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
@@ -164,7 +164,7 @@ export const Sucursal = () => {
     >
       <BuscadorPath />
       <>
-        <Title path={path} />
+        <TableTitle path={path} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}

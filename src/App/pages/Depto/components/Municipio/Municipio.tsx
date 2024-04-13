@@ -21,10 +21,11 @@ import {
   Buscador,
   Cargando,
   TablaLayout,
-  Title,
+  TableTitle,
 } from "../../../../components";
 import { useCommonStates } from "../../../../hooks";
 import { EditableMunicipio } from "./components/EditableMunicipio";
+import { TableNoData } from "../../../../components/Tabla/TableNoData";
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
   const { noTienePermiso } = useMenuStore();
   const {
@@ -110,7 +111,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
           setData({ pagination: paginationDefault, sort, busqueda: "" });
         }}
       />
-      <Title path={"Municipios"}  align="left"/>
+      <TableTitle texto={"Municipios"} align="left" />
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -180,16 +181,20 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
                 setAgregando={setAgregando}
               />
             )}
-            {municipiosData.map((municipio) => {
-              return (
-                <RowMunicipio
-                  busqueda={busqueda}
-                  key={municipio._id}
-                  municipio={municipio}
-                  depto={depto}
-                />
-              );
-            })}
+            {municipiosData.length === 0 ? (
+              <TableNoData length={columns.length} title="No hay municipios" />
+            ) : (
+              municipiosData.map((municipio) => {
+                return (
+                  <RowMunicipio
+                    busqueda={busqueda}
+                    key={municipio._id}
+                    municipio={municipio}
+                    depto={depto}
+                  />
+                );
+              })
+            )}
           </TableBody>
         )}
       </TablaLayout>

@@ -13,7 +13,7 @@ import { filterFunction } from "../helpers";
 import { usePath, useTablePagination } from "../../../hooks";
 import { useCallback } from "react";
 import "animate.css/animate.min.css";
-import { Acciones, TablaLayout, Title } from "../../../components";
+import { Acciones, TablaLayout, TableTitle } from "../../../components";
 import { Action, Column } from "../../../../interfaces/global";
 import { ConvertirIcono } from "../../../../helpers";
 
@@ -54,7 +54,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
 
   return (
     <>
-      <Title path={path} />
+      <TableTitle path={path} />
       <Box
         display={"flex"}
         justifyContent={"space-between"}

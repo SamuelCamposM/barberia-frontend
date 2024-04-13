@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { StaticDepto } from "./StaticDepto";
 import { EditableDepto } from "./EditableDepto";
 import { DeptoItem } from "../interfaces";
@@ -15,13 +15,12 @@ import { columns } from "../helpers";
 export const RowDepto = ({
   busqueda,
   //separo busqueda por que es el unico que no pasare el editable
-  ...rest
+  depto,
 }: {
   depto: DeptoItem;
   busqueda?: string;
 }) => {
-  const esNuevo = useMemo(() => !Boolean(rest.depto._id), []);
-  const [editando, setEditando] = useState(esNuevo);
+  const [editando, setEditando] = useState(!Boolean(depto._id));
   const [open, setopen] = useState(false);
   const actionsJoins: Action[] = [
     {
@@ -33,24 +32,22 @@ export const RowDepto = ({
       },
       tipo: "icono",
       size: "small",
-      ocultar: esNuevo,
     },
   ];
   return (
     <>
       {editando ? (
         <EditableDepto
-          {...rest}
-          esNuevo={esNuevo}
-          setEditando={setEditando}
           actionsJoins={actionsJoins}
+          depto={depto}
+          setEditando={setEditando}
         />
       ) : (
         <StaticDepto
-          setEditando={setEditando}
-          {...rest}
-          busqueda={busqueda || ""}
           actionsJoins={actionsJoins}
+          busqueda={busqueda || ""}
+          depto={depto}
+          setEditando={setEditando}
         />
       )}
       <TableRow sx={{ padding: 0 }}>
@@ -58,7 +55,7 @@ export const RowDepto = ({
           <Collapse in={open} timeout="auto" unmountOnExit>
             <StyledContainerSubTable>
               {/* <Cargando/> */}
-              <TablaMunicipio depto={rest.depto._id || ""} />
+              <TablaMunicipio depto={depto._id || ""} />
             </StyledContainerSubTable>
           </Collapse>
         </StyledTableCell>

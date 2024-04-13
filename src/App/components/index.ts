@@ -4,6 +4,6 @@ export * from "./Botones/Acciones";
 export * from "./Cargando/Cargando";
 export * from "./Modal/ModalLayout";
 export * from "./Tabla/TablaLayout";
-export * from "./Tabla/Title";
+export * from "./Tabla/TableTitle";
 export * from "./Search/BuscadorPath";
 export * from "./Search/Buscador";

@@ -51,7 +51,13 @@ export const StaticDepto = ({
     });
   }, []);
   return (
-    <StyledTableRow key={depto._id} crud={depto.crud} onDoubleClick={() => {}}>
+    <StyledTableRow
+      key={depto._id}
+      crud={depto.crud}
+      onDoubleClick={() => {
+        setEditando(true);
+      }}
+    >
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[

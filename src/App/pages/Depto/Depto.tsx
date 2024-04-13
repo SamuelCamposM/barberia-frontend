@@ -22,12 +22,13 @@ import {
   BuscadorPath,
   Cargando,
   TablaLayout,
-  Title,
+  TableTitle,
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { RowDepto } from "./components/RowDepto";
 import { EditableDepto } from "./components/EditableDepto";
+import { TableNoData } from "../../components/Tabla/TableNoData";
 
 export const Depto = () => {
   // Hooks de navegación y rutas.
@@ -64,6 +65,8 @@ export const Depto = () => {
     const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
       newPagination
     )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
+    console.log(urlParams);
+
     navigate(urlParams);
     // let params = new URLSearchParams(window.location.search);
     // params.set("q", busqueda);
@@ -120,7 +123,7 @@ export const Depto = () => {
     sort: string;
   };
   useEffect(() => {
-    const estaBuscando = Boolean(buscandoQuery);
+    const estaBuscando = Boolean(buscandoQuery === "true");
 
     setBuscando(estaBuscando);
     setData({
@@ -165,7 +168,7 @@ export const Depto = () => {
     >
       <BuscadorPath />
       <>
-        <Title path={path} />
+        <TableTitle texto={path} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -190,10 +193,11 @@ export const Depto = () => {
             sort={sort}
             sortFunction={sortFunction}
           />
+
           {cargando ? (
             <TableBody>
               <TableRow>
-                <TableCell colSpan={columns.length + 1}>
+                <TableCell colSpan={columns.length}>
                   <Cargando titulo="Cargando Deptos..." />
                 </TableCell>
               </TableRow>
@@ -208,11 +212,22 @@ export const Depto = () => {
                   setAgregando={setAgregando}
                 />
               )}
-              {deptosData.map((depto) => {
-                return (
-                  <RowDepto key={depto._id} depto={depto} busqueda={busqueda} />
-                );
-              })}
+              {deptosData.length === 0 ? (
+                <TableNoData
+                  length={columns.length}
+                  title="No hay municipios"
+                />
+              ) : (
+                deptosData.map((depto) => {
+                  return (
+                    <RowDepto
+                      key={depto._id}
+                      depto={depto}
+                      busqueda={busqueda}
+                    />
+                  );
+                })
+              )}
             </TableBody>
           )}
         </TablaLayout>

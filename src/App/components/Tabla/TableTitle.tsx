@@ -1,10 +1,10 @@
 import { Divider, Typography } from "@mui/material";
 
-export const Title = ({
-  path,
+export const TableTitle = ({
+  texto,
   align = "center",
 }: {
-  path: string;
+  texto: string;
   align?: "center" | "left" | "right";
 }) => {
   return (
@@ -15,7 +15,7 @@ export const Title = ({
           textTransform={"uppercase"}
           color={"secondary"}
         >
-          {path}
+          {texto}
         </Typography>
       </Divider>
       <Divider />
