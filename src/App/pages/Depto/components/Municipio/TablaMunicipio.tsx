@@ -77,7 +77,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
       busqueda,
     });
     if (error) {
-      return toast.error("Hubo un error al consultar los municipios");
+      return toast.error(error);
     }
     const { docs, ...rest } = result;
     setPagination(rest);

@@ -95,7 +95,7 @@ export const Sucursal = () => {
     setCargando(true);
     const { error, result } = await getSucursals({ pagination, sort, busqueda });
     if (error) {
-      toast.error("Hubo un error al consultar las Sucursales");
+      toast.error(error);
       return;
     }
     const { docs, ...rest } = result;

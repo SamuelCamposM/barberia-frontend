@@ -37,7 +37,7 @@ type getMunicipiosType = ({
   pagination,
   sort,
 }: setDataProps) => Promise<{
-  error: boolean;
+  error: string;
   result: Result;
 }>;
 
@@ -55,8 +55,11 @@ export const getMunicipios: getMunicipiosType = async ({
       depto,
     });
 
-    return { error: false, result: data.data.result };
-  } catch (error) {
-    return { error: true, result: { docs: [], ...paginationDefault } };
+    return { error: "", result: data.data.result };
+  } catch (error: any) {
+    const msgError =
+      error?.response?.data?.error || "Error al consultar los departamentos";
+
+    return { error: msgError, result: { docs: [], ...paginationDefault } };
   }
 };

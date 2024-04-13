@@ -40,7 +40,7 @@ interface MyResponse {
 }
 
 type getDeptosType = ({ busqueda, pagination, sort }: setDataProps) => Promise<{
-  error: boolean;
+  error: string;
   result: Result;
 }>;
 
@@ -61,10 +61,13 @@ export const getDeptos: getDeptosType = async ({
     });
 
     return {
-      error: false,
+      error: "",
       result: { docs, limit, page, totalDocs, totalPages },
     };
-  } catch (error) {
-    return { error: true, result: { docs: [], ...paginationDefault } };
+  } catch (error: any) {
+    const msgError =
+      error?.response?.data?.error || "Error al consultar los departamentos";
+
+    return { error: msgError, result: { docs: [], ...paginationDefault } };
   }
 };

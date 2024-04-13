@@ -68,7 +68,7 @@ type getSucursalsType = ({
   pagination,
   sort,
 }: setDataProps) => Promise<{
-  error: boolean;
+  error: string;
   result: Result;
 }>;
 
@@ -89,11 +89,14 @@ export const getSucursals: getSucursalsType = async ({
     });
 
     return {
-      error: false,
+      error: "",
       result: { docs, limit, page, totalDocs, totalPages },
     };
-  } catch (error) {
-    return { error: true, result: { docs: [], ...paginationDefault } };
+  } catch (error: any) {
+    const msgError =
+      error?.response?.data?.error || "Error al consultar las sucursales";
+
+    return { error: msgError, result: { docs: [], ...paginationDefault } };
   }
 };
 
@@ -117,12 +120,15 @@ export const searchDepto = async (
       searchProps
     );
     // return { data: [], error: true };
+    if (res.data.length === 0) {
+      toast.error("No se encontraron departamentos");
+    }
     return res;
-  } catch (error) {
-    console.log({ error });
-
-    toast.error("Hubo un error al consultar los departamentos");
-    return { data: [], error: true };
+  } catch (error: any) {
+    const msgError =
+      error?.response?.data?.error || "Error al consultar los departamentos";
+    toast.error(msgError);
+    return { error: msgError, data: [] };
   }
 };
 
@@ -144,10 +150,14 @@ export const searchMunicipio = async (
       "/municipio/searchByDepto",
       searchProps
     );
-    // return { data: [], error: true };
+    if (res.data.length === 0) {
+      toast.error("No se encontraron municipios");
+    }
     return res;
-  } catch (error) {
-    toast.error("Hubo un error al consultar los municipios");
-    return { data: [], error: true };
+  } catch (error: any) {
+    const msgError =
+      error?.response?.data?.error || "Error al consultar los municipios";
+    toast.error(msgError);
+    return { error: msgError, data: [] };
   }
 };

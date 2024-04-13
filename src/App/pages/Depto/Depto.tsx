@@ -94,8 +94,10 @@ export const Depto = () => {
   const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
     setCargando(true);
     const { error, result } = await getDeptos({ pagination, sort, busqueda });
+    console.log(error);
+    
     if (error) {
-      toast.error("Hubo un error al consultar los Departamentos");
+      toast.error(error);
       return;
     }
     const { docs, ...rest } = result;

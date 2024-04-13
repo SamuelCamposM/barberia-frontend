@@ -3,7 +3,6 @@ import React, {
   KeyboardEvent,
   useCallback,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { Acciones } from "../../../components";
@@ -175,6 +174,8 @@ export const Row = ({
     if (required(search) !== "") return;
 
     const { data } = await searchMunicipio({ search, deptoId });
+ 
+
     setMunicipiosData(data);
   };
   const debounceSearchMunicipio = useDebouncedCallback(handleSearchMunicipio);

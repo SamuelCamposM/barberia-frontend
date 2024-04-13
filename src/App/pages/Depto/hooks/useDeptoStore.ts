@@ -40,11 +40,11 @@ export const useDeptoStore = () => {
     } = await getDeptos({ pagination, sort, busqueda });
 
     if (error) {
-      return { paginationResult: paginationDefault, error: true };
+      return { paginationResult: paginationDefault, error };
     }
 
     dispatch(getSliceDataDepto({ docs, paginationResult }));
-    return { paginationResult, error: false };
+    return { paginationResult, error: "" };
     // navigate(`?pagination=${JSON.stringify(pagination)}`);
   };
   const onEditDepto = (item: DeptoItem) => {

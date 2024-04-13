@@ -93,7 +93,7 @@ export const Depto = () => {
       busqueda,
     });
     if (error) {
-      toast.error("Hubo un error al consultar los municipios");
+      toast.error(error);
       return;
     }
 
