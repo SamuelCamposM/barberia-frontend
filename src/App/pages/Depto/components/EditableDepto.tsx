@@ -75,6 +75,7 @@ export const EditableDepto = ({
         handleSocket({ error, msg });
         setCargandoSubmit(false);
         if (error) return;
+        setEditando(false);
       }
     );
   };

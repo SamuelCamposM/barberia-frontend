@@ -27,16 +27,30 @@ export const columns: Column[] = [
     label: "Departamento",
     minWidth: 175,
     sortable: true,
+    required: true,
   },
   {
     campo: "depto.name",
     label: "Municipio",
     minWidth: 175,
     sortable: true,
+    required: true,
   },
-  { campo: "name", label: "Sucursal", minWidth: 175, sortable: true },
-  { campo: "tel", label: "tel", minWidth: 100, sortable: true },
-  { campo: "direccion", label: "direccion", minWidth: 200, sortable: true },
+  {
+    campo: "name",
+    label: "Sucursal",
+    minWidth: 175,
+    sortable: true,
+    required: true,
+  },
+  { campo: "tel", label: "tel", minWidth: 100, sortable: true, required: true },
+  {
+    campo: "direccion",
+    label: "direccion",
+    minWidth: 200,
+    sortable: true,
+    required: true,
+  },
 ];
 
 export const sortDefault = { asc: true, campo: "municipio" };
@@ -155,6 +169,8 @@ export const searchMunicipio = async (
     }
     return res;
   } catch (error: any) {
+    console.log(error);
+    
     const msgError =
       error?.response?.data?.error || "Error al consultar los municipios";
     toast.error(msgError);

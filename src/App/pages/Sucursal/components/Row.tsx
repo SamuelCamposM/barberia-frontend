@@ -56,7 +56,7 @@ export const Row = ({
   const config = useMemo(
     () => ({
       "municipio.name": [required],
-      "depto.name": [required],
+      "sucursal.name": [required],
       name: [required],
       tel: [required],
       direccion: [required],
@@ -243,13 +243,13 @@ export const Row = ({
               <Autocomplete
                 options={deptosData}
                 disableClearable={false}
-                value={formValues.depto}
+                value={formValues.sucursal}
                 getOptionLabel={(value) => value.name}
                 onChange={(_, newValue) => {
                   if (!newValue) return;
                   setformValues((prev) => ({
                     ...prev,
-                    depto: newValue,
+                    sucursal: newValue,
                   }));
                   handleSearchMunicipio({
                     search: "",
@@ -260,9 +260,9 @@ export const Row = ({
                   <TextField
                     {...params}
                     autoFocus
-                    error={errorValues["depto.name"].length > 0}
+                    error={errorValues["sucursal.name"].length > 0}
                     onBlur={handleBlur}
-                    helperText={errorValues["depto.name"].join(" - ")}
+                    helperText={errorValues["sucursal.name"].join(" - ")}
                     onChange={({ target }) => {
                       debounceSearchDepto({ search: target.value });
                     }}
@@ -289,7 +289,7 @@ export const Row = ({
                 disableClearable={false}
                 value={formValues.municipio}
                 getOptionLabel={(value) => value.name}
-                disabled={formValues.depto._id === ""}
+                disabled={formValues.sucursal._id === ""}
                 onChange={(_, newValue) => {
                   if (!newValue) return;
                   setformValues((prev) => ({
@@ -307,7 +307,7 @@ export const Row = ({
                     onChange={({ target }) => {
                       debounceSearchMunicipio({
                         search: target.value,
-                        deptoId: formValues.depto._id,
+                        deptoId: formValues.sucursal._id,
                       });
                     }}
                     InputProps={{
@@ -364,7 +364,7 @@ export const Row = ({
         ) : (
           <>
             <StyledTableCell>
-              {useResaltarTexto({ busqueda: q, texto: sucursal.depto.name })}
+              {useResaltarTexto({ busqueda: q, texto: sucursal.sucursal.name })}
             </StyledTableCell>
             <StyledTableCell>
               {useResaltarTexto({

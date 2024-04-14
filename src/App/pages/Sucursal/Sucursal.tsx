@@ -27,7 +27,9 @@ import {
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
- 
+import { TableNoData } from "../../components/Tabla/TableNoData";
+import { RowSucursal } from "./components/RowSucursal";
+import { EditableSucursal } from "./components/EditableSucursal";
 
 export const Sucursal = () => {
   // Hooks de navegación y rutas.
@@ -93,7 +95,11 @@ export const Sucursal = () => {
   // Función asíncrona para obtener y establecer datos.
   const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
     setCargando(true);
-    const { error, result } = await getSucursals({ pagination, sort, busqueda });
+    const { error, result } = await getSucursals({
+      pagination,
+      sort,
+      busqueda,
+    });
     if (error) {
       toast.error(error);
       return;
@@ -164,7 +170,7 @@ export const Sucursal = () => {
     >
       <BuscadorPath />
       <>
-        <TableTitle path={path} />
+        <TableTitle texto={path} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -200,14 +206,29 @@ export const Sucursal = () => {
           ) : (
             <TableBody>
               {agregando && (
-                <Row
+                <EditableSucursal
+                  esNuevo
+                  setEditando={() => {}}
                   sucursal={{ ...rowDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}
                 />
               )}
-              {sucursalesData.map((sucursal) => {
-                return <Row key={sucursal._id} sucursal={sucursal} q={q} />;
-              })}
+              {sucursalesData.length === 0 ? (
+                <TableNoData
+                  length={columns.length}
+                  title="No hay Sucursales"
+                />
+              ) : (
+                sucursalesData.map((sucursal) => {
+                  return (
+                    <RowSucursal
+                      key={sucursal._id}
+                      sucursal={sucursal}
+                      busqueda={busqueda}
+                    />
+                  );
+                })
+              )}
             </TableBody>
           )}
         </TablaLayout>

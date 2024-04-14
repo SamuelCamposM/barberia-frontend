@@ -49,32 +49,28 @@ export const StyledTableHeaderCell = styled(TableCell)<{
   active?: 1 | 0;
 }>(({ theme, sorteable, active }) => ({
   padding: theme.spacing(0, 0.5),
-  cursor: "pointer",
+  cursor: sorteable ? "pointer" : "default",
   fontWeight: "bold",
   textTransform: "uppercase",
   color: active
     ? theme.palette.secondary.contrastText
     : theme.palette.primary.contrastText,
   border: sorteable
-    ? `1px solid ${agregarTransparencia(theme.palette.secondary.light, 0.5)}`
-    : "", // Añade un borde a las columnas ordenables
-  boxShadow: active
-    ? `0 0 10px ${agregarTransparencia(theme.palette.secondary.main, 0.5)}`
-    : "", // Añade un sombreado a las columnas activas
+    ? `1px solid ${agregarTransparencia(theme.palette.secondary.light, 0.75)}`
+    : "none",
+  boxShadow: active ? `0 2px 4px ${theme.palette.secondary.main}` : "none",
   background: active
-    ? sorteable
-      ? agregarTransparencia(theme.palette.secondary.dark, 0.5)
-      : ""
-    : agregarTransparencia(theme.palette.primary.light, 0.5),
-  transition: "background 0.3s, box-shadow 0.3s", // Añade transición al sombreado
-  ":hover": {
-    color: sorteable ? theme.palette.secondary.contrastText : "",
+    ? theme.palette.secondary.dark
+    : agregarTransparencia(theme.palette.primary.light, 0.75),
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    color: theme.palette.secondary.contrastText,
     background: sorteable
-      ? agregarTransparencia(theme.palette.secondary.dark, 0.5)
-      : "",
+      ? agregarTransparencia(theme.palette.secondary.dark, 0.75)
+      : agregarTransparencia(theme.palette.primary.dark, 0.75),
+    transform: sorteable ? "scale(1.05)" : "none",
   },
 }));
-
 export const StyledContainerSubTable = styled(Box)(({ theme }) => ({
   paddingLeft: theme.spacing(2),
   paddingTop: theme.spacing(1),

@@ -41,8 +41,8 @@ export const TableHeader = ({
               </Typography>
 
               {column.required && (
-                <Tooltip title="Este campo es requerido">
-                  <ErrorOutline sx={{color: theme => theme.palette.tertiary.main}} fontSize="small" />
+                <Tooltip title="Este campo es requerido" color="tertiary">
+                  <ErrorOutline />
                 </Tooltip>
               )}
 
