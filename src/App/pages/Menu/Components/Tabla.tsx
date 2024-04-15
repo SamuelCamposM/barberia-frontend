@@ -54,7 +54,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
 
   return (
     <>
-      <TableTitle path={path} />
+      <TableTitle texto={path} />
       <Box
         display={"flex"}
         justifyContent={"space-between"}

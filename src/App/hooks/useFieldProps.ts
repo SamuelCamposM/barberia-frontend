@@ -1,17 +1,17 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 
 export type KeyboardEvent = React.KeyboardEvent;
 
 export const useFieldProps = <
   Config extends Record<string, ((...args: any[]) => any)[]>
->(
-  config: Config,
-  formValues: any,
-  errorValues: any,
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  handleBlur: () => void,
-  handleKeyDown: (arg: KeyboardEvent) => void
-) => {
+>(props: {
+  config: Config;
+  formValues: any;
+  errorValues: any;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBlur: () => void;
+  handleKeyDown: (arg: KeyboardEvent) => void;
+}) => {
   type Property = keyof Config;
 
   const getNestedObject = useCallback((nestedObj: any, pathArr: string[]) => {
@@ -20,6 +20,14 @@ export const useFieldProps = <
       nestedObj
     );
   }, []);
+
+  // Crear las referencias dinámicamente
+  const refs: Record<Property, React.RefObject<HTMLInputElement>> = Object.keys(
+    props.config
+  ).reduce((acc, key) => {
+    acc[key as Property] = useRef<HTMLInputElement | null>(null);
+    return acc;
+  }, {} as Record<Property, React.RefObject<HTMLInputElement>>);
 
   const defaultPropsGenerator = useCallback(
     (property?: Property, isRequired = false, hasValue = false) => {
@@ -33,34 +41,68 @@ export const useFieldProps = <
         onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
         error?: boolean;
         helperText?: string;
+        inputRef?: React.RefObject<HTMLInputElement>;
       } = {
         fullWidth: true,
-        onKeyDown: handleKeyDown,
+        onKeyDown: props.handleKeyDown,
         autoComplete: "false",
-        onBlur: handleBlur,
+        onBlur: props.handleBlur,
         name: property,
+        inputRef: refs[property!], // Asignar la referencia correspondiente
       };
 
       if (isRequired) {
         baseProps = {
           ...baseProps,
-          error: errorValues[property!].length > 0,
-          helperText: errorValues[property!].join(" - "),
+          error: props.errorValues[property!].length > 0,
+          helperText: props.errorValues[property!].join(" - "),
         };
       }
       if (hasValue) {
         const values = String(property)?.split(".");
         baseProps = {
           ...baseProps,
-          value: getNestedObject(formValues, values!),
-          onChange: handleChange,
+          value: getNestedObject(props.formValues, values!),
+          onChange: props.handleChange,
         };
       }
 
       return baseProps;
     },
-    [config, formValues, errorValues, handleChange, handleBlur, getNestedObject]
+    [props, getNestedObject, refs]
   );
 
-  return { defaultPropsGenerator };
+  // Devolver las referencias junto con defaultPropsGenerator
+  return { defaultPropsGenerator, refs };
+};
+
+// handleNavigation.ts
+type ConfigKeys = string; // Reemplaza esto con el tipo correcto para tus claves de configuración
+type Refs = Record<ConfigKeys, React.RefObject<HTMLInputElement>>;
+
+export const handleNavigation = (
+  e: React.KeyboardEvent,
+  config: Record<string, any>,
+  refs: Refs
+) => {
+  const target = e.target as HTMLInputElement & { name: ConfigKeys };
+  const keys = Object.keys(config) as ConfigKeys[];
+  if (e.shiftKey) {
+    if (keys.includes(target.name)) {
+      const keyIndex = keys.indexOf(target.name);
+      const moveFocus = (step: number) => {
+        const newIndex = keyIndex + step;
+        if (newIndex >= 0 && newIndex < keys.length) {
+          refs[keys[newIndex]].current?.focus();
+        }
+      };
+
+      if (e.key === "ArrowRight") {
+        moveFocus(1);
+      }
+      if (e.key === "ArrowLeft") {
+        moveFocus(-1);
+      }
+    }
+  }
 };

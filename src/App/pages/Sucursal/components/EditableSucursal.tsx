@@ -10,7 +10,7 @@ import {
 } from "../helpers";
 
 import { useForm, useProvideSocket } from "../../../../hooks";
-import { Dispatch, KeyboardEvent, useMemo, useState } from "react";
+import { Dispatch, useMemo, useState } from "react";
 import { handleSocket, required } from "../../../../helpers";
 import { Action, ErrorSocket } from "../../../../interfaces/global";
 import { Add, CancelOutlined, Check } from "@mui/icons-material";
@@ -24,7 +24,7 @@ import {
 
 import { useMenuStore } from "../../Menu";
 import { useDebouncedCallback } from "../../../hooks";
-import { useFieldProps } from "../../../hooks/useFieldProps";
+import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 
 export const EditableSucursal = ({
   sucursal,
@@ -81,7 +81,7 @@ export const EditableSucursal = ({
         handleSocket({ error, msg });
         setCargandoSubmit(false);
         if (error) return;
-
+        refs["depto.name"].current?.focus();
         onNewForm(sucursal);
         // setSliceAgregando(false);
       }
@@ -111,43 +111,46 @@ export const EditableSucursal = ({
       handleEditar();
     }
   };
-  const [deptosData, setDeptosData] = useState<DeptoSuc[]>([]);
+  const [deptosData, setDeptosData] = useState<DeptoSuc[]>([formValues.depto]);
+  console.log(deptosData);
+
   const handleSearchDepto = async ({ search }: searchDeptoProps) => {
     console.log(search);
 
     if (required(search) !== "") return;
     const { data } = await searchDepto({ search });
-    setDeptosData(data);
+    setDeptosData(data.length === 0 ? [formValues.depto] : data);
   };
   const debounceSearchDepto = useDebouncedCallback(handleSearchDepto);
 
-  const [municipiosData, setMunicipiosData] = useState<MunicipioSuc[]>([]);
+  const [municipiosData, setMunicipiosData] = useState<MunicipioSuc[]>([formValues.municipio]);
+  console.log(municipiosData);
+
   const handleSearchMunicipio = async ({
     search,
     deptoId,
   }: searchMunicipioProps) => {
     const { data } = await searchMunicipio({ search, deptoId });
-    setMunicipiosData(data);
+    setMunicipiosData(data.length === 0 ? [formValues.municipio] : data);
   };
   const debounceSearchMunicipio = useDebouncedCallback(handleSearchMunicipio);
 
-  const { defaultPropsGenerator } = useFieldProps(
+  const { defaultPropsGenerator, refs } = useFieldProps({
     config,
     formValues,
     errorValues,
     handleChange,
     handleBlur,
-    (e: React.KeyboardEvent) => {
-      // const target = e.target as HTMLInputElement;
-
-      if (e.key === "Enter") {
+    handleKeyDown: (e: React.KeyboardEvent) => {
+      handleNavigation(e, config, refs);
+      if (e.key === "Enter" && e.shiftKey) {
         onSubmit();
       }
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && e.shiftKey) {
         onClickEditar();
       }
-    }
-  );
+    },
+  });
   return (
     <StyledTableRow
       key={sucursal._id}
@@ -188,8 +191,13 @@ export const EditableSucursal = ({
           <Autocomplete
             options={deptosData}
             disableClearable={false}
-            value={formValues.depto}
+            value={
+              deptosData.some((option) => option._id === formValues.depto._id)
+                ? formValues.depto
+                : null
+            }
             getOptionLabel={(value) => value.name}
+            isOptionEqualToValue={(option, value) => option._id === value._id}
             onChange={(_, newValue) => {
               if (!newValue) return;
               setformValues((prev) => ({
@@ -201,7 +209,7 @@ export const EditableSucursal = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                {...defaultPropsGenerator("municipio.name", true, false)}
+                {...defaultPropsGenerator("depto.name", true, false)}
                 autoFocus
                 onChange={({ target }) => {
                   debounceSearchDepto({ search: target.value });
@@ -227,10 +235,18 @@ export const EditableSucursal = ({
           <Autocomplete
             options={municipiosData}
             disableClearable={false}
-            value={formValues.municipio}
+            value={
+              municipiosData.some(
+                (option) => option._id === formValues.municipio._id
+              )
+                ? formValues.municipio
+                : null
+            }
             getOptionLabel={(value) => value.name}
+            isOptionEqualToValue={(option, value) => option._id === value._id}
             onChange={(_, newValue) => {
               if (!newValue) return;
+
               setformValues((prev) => ({
                 ...prev,
                 municipio: newValue,

@@ -18,7 +18,7 @@ export const StaticSucursal = ({
   sucursal: SucursalItem;
   busqueda: string;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
-  actionsJoins: Action[];
+  actionsJoins?: Action[];
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
@@ -88,17 +88,17 @@ export const StaticSucursal = ({
           {busqueda
             ? useResaltarTexto({
                 busqueda: busqueda,
-                texto: sucursal.municipio.name,
+                texto: sucursal.depto.name,
               })
-            : sucursal.municipio.name}
+            : sucursal.depto.name}
         </StyledTableCell>
         <StyledTableCell>
           {busqueda
             ? useResaltarTexto({
                 busqueda: busqueda,
-                texto: sucursal.depto.name,
+                texto: sucursal.municipio.name,
               })
-            : sucursal.depto.name}
+            : sucursal.municipio.name}
         </StyledTableCell>
         <StyledTableCell>
           {busqueda
