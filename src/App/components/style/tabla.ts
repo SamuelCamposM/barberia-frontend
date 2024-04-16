@@ -67,7 +67,7 @@ export const StyledTableHeaderCell = styled(TableCell)<{
     color: theme.palette.secondary.contrastText,
     background: sorteable
       ? agregarTransparencia(theme.palette.secondary.dark, 0.75)
-      : agregarTransparencia(theme.palette.primary.dark, 0.75),
+      : "",
     transform: sorteable ? "scale(1.05)" : "none",
   },
 }));

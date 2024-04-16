@@ -1,5 +1,5 @@
 export * from "./const";
-export * from "./convertidores/convertidores";
+export * from "./path";
 export * from "./date/formatearFecha";
 export * from "./env/getEnvVariables";
 export * from "./errorSocket";

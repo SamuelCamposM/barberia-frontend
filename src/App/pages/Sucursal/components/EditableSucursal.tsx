@@ -13,7 +13,7 @@ import { useForm, useProvideSocket } from "../../../../hooks";
 import { Dispatch, useMemo, useState } from "react";
 import { handleSocket, required } from "../../../../helpers";
 import { Action, ErrorSocket } from "../../../../interfaces/global";
-import { Add, CancelOutlined, Check } from "@mui/icons-material";
+import { CancelOutlined, Check } from "@mui/icons-material";
 import {
   Autocomplete,
   IconButton,
@@ -25,6 +25,7 @@ import {
 import { useMenuStore } from "../../Menu";
 import { useDebouncedCallback } from "../../../hooks";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
+import { useNavigate } from "react-router-dom";
 
 export const EditableSucursal = ({
   sucursal,
@@ -39,7 +40,8 @@ export const EditableSucursal = ({
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso, getPathPage } = useMenuStore();
+  const navigate = useNavigate();
   const { socket } = useProvideSocket();
   const config = useMemo(
     () => ({
@@ -112,19 +114,17 @@ export const EditableSucursal = ({
     }
   };
   const [deptosData, setDeptosData] = useState<DeptoSuc[]>([formValues.depto]);
-  console.log(deptosData);
 
   const handleSearchDepto = async ({ search }: searchDeptoProps) => {
-    console.log(search);
-
     if (required(search) !== "") return;
     const { data } = await searchDepto({ search });
     setDeptosData(data.length === 0 ? [formValues.depto] : data);
   };
   const debounceSearchDepto = useDebouncedCallback(handleSearchDepto);
 
-  const [municipiosData, setMunicipiosData] = useState<MunicipioSuc[]>([formValues.municipio]);
-  console.log(municipiosData);
+  const [municipiosData, setMunicipiosData] = useState<MunicipioSuc[]>([
+    formValues.municipio,
+  ]);
 
   const handleSearchMunicipio = async ({
     search,
@@ -146,11 +146,12 @@ export const EditableSucursal = ({
       if (e.key === "Enter" && e.shiftKey) {
         onSubmit();
       }
-      if (e.key === "Escape" && e.shiftKey) {
+      if (e.key === "Escape") {
         onClickEditar();
       }
     },
   });
+  const { Icono, path } = useMemo(() => getPathPage("Depto"), []);
   return (
     <StyledTableRow
       key={sucursal._id}
@@ -219,9 +220,14 @@ export const EditableSucursal = ({
                   sx: { paddingRight: "0px !important" },
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Tooltip title="Ver iconos">
-                        <IconButton aria-label="" onClick={() => {}}>
-                          <Add />
+                      <Tooltip title={`agregar ${path}`}>
+                        <IconButton
+                          aria-label=""
+                          onClick={() => {
+                            navigate(path);
+                          }}
+                        >
+                          {Icono}
                         </IconButton>
                       </Tooltip>
                     </InputAdornment>
@@ -269,6 +275,7 @@ export const EditableSucursal = ({
         <StyledTableCell>
           <TextField {...defaultPropsGenerator("name", true, true)} />
         </StyledTableCell>
+
         <StyledTableCell>
           <TextField {...defaultPropsGenerator("tel", true, true)} />
         </StyledTableCell>

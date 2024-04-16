@@ -1,4 +1,5 @@
 export * from "./Depto";
+export * from "./CallDepto";
 export * from "./store";
 export * from "./interfaces";
 export * from "./helpers";

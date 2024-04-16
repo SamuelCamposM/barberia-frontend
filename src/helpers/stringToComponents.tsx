@@ -1,11 +1,14 @@
 import * as Iconos from "@mui/icons-material";
-import Componentes from "../App/router/routes"; 
+import Componentes from "../App/router/routes";
 
 export const ConvertirIcono = (
-  icono: string,
+  icono?: string,
   size: string = "medium",
   color: string = ""
 ) => {
+  if (!icono) {
+    return <Iconos.Abc />;
+  }
   const Icono = (Iconos as any)[icono] || Iconos.Menu;
   return <Icono fontSize={size} color={color} />;
 };

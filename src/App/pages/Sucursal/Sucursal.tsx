@@ -1,12 +1,12 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SucursalItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
-import { PaperContainerPage } from "../../components/style"; 
+import { PaperContainerPage } from "../../components/style";
 import { columns, getSucursals, rowDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
-import { useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCommonStates, usePath } from "../../hooks";
 import queryString from "query-string";
 
@@ -29,6 +29,7 @@ import { toast } from "react-toastify"; // Definición de las columnas de la tab
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { RowSucursal } from "./components/RowSucursal";
 import { EditableSucursal } from "./components/EditableSucursal";
+import { CallDepto } from "../Depto";
 
 export const Sucursal = () => {
   // Hooks de navegación y rutas.
@@ -36,7 +37,7 @@ export const Sucursal = () => {
   const path = usePath();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso, getPathPage } = useMenuStore();
 
   // Estados locales para el manejo de la UI y datos.
   const {
@@ -157,82 +158,87 @@ export const Sucursal = () => {
       tipo: "icono",
     },
   ];
-
+  const { path: deptoPath } = useMemo(() => getPathPage("Depto"), []);
   return (
-    <PaperContainerPage
-      tabIndex={-1}
-      onKeyDown={(e) => {
-        if (validateFunction(e)) return;
+    <>
+      <PaperContainerPage
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (validateFunction(e)) return;
 
-        actions[Number(e.key) - 1].onClick(null);
-      }}
-    >
-      <BuscadorPath />
-      <>
-        <TableTitle texto={path} />
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
-          <Acciones actions={actions} />
-          <TablePagination
-            className="tablePagination"
-            rowsPerPageOptions={[10, 20, 100]}
-            component="div"
-            count={pagination.totalDocs}
-            rowsPerPage={pagination.limit}
-            page={pagination.page - 1}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Box>
+          actions[Number(e.key) - 1].onClick(null);
+        }}
+      >
+        <Routes>
+          <Route path={`${deptoPath}`} element={<CallDepto />} />
+        </Routes>
+        <BuscadorPath />
+        <>
+          <TableTitle texto={path} />
+          <Box
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <Acciones actions={actions} />
+            <TablePagination
+              className="tablePagination"
+              rowsPerPageOptions={[10, 20, 100]}
+              component="div"
+              count={pagination.totalDocs}
+              rowsPerPage={pagination.limit}
+              page={pagination.page - 1}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Box>
 
-        <TablaLayout>
-          <TableHeader
-            columns={columns}
-            sort={sort}
-            sortFunction={sortFunction}
-          />
-          {cargando ? (
-            <TableBody>
-              <TableRow>
-                <TableCell colSpan={columns.length + 1}>
-                  <Cargando titulo="Cargando Sucursales..." />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          ) : (
-            <TableBody>
-              {agregando && (
-                <EditableSucursal
-                  esNuevo
-                  setEditando={() => {}}
-                  sucursal={{ ...rowDefault, crud: { nuevo: true } }}
-                  setAgregando={setAgregando}
-                />
-              )}
-              {sucursalesData.length === 0 ? (
-                <TableNoData
-                  length={columns.length}
-                  title="No hay Sucursales"
-                />
-              ) : (
-                sucursalesData.map((sucursal) => {
-                  return (
-                    <RowSucursal
-                      key={sucursal._id}
-                      sucursal={sucursal}
-                      busqueda={busqueda}
-                    />
-                  );
-                })
-              )}
-            </TableBody>
-          )}
-        </TablaLayout>
-      </>
-    </PaperContainerPage>
+          <TablaLayout>
+            <TableHeader
+              columns={columns}
+              sort={sort}
+              sortFunction={sortFunction}
+            />
+            {cargando ? (
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={columns.length + 1}>
+                    <Cargando titulo="Cargando Sucursales..." />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            ) : (
+              <TableBody>
+                {agregando && (
+                  <EditableSucursal
+                    esNuevo
+                    setEditando={() => {}}
+                    sucursal={{ ...rowDefault, crud: { nuevo: true } }}
+                    setAgregando={setAgregando}
+                  />
+                )}
+                {sucursalesData.length === 0 ? (
+                  <TableNoData
+                    length={columns.length}
+                    title="No hay Sucursales"
+                  />
+                ) : (
+                  sucursalesData.map((sucursal) => {
+                    return (
+                      <RowSucursal
+                        key={sucursal._id}
+                        sucursal={sucursal}
+                        busqueda={busqueda}
+                      />
+                    );
+                  })
+                )}
+              </TableBody>
+            )}
+          </TablaLayout>
+        </>
+      </PaperContainerPage>
+    </>
   );
 };
 

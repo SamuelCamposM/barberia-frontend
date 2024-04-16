@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Components, tipoPermiso } from "../../../../interfaces/global";
 import { toast } from "react-toastify";
 import { useCallback } from "react";
+import { ConvertirIcono, convertirPath } from "../../../../helpers";
 export const useMenuStore = () => {
   const { openModal, rowActive, data, rowDefault } = useSelector(
     (state: RootState) => state.menu
@@ -54,6 +55,16 @@ export const useMenuStore = () => {
     },
     [data, rol]
   );
+  const getPathPage: (component: Components) => {
+    path: string;
+    Icono: JSX.Element;
+  } = (component: Components) => {
+    const res = data.find((itemMenu) => itemMenu.componente === component);
+    return {
+      path: convertirPath(res?.componente || ""),
+      Icono: ConvertirIcono(res?.icono),
+    };
+  };
 
   return {
     //Propiedades
@@ -67,5 +78,6 @@ export const useMenuStore = () => {
     setActiveRow,
     rowDefault,
     noTienePermiso,
+    getPathPage,
   };
 };
