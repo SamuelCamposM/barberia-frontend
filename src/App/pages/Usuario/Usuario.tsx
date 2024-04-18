@@ -37,7 +37,7 @@ export const Usuario = () => {
   // Hooks personalizados para permisos.
   const { noTienePermiso } = useMenuStore();
 
-  const [activeItem, setActiveItem] = useState(itemDefault);
+  const [activeItem, setItemActive] = useState(itemDefault);
   const [openModal, setOpenModal] = useState(false);
 
   // Estados locales para el manejo de la UI y datos.
@@ -184,10 +184,10 @@ export const Usuario = () => {
             path="/:_id"
             element={
               <ModalRoute
-                setActiveItem={setActiveItem}
+                setItemActive={setItemActive}
                 openModal={openModal}
                 setOpenModal={setOpenModal}
-                activeRow={activeItem}
+                activeItem={activeItem}
               />
             }
           />

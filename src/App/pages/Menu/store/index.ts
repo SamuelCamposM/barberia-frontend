@@ -32,7 +32,7 @@ export const menuSlice = createSlice({
     setSliceOpenModalMenu: (state, action: PayloadAction<boolean>) => {
       state.openModal = action.payload;
     },
-    setSliceActiveRow: (state, action: PayloadAction<PageItem>) => {
+    setSliceItemActive: (state, action: PayloadAction<PageItem>) => {
       state.itemActive = action.payload;
     },
     onSliceEditMenu: (state, action: PayloadAction<PageItem>) => {
@@ -49,6 +49,6 @@ export const menuSlice = createSlice({
 export const {
   getSliceDataMenu,
   onSliceEditMenu,
-  setSliceActiveRow,
+  setSliceItemActive,
   setSliceOpenModalMenu,
 } = menuSlice.actions;

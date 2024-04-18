@@ -38,7 +38,7 @@ import { useModalConfig } from "../../../hooks";
 export const ModalMenu = () => {
   const { socket } = useProvideSocket();
   const { columns, idModal, vhContainer, width } = useModalConfig("modalMenu");
-  const { openModal, setOpenModalMenu, itemActive, setActiveItem, itemDefault } =
+  const { openModal, setOpenModalMenu, itemActive, setItemActive, itemDefault } =
     useMenuStore();
   const editar = useMemo(() => Boolean(itemActive._id), [itemActive]);
   const propsUseForm = (item: PageItem) => {
@@ -99,7 +99,7 @@ export const ModalMenu = () => {
         if (error) return;
 
         setOpenModalMenu(false);
-        setActiveItem(itemDefault);
+        setItemActive(itemDefault);
       }
     );
   };

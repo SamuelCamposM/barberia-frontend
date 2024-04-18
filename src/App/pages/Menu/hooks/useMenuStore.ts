@@ -1,7 +1,7 @@
 import {
   getSliceDataMenu,
   onSliceEditMenu,
-  setSliceActiveRow,
+  setSliceItemActive,
   setSliceOpenModalMenu,
 } from "../store";
 import { getPages } from "../../../Layout/helpers";
@@ -33,8 +33,8 @@ export const useMenuStore = () => {
     dispatch(setSliceOpenModalMenu(value));
   };
 
-  const setActiveItem = (item: PageItem) => {
-    dispatch(setSliceActiveRow(item));
+  const setItemActive = (item: PageItem) => {
+    dispatch(setSliceItemActive(item));
   };
 
   const onEditMenu = (item: PageItem) => {
@@ -75,7 +75,7 @@ export const useMenuStore = () => {
     getDataMenu,
     onEditMenu,
     setOpenModalMenu,
-    setActiveItem,
+    setItemActive,
     itemDefault,
     noTienePermiso,
     getPathPage,

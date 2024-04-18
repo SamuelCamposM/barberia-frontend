@@ -5,15 +5,15 @@ import { itemDefault } from "./helpers";
 import { UsuarioItem } from "./interfaces";
 
 export const ModalRoute = ({
-  setActiveItem,
+  setItemActive,
   openModal,
   setOpenModal,
-  activeRow,
+  activeItem,
 }: {
-  setActiveItem: React.Dispatch<React.SetStateAction<UsuarioItem>>;
+  setItemActive: React.Dispatch<React.SetStateAction<UsuarioItem>>;
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  activeRow: UsuarioItem;
+  activeItem: UsuarioItem;
 }) => {
   const { _id } = useParams();
 
@@ -24,13 +24,13 @@ export const ModalRoute = ({
   };
   useEffect(() => {
     if (_id === "nuevo") {
-      setActiveItem(itemDefault);
+      setItemActive(itemDefault);
       setOpenModal(true);
     } else {
-      if (activeRow._id !== _id) {
+      if (activeItem._id !== _id) {
         // const itemF = data.find((row) => row._id === _id);
         // if (itemF) {
-        //   setActiveItem(itemF);
+        //   setItemActive(itemF);
         //   setOpenModalMenu(true);
         // } else {    onBackPage();
         // }

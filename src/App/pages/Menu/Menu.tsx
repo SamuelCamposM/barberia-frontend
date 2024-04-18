@@ -15,7 +15,7 @@ export const Menu = () => {
     openModal,
     itemActive,
     itemDefault,
-    setActiveItem,
+    setItemActive,
     setOpenModalMenu,
   } = useMenuStore();
 
@@ -48,7 +48,7 @@ export const Menu = () => {
       onClick() {
         if (this && this.ocultar) return;
         if (!Boolean(itemActive._id)) return;
-        setActiveItem(itemDefault);
+        setItemActive(itemDefault);
         navigate(`/${path}`, { replace: true });
       },
     },
