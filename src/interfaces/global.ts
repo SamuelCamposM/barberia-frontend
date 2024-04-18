@@ -29,7 +29,8 @@ export type Components =
   | "Municipio"
   | "Productos"
   | "Sucursal"
-  | "Valoraciones";
+  | "Valoraciones"
+  | "Usuario";
 
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";
 

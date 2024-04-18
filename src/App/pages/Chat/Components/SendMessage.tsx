@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
 
 export const SendMessage = ({ name }: { name: string }) => {
   const { socket } = useProvideSocket();
-  const { user } = useAuthStore();
+  const { usuario } = useAuthStore();
   const { chatActivo } = useChatStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const {
@@ -37,7 +37,7 @@ export const SendMessage = ({ name }: { name: string }) => {
     onResetForm();
 
     socket?.emit("mensaje-personal", {
-      de: user.uid,
+      de: usuario.uid,
       para: chatActivo,
       mensaje,
     });

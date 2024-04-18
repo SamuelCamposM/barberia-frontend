@@ -4,8 +4,8 @@ import { useAuthStore } from "../hooks";
 import { useMemo } from "react";
 
 export const AppTheme = ({ children }: { children: JSX.Element }) => {
-  const { user } = useAuthStore();
-  const tema = useMemo(() => purpleTheme(), [user]);
+  const { usuario } = useAuthStore();
+  const tema = useMemo(() => purpleTheme(), [usuario]);
   return (
     <ThemeProvider theme={tema}>
       <CssBaseline />

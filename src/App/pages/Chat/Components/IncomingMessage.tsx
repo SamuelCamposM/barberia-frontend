@@ -6,7 +6,7 @@ export const IncomingMessage = ({ msg }: { msg: Mensaje }) => {
   return (
     <ListItem disablePadding>
       <Avatar
-        src="https://ptetutorials.com/images/user-profile.png"
+        src="https://ptetutorials.com/images/usuario-profile.png"
         className="Avatar"
       />
       <Box className="BoxMessage bg_BoxMessage">

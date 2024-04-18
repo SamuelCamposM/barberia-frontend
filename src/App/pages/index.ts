@@ -9,3 +9,4 @@ export * from "./Depto/Depto";
 export * from "./Marca/Marca";
 export * from "./Municipio/Municipio";
 export * from "./Sucursal/Sucursal";
+export * from "./Usuario/Usuario";

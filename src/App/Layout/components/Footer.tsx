@@ -6,7 +6,7 @@ import { AppBarFooter } from "./styled";
 export const Footer = () => {
   const { online } = useProvideSocket();
   const { onToogleDrawerChat } = useUiStore();
-  const { user } = useAuthStore();
+  const { usuario } = useAuthStore();
   return (
     <AppBarFooter position="sticky">
       <Toolbar className="toolbar">
@@ -23,7 +23,7 @@ export const Footer = () => {
         </Box>
         <Box className="boxOnline">
           <Typography variant="h6" className="Typography">
-            {user.name}
+            {usuario.name}
           </Typography>
           <OnlinePrediction color={online ? "success" : "error"} />
         </Box>

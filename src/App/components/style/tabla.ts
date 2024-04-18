@@ -64,7 +64,9 @@ export const StyledTableHeaderCell = styled(TableCell)<{
     : agregarTransparencia(theme.palette.primary.light, 0.75),
   transition: "all 0.3s ease-in-out",
   "&:hover": {
-    color: theme.palette.secondary.contrastText,
+    color: sorteable
+      ? theme.palette.secondary.contrastText
+      : theme.palette.primary.contrastText,
     background: sorteable
       ? agregarTransparencia(theme.palette.secondary.dark, 0.75)
       : "",

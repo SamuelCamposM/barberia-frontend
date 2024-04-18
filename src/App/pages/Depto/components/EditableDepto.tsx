@@ -105,13 +105,7 @@ export const EditableDepto = ({
     autoComplete: "false",
   };
   return (
-    <StyledTableRow
-      key={depto._id}
-      crud={depto.crud}
-      onDoubleClick={() => {
-        onClickEditar();
-      }}
-    >
+    <StyledTableRow key={depto._id} crud={depto.crud}>
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[

@@ -5,7 +5,7 @@ import {
   onSliceGetMensajes,
   onSliceSelectChat,
 } from "../../store/chat";
-import { Mensaje, RootState, User } from "../../store/interfaces";
+import { Mensaje, RootState, Usuario } from "../../store/interfaces";
 
 export const useChatStore = () => {
   const { usuarios, chatActivo, mensajes } = useSelector(
@@ -13,7 +13,7 @@ export const useChatStore = () => {
   );
   const dispatch = useDispatch();
 
-  const onCargarUsuarios = (usuarios: User[]) => {
+  const onCargarUsuarios = (usuarios: Usuario[]) => {
     dispatch(onSliceCargarUsuarios(usuarios));
   };
   const onSelectChat = (chat: string) => {

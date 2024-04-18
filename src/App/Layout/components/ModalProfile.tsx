@@ -159,7 +159,7 @@ const width = {
 
 export const ModalProfile = () => {
   const { setOpenProfileModal, openModalProfile } = useUiStore();
-  const { user, onEditUser } = useAuthStore();
+  const { usuario, onEditUsuario } = useAuthStore();
   const [showPass, setShowPass] = useState(false);
   const config = useMemo(
     () => ({
@@ -190,7 +190,7 @@ export const ModalProfile = () => {
     cargando,
     setcargando,
   } = useForm(
-    { ...user, newPassword: "" },
+    { ...usuario, newPassword: "" },
     config
     // getInitialValues(formularioDinamico),
     // getValidations(formularioDinamico)
@@ -249,7 +249,7 @@ export const ModalProfile = () => {
         data: formAllData,
         eliminados,
       });
-      onEditUser(formAllData);
+      onEditUsuario(formAllData);
       toast.success("¡Actualizado con exito!");
       setcargando(false);
       onNewForm(formAllData);
@@ -403,7 +403,7 @@ export const ModalProfile = () => {
                 >
                   C:
                   <Typography className="span" component={"span"}>
-                    {formatearFecha(user.createdAt)}
+                    {formatearFecha(usuario.createdAt)}
                   </Typography>
                 </StyledTypographyFooter>
                 <StyledTypographyFooter
@@ -411,7 +411,7 @@ export const ModalProfile = () => {
                 >
                   E:
                   <Typography className="span" component={"span"}>
-                    {formatearFecha(user.updatedAt)}
+                    {formatearFecha(usuario.updatedAt)}
                   </Typography>
                 </StyledTypographyFooter>
               </Box>

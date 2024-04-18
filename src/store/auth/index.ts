@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { User, AuthState } from "../interfaces";
+import { Usuario, AuthState } from "../interfaces";
 
 const initialState: AuthState = {
   status: "checking",
-  user: {
+  usuario: {
     name: "",
     email: "",
     online: false,
@@ -27,7 +27,7 @@ export const authSlice = createSlice({
       state.status = "checking";
       state.errorMessage = undefined;
     },
-    onSliceLogin: (state, action: PayloadAction<User>) => {
+    onSliceLogin: (state, action: PayloadAction<Usuario>) => {
       //   {
       //     "": true,
       //     "": "Samuel Benjamin",
@@ -39,19 +39,19 @@ export const authSlice = createSlice({
       //     "": "65f9f915df006187fc65b648"
       // }
       state.status = "authenticated";
-      state.user = action.payload;
+      state.usuario = action.payload;
       state.errorMessage = undefined;
     },
     onSliceLogout: (state, action: PayloadAction<string | undefined>) => {
       state.status = "not-authenticated";
-      state.user = initialState.user; // You might want to replace this with a proper initial value
+      state.usuario = initialState.usuario; // You might want to replace this with a proper initial value
       state.errorMessage = action.payload;
     },
     clearErrorMessage: (state) => {
       state.errorMessage = undefined;
     },
-    onSliceEditUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+    onSliceEditUsuario: (state, action: PayloadAction<Usuario>) => {
+      state.usuario = action.payload;
     },
   },
 });
@@ -62,5 +62,5 @@ export const {
   onSliceLogin,
   onSliceLogout,
   clearErrorMessage,
-  onSliceEditUser,
+  onSliceEditUsuario,
 } = authSlice.actions;

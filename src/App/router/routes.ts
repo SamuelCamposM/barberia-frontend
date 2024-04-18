@@ -10,4 +10,5 @@ export default {
   Marca: lazy(() => import("../pages/Marca/Marca")),
   Municipio: lazy(() => import("../pages/Municipio/Municipio")),
   Sucursal: lazy(() => import("../pages/Sucursal/Sucursal")),
+  Usuario: lazy(() => import("../pages/Usuario/Usuario")),
 };

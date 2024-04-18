@@ -1,17 +1,18 @@
 export interface AuthState {
   errorMessage?: string;
   status: "checking" | "authenticated" | "not-authenticated";
-  user: User;
+  usuario: Usuario;
 }
 
-export interface User {
+export type Roles = "GERENTE" | "EMPLEADO" | "CLIENTE";
+export interface Usuario {
   email: string;
   estado: boolean;
   lastname: string;
   name: string;
   online: boolean;
   photo?: string;
-  rol: "GERENTE" | "EMPLEADO" | "CLIENTE";
+  rol: Roles;
   tel: string;
   uid: string;
   createdAt: string;

@@ -1,10 +1,10 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { SucursalItem, setDataProps, useSocketEvents } from ".";
+import { ChangeEvent, useEffect, useState } from "react";
+import { StaticUsuario, UsuarioItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { columns, getSucursals, rowDefault, sortDefault } from "./helpers";
+import { columns, getUsuarios, rowDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCommonStates, usePath } from "../../hooks";
@@ -27,17 +27,18 @@ import {
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { TableNoData } from "../../components/Tabla/TableNoData";
-import { RowSucursal } from "./components/RowSucursal";
-import { EditableSucursal } from "./components/EditableSucursal";
-import { CallDepto } from "../Depto";
+import { ModalRoute } from "./ModalRoute";
 
-export const Sucursal = () => {
+export const Usuario = () => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
   const path = usePath();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso, getPathPage } = useMenuStore();
+  const { noTienePermiso } = useMenuStore();
+
+  const [activeItem, setActiveItem] = useState(rowDefault);
+  const [openModal, setOpenModal] = useState(false);
 
   // Estados locales para el manejo de la UI y datos.
   const {
@@ -52,7 +53,7 @@ export const Sucursal = () => {
     setSort,
     sort,
   } = useCommonStates(sortDefault);
-  const [sucursalesData, setSucursalsData] = useState<SucursalItem[]>([]);
+  const [usuariosData, setUsuariosData] = useState<UsuarioItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
   // Funciones para el manejo de eventos y acciones.
@@ -95,7 +96,7 @@ export const Sucursal = () => {
   // Función asíncrona para obtener y establecer datos.
   const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
     setCargando(true);
-    const { error, result } = await getSucursals({
+    const { error, result } = await getUsuarios({
       pagination,
       sort,
       busqueda,
@@ -106,7 +107,7 @@ export const Sucursal = () => {
     }
     const { docs, ...rest } = result;
     setPagination(rest);
-    setSucursalsData(docs);
+    setUsuariosData(docs);
     setSort(sort);
     setBusqueda(busqueda);
     setCargando(false);
@@ -137,7 +138,7 @@ export const Sucursal = () => {
     });
   }, [q, paginationQuery, sortQuery, buscandoQuery]);
 
-  useSocketEvents({ setSucursalsData, setPagination });
+  useSocketEvents({ setUsuariosData, setPagination });
   // Acciones disponibles en la UI.
   const actions: Action[] = [
     {
@@ -150,15 +151,24 @@ export const Sucursal = () => {
     {
       color: agregando ? "error" : "success",
       Icon: agregando ? Cancel : AddCircle,
-      name: "Agregar Sucursal",
+      name: "Agregar Usuario",
       onClick: () => {
-        if (noTienePermiso("Sucursal", "insert")) return;
+        if (noTienePermiso("Usuario", "insert")) return;
         setAgregando(!agregando);
       },
       tipo: "icono",
     },
+
+    {
+      color: "error",
+      Icon: AddCircle,
+      name: "Nuevo",
+      tipo: "icono",
+      onClick() {
+        navigate(`/${path}/nuevo`, {});
+      },
+    },
   ];
-  const { path: deptoPath } = useMemo(() => getPathPage("Depto"), []);
   return (
     <>
       <PaperContainerPage
@@ -170,7 +180,17 @@ export const Sucursal = () => {
         }}
       >
         <Routes>
-          <Route path={`${deptoPath}`} element={<CallDepto />} />
+          <Route
+            path="/:_id"
+            element={
+              <ModalRoute
+                setActiveItem={setActiveItem}
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                activeRow={activeItem}
+              />
+            }
+          />
         </Routes>
         <BuscadorPath />
         <>
@@ -192,7 +212,6 @@ export const Sucursal = () => {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Box>
-
           <TablaLayout>
             <TableHeader
               columns={columns}
@@ -203,31 +222,23 @@ export const Sucursal = () => {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={columns.length + 1}>
-                    <Cargando titulo="Cargando Sucursales..." />
+                    <Cargando titulo="Cargando Usuarios..." />
                   </TableCell>
                 </TableRow>
               </TableBody>
             ) : (
               <TableBody>
-                {agregando && (
-                  <EditableSucursal
-                    esNuevo
-                    setEditando={() => {}}
-                    sucursal={{ ...rowDefault, crud: { nuevo: true } }}
-                    setAgregando={setAgregando}
-                  />
-                )}
-                {sucursalesData.length === 0 ? (
+                {usuariosData.length === 0 ? (
                   <TableNoData
                     length={columns.length}
-                    title="No hay Sucursales"
+                    title="No hay Usuarios"
                   />
                 ) : (
-                  sucursalesData.map((sucursal) => {
+                  usuariosData.map((usuario) => {
                     return (
-                      <RowSucursal
-                        key={sucursal._id}
-                        sucursal={sucursal}
+                      <StaticUsuario
+                        key={usuario._id}
+                        usuario={usuario}
                         busqueda={busqueda}
                       />
                     );
@@ -242,4 +253,4 @@ export const Sucursal = () => {
   );
 };
 
-export default Sucursal;
+export default Usuario;

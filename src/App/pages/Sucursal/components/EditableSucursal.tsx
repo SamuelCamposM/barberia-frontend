@@ -153,13 +153,7 @@ export const EditableSucursal = ({
   });
   const { Icono, path } = useMemo(() => getPathPage("Depto"), []);
   return (
-    <StyledTableRow
-      key={sucursal._id}
-      crud={sucursal.crud}
-      onDoubleClick={() => {
-        onClickEditar();
-      }}
-    >
+    <StyledTableRow key={sucursal._id} crud={sucursal.crud}>
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[

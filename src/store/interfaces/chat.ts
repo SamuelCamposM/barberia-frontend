@@ -1,4 +1,4 @@
-import { User } from "./auth";
+import { Usuario } from "./auth";
 
 export interface Mensaje {
   _id: string;
@@ -13,5 +13,5 @@ export interface ChatState {
   chatActivo: string | null;
   mensajes: Mensaje[];
   uid: string;
-  usuarios: User[];
+  usuarios: Usuario[];
 }

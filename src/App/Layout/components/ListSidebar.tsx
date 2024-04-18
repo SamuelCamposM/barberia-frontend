@@ -15,12 +15,12 @@ import { StyledListItem } from "./styled";
 
 export const ListSidebar = ({ openSidebar = true }) => {
   const { data } = useMenuStore();
-  const { user } = useAuthStore();
+  const { usuario } = useAuthStore();
   return (
     <Box sx={{ overflow: "auto" }}>
       <List>
         {data
-          .filter(({ ver }) => ver.includes(user.rol))
+          .filter(({ ver }) => ver.includes(usuario.rol))
           .map(({ nombre, _id, icono }) => (
             <Tooltip key={_id} title={nombre} followCursor placement="right">
               <StyledListItem disablePadding>

@@ -9,14 +9,14 @@ const ChatPage = lazy(() => import("../pages/Chat/ChatPage"));
 
 export const ContentRouter = () => {
   const { data } = useMenuStore();
-  const { user } = useAuthStore();
+  const { usuario } = useAuthStore();
   if (data.length === 0) {
     return <Cargando titulo="Cargando" />;
   }
   return (
     <Routes>
       {data
-        .filter(({ ver }) => ver.includes(user.rol))
+        .filter(({ ver }) => ver.includes(usuario.rol))
         .map(({ nombre, _id, componente }) => {
           return (
             <Route

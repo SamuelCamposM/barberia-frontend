@@ -20,6 +20,7 @@ export const TableHeader = ({
             key={column.label}
             sx={{
               minWidth: column.minWidth,
+              textAlign: column.align,
             }}
             sorteable={column.sortable ? 1 : 0}
             active={column.campo === sort.campo ? 1 : 0}
@@ -32,7 +33,18 @@ export const TableHeader = ({
               });
             }}
           >
-            <Box display={"flex"} alignItems={"center"}>
+            <Box
+              display={"flex"}
+              justifyContent={
+                column.align === "center"
+                  ? "center"
+                  : column.align === "right"
+                  ? "flex-end"
+                  : ""
+              }
+              alignItems={"center"}
+              width={"100%"}
+            >
               <Typography
                 component={"span"}
                 sx={{ fontWeight: column.required ? "bold" : "normal" }}

@@ -17,7 +17,7 @@ export const useMenuStore = () => {
     (state: RootState) => state.menu
   );
   const {
-    user: { rol },
+    usuario: { rol },
   } = useSelector((state: RootState) => state.auth);
 
   const dispatch = useDispatch();

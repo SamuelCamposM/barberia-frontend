@@ -3,7 +3,7 @@ import { useAuthStore, useChatStore, useSocket } from "../hooks";
 import { Socket } from "socket.io-client";
 import { getEnvVariables, EnvVariables } from "../helpers";
 import { useEffect } from "react";
-import { Mensaje } from "../store/interfaces"; 
+import { Mensaje } from "../store/interfaces";
 
 export const SocketContext = createContext({
   socket: null as Socket | null,

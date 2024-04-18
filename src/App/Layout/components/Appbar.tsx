@@ -15,19 +15,19 @@ import { ContentCut, MenuTwoTone } from "@mui/icons-material";
 import { useAuthStore, useUiStore } from "../../../hooks";
 import { ModalProfile } from "./ModalProfile";
 export const Appbar = () => {
-  const { onStartLogout, user } = useAuthStore();
+  const { onStartLogout, usuario } = useAuthStore();
   const { onToogleSidebar, onToogleSidebarMobile, setOpenProfileModal } =
     useUiStore();
 
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+  const [anchorElUsuario, setAnchorElUsuario] = React.useState<null | HTMLElement>(
     null
   );
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+  const handleOpenUsuarioMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUsuario(event.currentTarget);
   };
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleCloseUsuarioMenu = () => {
+    setAnchorElUsuario(null);
   };
   const isMdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
@@ -39,7 +39,7 @@ export const Appbar = () => {
           {isMdDown ? (
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="account of current usuario"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={onToogleSidebarMobile}
@@ -49,7 +49,7 @@ export const Appbar = () => {
           ) : (
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="account of current usuario"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={onToogleSidebar}
@@ -66,13 +66,13 @@ export const Appbar = () => {
           </Box>
           <Box>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu}>
-                <Avatar alt="Remy Sharp" src={user.photo || ""} />
+              <IconButton onClick={handleOpenUsuarioMenu}>
+                <Avatar alt="Remy Sharp" src={usuario.photo || ""} />
               </IconButton>
             </Tooltip>
             <Menu
               id="menu-appbar"
-              anchorEl={anchorElUser}
+              anchorEl={anchorElUsuario}
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "center",
@@ -82,8 +82,8 @@ export const Appbar = () => {
                 vertical: "top",
                 horizontal: "center",
               }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              open={Boolean(anchorElUsuario)}
+              onClose={handleCloseUsuarioMenu}
             >
               <MenuItem
                 onClick={() => {

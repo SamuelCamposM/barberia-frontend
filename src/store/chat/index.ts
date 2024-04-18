@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ChatState, Mensaje, User } from "../interfaces";
+import { ChatState, Mensaje, Usuario } from "../interfaces";
 import { onSliceLogout } from "../auth";
 
 const initialState: ChatState = {
@@ -12,7 +12,7 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    onSliceCargarUsuarios: (state, action: PayloadAction<User[]>) => {
+    onSliceCargarUsuarios: (state, action: PayloadAction<Usuario[]>) => {
       state.usuarios = action.payload;
     },
     onSliceSelectChat: (state, action: PayloadAction<string>) => {

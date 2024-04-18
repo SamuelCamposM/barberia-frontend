@@ -12,7 +12,7 @@ import { useAuthStore, useChatStore, useUiStore } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 export const ChatDrawer = () => {
   const { usuarios, chatActivo } = useChatStore();
-  const { user } = useAuthStore();
+  const { usuario: usuarioAuth } = useAuthStore();
   const navigate = useNavigate();
   const { openDrawerChat, onToogleDrawerChat } = useUiStore();
 
@@ -40,29 +40,29 @@ export const ChatDrawer = () => {
       >
         <List>
           {usuarios
-            .filter((usuario) => usuario.uid !== user.uid)
-            .map((user) => (
+            .filter((usuario) => usuario.uid !== usuarioAuth.uid)
+            .map((usuario) => (
               <ListItemButton
                 sx={{
                   backgroundColor: (theme) =>
-                    user.uid === chatActivo
+                    usuario.uid === chatActivo
                       ? theme.palette.primary.main
                       : "transparent",
                 }}
-                key={user.uid}
+                key={usuario.uid}
                 onClick={() => {
-                  navigate(`chat/?uid=${user.uid}&name=${user.name}`);
+                  navigate(`chat/?uid=${usuario.uid}&name=${usuario.name}`);
                 }}
               >
                 <ListItemAvatar>
                   <Badge
-                    color={user.online ? "success" : "error"}
+                    color={usuario.online ? "success" : "error"}
                     variant="dot"
                   >
-                    <Avatar src="https://ptetutorials.com/images/user-profile.png" />
+                    <Avatar src="https://ptetutorials.com/images/usuario-profile.png" />
                   </Badge>
                 </ListItemAvatar>
-                <ListItemText primary={user.name} />
+                <ListItemText primary={usuario.name} />
               </ListItemButton>
             ))}
         </List>

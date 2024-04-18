@@ -32,7 +32,7 @@ export const ChatPage = () => {
     }
   }, [uid]);
   const { mensajes } = useChatStore();
-  const { user } = useAuthStore();
+  const { usuario } = useAuthStore();
   useEffect(() => {
     if (mensajes.length !== 0) {
       scrollToBottomAnimated("mensajes");
@@ -54,7 +54,7 @@ export const ChatPage = () => {
 
       <BoxChat id="mensajes">
         {mensajes.map((msg) =>
-          user.uid === msg.para ? (
+          usuario.uid === msg.para ? (
             <IncomingMessage msg={msg} key={msg._id} />
           ) : (
             <OutgoingMessage msg={msg} key={msg._id} />

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clienteAxios } from "../../api";
 import {
   clearErrorMessage,
-  onSliceEditUser,
+  onSliceEditUsuario,
   onSliceLogin,
   onSliceLogout,
   // onSlicechecking,
@@ -11,13 +11,13 @@ import {
   LoginParams,
   RegisterParams,
   RootState,
-  User,
+  Usuario,
 } from "../../store/interfaces";
-interface UserWithToken extends User {
+interface UsuarioWithToken extends Usuario {
   token: string;
 }
 export const useAuthStore = () => {
-  const { status, user, errorMessage } = useSelector(
+  const { status, usuario, errorMessage } = useSelector(
     (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ export const useAuthStore = () => {
     try {
       const {
         data: { token, ...usuarioSinToken },
-      }: { data: UserWithToken } = await clienteAxios.post("/auth", {
+      }: { data: UsuarioWithToken } = await clienteAxios.post("/auth", {
         email,
         password,
       });
@@ -53,7 +53,7 @@ export const useAuthStore = () => {
     try {
       const {
         data: { token, ...usuarioSinToken },
-      }: { data: UserWithToken } = await clienteAxios.post("/auth/new", {
+      }: { data: UsuarioWithToken } = await clienteAxios.post("/auth/new", {
         name,
         email,
         password,
@@ -92,20 +92,20 @@ export const useAuthStore = () => {
     localStorage.clear();
     dispatch(onSliceLogout(undefined));
   };
-  const onEditUser = (user: User) => {
-    dispatch(onSliceEditUser(user));
+  const onEditUsuario = (usuario: Usuario) => {
+    dispatch(onSliceEditUsuario(usuario));
   };
 
   return {
     //Propiedades
     status,
-    user,
+    usuario,
     errorMessage,
     //Metodos
     onStartLogin,
     onStartLogout,
     onStartRegister,
     onStartSheckAuthToken,
-    onEditUser,
+    onEditUsuario,
   };
 };

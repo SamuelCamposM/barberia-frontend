@@ -43,7 +43,8 @@ export const EditableMunicipio = ({
     isFormInvalidSubmit,
     setisSubmited,
     cargandoSubmit,
-    setCargandoSubmit,onNewForm
+    setCargandoSubmit,
+    onNewForm,
   } = useForm(municipio, config);
 
   const onClickEditar = () => {
@@ -61,8 +62,8 @@ export const EditableMunicipio = ({
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);
-        if (error) return; 
-        onNewForm(municipio)
+        if (error) return;
+        onNewForm(municipio);
         // setSliceAgregando(false);
       }
     );
@@ -107,13 +108,7 @@ export const EditableMunicipio = ({
     autoComplete: "false",
   };
   return (
-    <StyledTableRow
-      key={municipio._id}
-      crud={municipio.crud}
-      onDoubleClick={() => {
-        onClickEditar();
-      }}
-    >
+    <StyledTableRow key={municipio._id} crud={municipio.crud}>
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[

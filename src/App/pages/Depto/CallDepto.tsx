@@ -36,7 +36,7 @@ export const CallDepto = () => {
     <ModalLayout
       idModal={idModal}
       open
-      setOpen={handleClose}
+      setOpen={() => {}}
       vh={vhContainer.height}
       width={width}
     >

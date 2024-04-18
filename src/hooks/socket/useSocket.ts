@@ -4,6 +4,8 @@ import { Socket, io } from "socket.io-client";
 
 export const useSocket = (serverPath: string) => {
   const [online, setonline] = useState(false);
+  console.log(online);
+  
   const [socket, setsocket] = useState<Socket<
     DefaultEventsMap,
     DefaultEventsMap
@@ -28,12 +30,16 @@ export const useSocket = (serverPath: string) => {
 
   useEffect(() => {
     socket?.on("disconnect", () => {
+      console.log("disconnect");
+
       setonline(false);
     });
   }, [socket]);
   useEffect(() => {
     setonline(socket?.connected!);
     socket?.on("connect", () => {
+      console.log("connect");
+
       setonline(true);
     });
   }, [socket]);
