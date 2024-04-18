@@ -55,7 +55,7 @@ export const columns: Column[] = [
 
 export const sortDefault = { asc: true, campo: "municipio.name" };
 
-export const rowDefault: SucursalItem = {
+export const itemDefault: SucursalItem = {
   direccion: "",
   estado: true,
   municipio: {

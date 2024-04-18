@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { StaticUsuario, UsuarioItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { columns, getUsuarios, rowDefault, sortDefault } from "./helpers";
+import { columns, getUsuarios, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCommonStates, usePath } from "../../hooks";
@@ -37,7 +37,7 @@ export const Usuario = () => {
   // Hooks personalizados para permisos.
   const { noTienePermiso } = useMenuStore();
 
-  const [activeItem, setActiveItem] = useState(rowDefault);
+  const [activeItem, setActiveItem] = useState(itemDefault);
   const [openModal, setOpenModal] = useState(false);
 
   // Estados locales para el manejo de la UI y datos.

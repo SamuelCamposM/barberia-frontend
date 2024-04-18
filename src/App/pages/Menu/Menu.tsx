@@ -13,9 +13,9 @@ export const Menu = () => {
   const {
     noTienePermiso,
     openModal,
-    rowActive,
-    rowDefault,
-    setActiveRow,
+    itemActive,
+    itemDefault,
+    setActiveItem,
     setOpenModalMenu,
   } = useMenuStore();
 
@@ -28,7 +28,7 @@ export const Menu = () => {
       disabled: false,
       Icon: Create,
       name: "Continuar Editando",
-      ocultar: !Boolean(rowActive._id),
+      ocultar: !Boolean(itemActive._id),
       onClick() {
         if (this && this.ocultar) return;
         if (noTienePermiso("Menu", "update")) {
@@ -44,11 +44,11 @@ export const Menu = () => {
       disabled: false,
       Icon: Cancel,
       name: "Cancelar Edición",
-      ocultar: !Boolean(rowActive._id),
+      ocultar: !Boolean(itemActive._id),
       onClick() {
         if (this && this.ocultar) return;
-        if (!Boolean(rowActive._id)) return;
-        setActiveRow(rowDefault);
+        if (!Boolean(itemActive._id)) return;
+        setActiveItem(itemDefault);
         navigate(`/${path}`, { replace: true });
       },
     },

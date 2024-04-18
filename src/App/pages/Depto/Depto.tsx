@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { DeptoItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { columns, getDeptos, rowDefault, sortDefault } from "./helpers";
+import { columns, getDeptos, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
 import { useCommonStates, usePath } from "../../hooks";
@@ -208,7 +208,7 @@ export const Depto = () => {
                 <EditableDepto
                   esNuevo
                   setEditando={() => {}}
-                  depto={{ ...rowDefault, crud: { nuevo: true } }}
+                  depto={{ ...itemDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}
                 />
               )}

@@ -34,7 +34,7 @@ export const columns: Column[] = [
 export const sortDefault = { asc: true, campo: "name" };
 
 // Definición del objeto por defecto para un nuevo departamento.
-export const rowDefault: DeptoItem = {
+export const itemDefault: DeptoItem = {
   name: "",
 };
 interface Result extends Pagination {

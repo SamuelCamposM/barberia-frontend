@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { useCallback } from "react";
 import { ConvertirIcono, convertirPath } from "../../../../helpers";
 export const useMenuStore = () => {
-  const { openModal, rowActive, data, rowDefault } = useSelector(
+  const { openModal, itemActive, data, itemDefault } = useSelector(
     (state: RootState) => state.menu
   );
   const {
@@ -33,7 +33,7 @@ export const useMenuStore = () => {
     dispatch(setSliceOpenModalMenu(value));
   };
 
-  const setActiveRow = (item: PageItem) => {
+  const setActiveItem = (item: PageItem) => {
     dispatch(setSliceActiveRow(item));
   };
 
@@ -69,14 +69,14 @@ export const useMenuStore = () => {
   return {
     //Propiedades
     openModal,
-    rowActive,
+    itemActive,
     data,
     //Metodos
     getDataMenu,
     onEditMenu,
     setOpenModalMenu,
-    setActiveRow,
-    rowDefault,
+    setActiveItem,
+    itemDefault,
     noTienePermiso,
     getPathPage,
   };

@@ -9,7 +9,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { DeptoItem, setDataProps, useDeptoStore } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { SocketOnDepto, columns, rowDefault } from "./helpers";
+import { SocketOnDepto, columns, itemDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
 import { usePath } from "../../hooks";
@@ -231,7 +231,7 @@ export const Depto = () => {
                 <EditableDepto
                   esNuevo
                   setEditando={() => {}}
-                  depto={{ ...rowDefault, crud: { nuevo: true } }}
+                  depto={{ ...itemDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}
                 />
               )}

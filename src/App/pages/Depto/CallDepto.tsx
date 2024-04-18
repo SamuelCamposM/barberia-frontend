@@ -9,25 +9,11 @@ import { Cancel } from "@mui/icons-material";
 import Depto from "./Depto";
 import { useNavigate } from "react-router-dom";
 import { getSubPath } from "../../../helpers";
+import { useModalConfig } from "../../hooks";
 // import { usePath } from "../../../hooks";
-const idModal = "idModalDepto";
-
-const vhContainer = {
-  height: {
-    lg: "100",
-    md: "100",
-    xs: "100",
-  },
-  header_height: 40,
-  footer_height: 0,
-};
-const width = {
-  lg: "100",
-  md: "100",
-  xs: "100",
-};
 
 export const CallDepto = () => {
+  const { idModal, vhContainer, width } = useModalConfig("idModalDepto");
   const navigate = useNavigate();
   const handleClose = () => {
     navigate(getSubPath(location.pathname));

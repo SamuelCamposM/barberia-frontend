@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { getSubPath } from "../../../helpers";
-import { rowDefault } from "./helpers";
+import { itemDefault } from "./helpers";
 import { UsuarioItem } from "./interfaces";
 
 export const ModalRoute = ({
@@ -24,13 +24,13 @@ export const ModalRoute = ({
   };
   useEffect(() => {
     if (_id === "nuevo") {
-      setActiveItem(rowDefault);
+      setActiveItem(itemDefault);
       setOpenModal(true);
     } else {
       if (activeRow._id !== _id) {
         // const itemF = data.find((row) => row._id === _id);
         // if (itemF) {
-        //   setActiveRow(itemF);
+        //   setActiveItem(itemF);
         //   setOpenModalMenu(true);
         // } else {    onBackPage();
         // }

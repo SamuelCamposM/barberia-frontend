@@ -63,7 +63,7 @@ export const columns: Column[] = [
 
 export const sortDefault = { asc: false, campo: "online" };
 
-export const rowDefault: UsuarioItem = {
+export const itemDefault: UsuarioItem = {
   email: "",
   lastname: "",
   name: "",

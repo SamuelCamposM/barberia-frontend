@@ -19,6 +19,6 @@ export interface PageItem {
 export interface MenuState {
   data: PageItem[];
   openModal: boolean;
-  rowActive: PageItem;
-  rowDefault: PageItem;
+  itemActive: PageItem;
+  itemDefault: PageItem;
 }

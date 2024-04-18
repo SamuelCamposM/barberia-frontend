@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SucursalItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { columns, getSucursals, rowDefault, sortDefault } from "./helpers";
+import { columns, getSucursals, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCommonStates, usePath } from "../../hooks";
@@ -213,7 +213,7 @@ export const Sucursal = () => {
                   <EditableSucursal
                     esNuevo
                     setEditando={() => {}}
-                    sucursal={{ ...rowDefault, crud: { nuevo: true } }}
+                    sucursal={{ ...itemDefault, crud: { nuevo: true } }}
                     setAgregando={setAgregando}
                   />
                 )}

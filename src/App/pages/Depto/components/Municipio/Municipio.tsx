@@ -1,6 +1,6 @@
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
-import { getMunicipios, columns, rowDefault } from "./helpers";
+import { getMunicipios, columns, itemDefault } from "./helpers";
 import { MunicipioItem, setDataProps } from "./interfaces";
 import { paginationDefault } from "../../../../../helpers";
 import { RowMunicipio } from "./components/RowMunicipio";
@@ -176,7 +176,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
             {agregando && (
               <EditableMunicipio
                 setEditando={() => {}}
-                municipio={{ ...rowDefault, crud: { nuevo: true } }}
+                municipio={{ ...itemDefault, crud: { nuevo: true } }}
                 depto={depto}
                 setAgregando={setAgregando}
               />

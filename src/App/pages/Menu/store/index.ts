@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { MenuState, PageItem } from "../";
 
-const rowDefault: PageItem = {
+const itemDefault: PageItem = {
   _id: "",
   nombre: "",
   icono: "",
@@ -17,8 +17,8 @@ const rowDefault: PageItem = {
 };
 const initialState: MenuState = {
   openModal: false,
-  rowActive: rowDefault,
-  rowDefault,
+  itemActive: itemDefault,
+  itemDefault,
   data: [],
 };
 
@@ -33,7 +33,7 @@ export const menuSlice = createSlice({
       state.openModal = action.payload;
     },
     setSliceActiveRow: (state, action: PayloadAction<PageItem>) => {
-      state.rowActive = action.payload;
+      state.itemActive = action.payload;
     },
     onSliceEditMenu: (state, action: PayloadAction<PageItem>) => {
       state.data = state.data.map((row) =>

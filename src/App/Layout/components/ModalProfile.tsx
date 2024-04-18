@@ -27,20 +27,8 @@ import { useMemo, useState } from "react";
 import { useAuthStore, useForm, useUiStore } from "../../../hooks";
 import { clienteAxios } from "../../../api";
 import { toast } from "react-toastify";
-import { useFileUpload } from "../../hooks";
+import { useFileUpload, useModalConfig } from "../../hooks";
 // import { useNavigate } from "react-router-dom"; // import { usePath } from "../../../hooks";
-const idModal = "modalMenu";
-const columns = { lg: 2, md: 2, xs: 1 };
-const vhContainer = {
-  height: { lg: "50", md: "60", xs: "90" },
-  header_height: 40,
-  footer_height: 40,
-};
-const width = {
-  lg: "60",
-  md: "70",
-  xs: "100",
-};
 
 // interface CampoFormDinamyc {
 //   tipo: "numero" | "doc" | "img" | "texto";
@@ -159,6 +147,8 @@ const width = {
 
 export const ModalProfile = () => {
   const { setOpenProfileModal, openModalProfile } = useUiStore();
+  const { columns, idModal, vhContainer, width } =
+    useModalConfig("modalProfile");
   const { usuario, onEditUsuario } = useAuthStore();
   const [showPass, setShowPass] = useState(false);
   const config = useMemo(

@@ -29,7 +29,7 @@ const columns: readonly Column[] = [
 ];
 export const Tabla = ({ actions }: { actions: Action[] }) => {
   const navigate = useNavigate();
-  const { data, noTienePermiso, setOpenModalMenu, setActiveRow, rowActive } =
+  const { data, noTienePermiso, setOpenModalMenu, setActiveItem, itemActive } =
     useMenuStore();
   const path = usePath();
   const { q = "", buscando = "" } = queryString.parse(location.search) as {
@@ -45,7 +45,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
         return;
       }
       navigate(`/${path}/${row._id}${q && `?q=${q}&buscando=${buscando}`}`);
-      setActiveRow(row);
+      setActiveItem(row);
       setOpenModalMenu(true);
     },
     [q]
@@ -95,19 +95,19 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
                   key={row._id}
                   onDoubleClick={() => {
                     handleEditar(row);
-                    // setActiveRow(row);
+                    // setActiveItem(row);
                   }}
                   // onMouseEnter={() => setshowButtoms(true)}
                   // onMouseLeave={() => setshowButtoms(false)}
                   // className={`${
-                  //   rowActive._id === row._id &&
+                  //   itemActive._id === row._id &&
                   //   "animate__animated animate__lightSpeedInRight"
                   // }`}
                 >
                   <StyledTableCell
                     padding="checkbox"
                     className={`pendingActive ${
-                      rowActive._id === row._id && "active"
+                      itemActive._id === row._id && "active"
                     }`}
                   >
                     <Acciones

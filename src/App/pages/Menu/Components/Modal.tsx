@@ -31,34 +31,16 @@ import { useForm, useProvideSocket } from "../../../../hooks";
 import { IconosFiltered } from "../helpers";
 
 import { ErrorSocket } from "../../../../interfaces/global";
+import { useModalConfig } from "../../../hooks";
 // import { useNavigate } from "react-router-dom";
 // import { usePath } from "../../../hooks";
-const idModal = "modalMenu";
-const columns = {
-  lg: 2,
-  md: 2,
-  xs: 1,
-};
-const vhContainer = {
-  height: {
-    lg: "50",
-    md: "60",
-    xs: "80",
-  },
-  header_height: 40,
-  footer_height: 40,
-};
-const width = {
-  lg: "40",
-  md: "70",
-  xs: "100",
-};
 
 export const ModalMenu = () => {
   const { socket } = useProvideSocket();
-  const { openModal, setOpenModalMenu, rowActive, setActiveRow, rowDefault } =
+  const { columns, idModal, vhContainer, width } = useModalConfig("modalMenu");
+  const { openModal, setOpenModalMenu, itemActive, setActiveItem, itemDefault } =
     useMenuStore();
-  const editar = useMemo(() => Boolean(rowActive._id), [rowActive]);
+  const editar = useMemo(() => Boolean(itemActive._id), [itemActive]);
   const propsUseForm = (item: PageItem) => {
     return {
       nombre: item.nombre,
@@ -97,7 +79,7 @@ export const ModalMenu = () => {
     // onResetForm,
     onNewForm,
     setformValues,
-  } = useForm(propsUseForm(rowDefault), config);
+  } = useForm(propsUseForm(itemDefault), config);
 
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -117,7 +99,7 @@ export const ModalMenu = () => {
         if (error) return;
 
         setOpenModalMenu(false);
-        setActiveRow(rowDefault);
+        setActiveItem(itemDefault);
       }
     );
   };
@@ -128,8 +110,8 @@ export const ModalMenu = () => {
   //   handleBlur();
   // };
   useEffect(() => {
-    onNewForm(rowActive);
-  }, [rowActive]);
+    onNewForm(itemActive);
+  }, [itemActive]);
 
   return (
     <>

@@ -24,7 +24,7 @@ export const columns: Column[] = [
     sortable: true,
   },
 ];
-export const rowDefault: MunicipioItem = {
+export const itemDefault: MunicipioItem = {
   depto: "",
   name: "",
 };

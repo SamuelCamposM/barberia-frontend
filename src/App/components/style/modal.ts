@@ -21,9 +21,9 @@ export const StyledTypographyHeader = styled(Typography)(
 
 export const StyledContainerForm = styled(Box)<{
   height: {
-    xs?: string;
-    md?: string;
-    lg?: string;
+    xs: string;
+    md: string;
+    lg: string;
   };
   header_height: number;
   footer_height: number;
