@@ -3,6 +3,7 @@ import { chatSlice } from "./chat";
 import { authSlice } from "./auth";
 import { uiSlice } from "./ui";
 import { menuSlice } from "../App/pages/Menu/store";
+import { usuarioSlice } from "../App/pages/Usuario/store";
 // import { deptoSlice } from "../App/pages/Depto/store";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     chat: chatSlice.reducer,
     ui: uiSlice.reducer,
     menu: menuSlice.reducer,
+    usuario: usuarioSlice.reducer,
     // depto: deptoSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

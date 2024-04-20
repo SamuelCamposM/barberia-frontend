@@ -1,13 +1,7 @@
 import { clienteAxios } from "../../../../api";
 import { Column, Pagination } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
-import {
-  DeptoSuc,
-  MunicipioSuc,
-  UsuarioItem,
-  setDataProps,
-} from "../interfaces";
-import { toast } from "react-toastify";
+import { UsuarioItem, setDataProps } from "../interfaces";
 export enum SocketOnUsuario {
   agregar = "cliente:usuario-agregar",
   editar = "cliente:usuario-editar",
@@ -24,12 +18,12 @@ export const columns: Column[] = [
   { campo: "", label: "", minWidth: 10, align: "center", sortable: false },
   {
     campo: "online",
-    label: "",
+    label: "online",
     align: "center",
     minWidth: 25,
     sortable: true,
     required: false,
-  }, 
+  },
   {
     campo: "lastname",
     label: "Nombre Completo",
@@ -72,9 +66,10 @@ export const itemDefault: UsuarioItem = {
   tel: "",
   rol: "CLIENTE",
   estado: true,
-  createdAt: new Date().toString(),
+  createdAt: new Date().toISOString(),
   updatedAt: "",
 };
+
 interface Result extends Pagination {
   docs: UsuarioItem[];
 }
@@ -96,7 +91,7 @@ export const getUsuarios: getUsuariosType = async ({
   busqueda,
   pagination,
   sort,
-}: setDataProps) => {
+}) => {
   try {
     const {
       data: {
@@ -117,69 +112,5 @@ export const getUsuarios: getUsuariosType = async ({
       error?.response?.data?.error || "Error al consultar las usuarios";
 
     return { error: msgError, result: { docs: [], ...paginationDefault } };
-  }
-};
-
-// Define la estructura de la respuesta
-interface searchDeptoResponse {
-  data: DeptoSuc[];
-  error: boolean;
-}
-
-export interface searchDeptoProps {
-  search: string;
-}
-export const searchDepto = async (
-  searchProps: searchDeptoProps
-): Promise<searchDeptoResponse> => {
-  try {
-    console.log(searchProps);
-
-    const res: searchDeptoResponse = await clienteAxios.post(
-      "/depto/search",
-      searchProps
-    );
-    // return { data: [], error: true };
-    if (res.data.length === 0) {
-      toast.error("No se encontraron departamentos");
-    }
-    return res;
-  } catch (error: any) {
-    const msgError =
-      error?.response?.data?.error || "Error al consultar los departamentos";
-    toast.error(msgError);
-    return { error: msgError, data: [] };
-  }
-};
-
-// Define la estructura de la respuesta
-interface searchMunicipioResponse {
-  data: MunicipioSuc[];
-  error: boolean;
-}
-
-export interface searchMunicipioProps {
-  search: string;
-  deptoId: string;
-}
-export const searchMunicipio = async (
-  searchProps: searchMunicipioProps
-): Promise<searchMunicipioResponse> => {
-  try {
-    const res: searchMunicipioResponse = await clienteAxios.post(
-      "/municipio/searchByDepto",
-      searchProps
-    );
-    if (res.data.length === 0) {
-      toast.error("No se encontraron municipios");
-    }
-    return res;
-  } catch (error: any) {
-    console.log(error);
-
-    const msgError =
-      error?.response?.data?.error || "Error al consultar los municipios";
-    toast.error(msgError);
-    return { error: msgError, data: [] };
   }
 };

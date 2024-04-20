@@ -1,13 +1,13 @@
 import { Badge, styled } from "@mui/material";
 
 export const StyledBadge = styled(Badge)<{
-  online?: boolean;
-}>(({ theme, online }) => ({
+  active?: 1 | 0;
+}>(({ theme, active }) => ({
   "& .MuiBadge-badge": {
-    backgroundColor: online
+    backgroundColor: active
       ? theme.palette.success.main
       : theme.palette.error.main,
-    color: online ? theme.palette.success.main : theme.palette.error.main,
+    color: active ? theme.palette.success.main : theme.palette.error.main,
     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
     "&::after": {
       position: "absolute",
@@ -27,7 +27,7 @@ export const StyledBadge = styled(Badge)<{
       opacity: 1,
     },
     "100%": {
-      transform: "scale(2.4)",
+      transform: "scale(5)",
       opacity: 0,
     },
   },

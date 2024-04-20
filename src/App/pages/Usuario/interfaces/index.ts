@@ -1,15 +1,6 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
 import { Roles } from "../../../../store/interfaces";
 
-export interface MunicipioSuc {
-  _id: string;
-  name: string;
-}
-export interface DeptoSuc {
-  _id: string;
-  name: string;
-}
-
 export interface UsuarioItem {
   _id?: string | undefined;
   crud?: Crud | undefined;
@@ -25,13 +16,13 @@ export interface UsuarioItem {
   updatedAt: string;
 }
 
-export interface UsuarioState {
-  cargando: boolean;
-  data: UsuarioItem[];
-  pagination: Pagination;
-}
 export interface setDataProps {
   busqueda: string;
   pagination: Pagination;
   sort: Sort;
+}
+export interface UsuarioState {
+  openModal: boolean;
+  itemActive: UsuarioItem;
+  itemDefault: UsuarioItem;
 }

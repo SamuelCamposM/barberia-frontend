@@ -1,4 +1,4 @@
-import { Dispatch, useCallback } from "react";
+import { useCallback } from "react";
 import {
   StyledBadge,
   StyledTableCell,
@@ -13,16 +13,17 @@ import { Action, ErrorSocket } from "../../../../interfaces/global";
 import { formatearFecha, handleSocket } from "../../../../helpers";
 import { Acciones } from "../../../components";
 import { Create, DeleteForever } from "@mui/icons-material";
-import { Avatar, Badge, Box, styled } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 
 export const StaticUsuario = ({
   usuario,
-  busqueda,
   actionsJoins = [],
+  handleEditar,
 }: {
   usuario: UsuarioItem;
   busqueda: string;
   actionsJoins?: Action[];
+  handleEditar: (itemEditing: UsuarioItem) => void;
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
@@ -61,6 +62,16 @@ export const StaticUsuario = ({
         <Acciones
           actions={[
             {
+              color: "primary",
+              Icon: Create,
+              name: `Editar`,
+              onClick: () => {
+                handleEditar(usuario);
+              },
+              tipo: "icono",
+              size: "small",
+            },
+            {
               color: "error",
               Icon: DeleteForever,
               name: `Eliminar`,
@@ -78,7 +89,7 @@ export const StaticUsuario = ({
         <StyledTableCell>
           <Box display={"flex"} justifyContent={"center"}>
             <StyledBadge
-              online={usuario.online}
+              active={usuario.online ? 1 : 0}
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"

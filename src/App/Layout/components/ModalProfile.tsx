@@ -177,8 +177,8 @@ export const ModalProfile = () => {
     onResetForm,
     onNewForm,
     setformValues,
-    cargando,
-    setcargando,
+    setCargandoSubmit,
+    cargandoSubmit,
   } = useForm(
     { ...usuario, newPassword: "" },
     config
@@ -209,11 +209,11 @@ export const ModalProfile = () => {
 
   const onHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (cargando) return;
+    if (cargandoSubmit) return;
     setisSubmited(true);
     handleBlur();
     try {
-      setcargando(true);
+      setCargandoSubmit(true);
 
       const onSubmitUploadFunctions = [onSubmitUpload()];
       const docsUrls = await Promise.all(onSubmitUploadFunctions);
@@ -226,12 +226,12 @@ export const ModalProfile = () => {
         ...uploadProperties,
       };
       if (error) {
-        setcargando(false);
+        setCargandoSubmit(false);
         return toast.error(error);
       }
 
       if (isFormInvalidSubmit(formAllData)) {
-        setcargando(false);
+        setCargandoSubmit(false);
         return;
       }
       //SI CUMPLE LAS CONDICIONES PASA A ACTUALIZAR
@@ -241,11 +241,11 @@ export const ModalProfile = () => {
       });
       onEditUsuario(formAllData);
       toast.success("¡Actualizado con exito!");
-      setcargando(false);
+      setCargandoSubmit(false);
       onNewForm(formAllData);
       setOpenProfileModal(false);
     } catch (error) {
-      setcargando(false);
+      setCargandoSubmit(false);
       toast.error("¡No se pudieron actualizar los datos!");
     }
   };
@@ -414,7 +414,7 @@ export const ModalProfile = () => {
                 <IconButton
                   aria-label="Submit"
                   type="submit"
-                  disabled={cargando}
+                  disabled={cargandoSubmit}
                 >
                   <Save />
                 </IconButton>

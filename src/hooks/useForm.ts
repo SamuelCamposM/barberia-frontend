@@ -26,7 +26,6 @@ export const useForm = <
   const [isFormInvalid, setisFormInvalid] = useState(false);
   const [isSubmited, setisSubmited] = useState(false);
   const [onBlur, setonBlur] = useState(0);
-  const [cargando, setcargando] = useState(false);
 
   const errorValues = useMemo<Record<keyof ConfigTypes, string[]>>(() => {
     const entries = Object.entries(ObjectValidations);
@@ -123,7 +122,5 @@ export const useForm = <
     setCargandoSubmit,
     setformValues,
     setisSubmited,
-    cargando,
-    setcargando,
   };
 };

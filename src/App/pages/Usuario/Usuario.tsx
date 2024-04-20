@@ -1,10 +1,10 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
-import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { AddCircle, Refresh } from "@mui/icons-material";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { StaticUsuario, UsuarioItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { columns, getUsuarios, itemDefault, sortDefault } from "./helpers";
+import { columns, getUsuarios, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCommonStates, usePath } from "../../hooks";
@@ -27,7 +27,8 @@ import {
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { TableNoData } from "../../components/Tabla/TableNoData";
-import { ModalRoute } from "./ModalRoute";
+import { ModalRoute } from "./components/ModalRoute";
+import { useUsuarioStore } from "./hooks/useUsuarioStore";
 
 export const Usuario = () => {
   // Hooks de navegación y rutas.
@@ -36,17 +37,14 @@ export const Usuario = () => {
 
   // Hooks personalizados para permisos.
   const { noTienePermiso } = useMenuStore();
-
-  const [activeItem, setItemActive] = useState(itemDefault);
-  const [openModal, setOpenModal] = useState(false);
-
+  const { setItemActive, setOpenModal } = useUsuarioStore();
   // Estados locales para el manejo de la UI y datos.
   const {
-    agregando,
+    // agregando,
     buscando,
     busqueda,
     cargando,
-    setAgregando,
+    // setAgregando,
     setBuscando,
     setBusqueda,
     setCargando,
@@ -149,17 +147,6 @@ export const Usuario = () => {
       tipo: "icono",
     },
     {
-      color: agregando ? "error" : "success",
-      Icon: agregando ? Cancel : AddCircle,
-      name: "Agregar Usuario",
-      onClick: () => {
-        if (noTienePermiso("Usuario", "insert")) return;
-        setAgregando(!agregando);
-      },
-      tipo: "icono",
-    },
-
-    {
       color: "error",
       Icon: AddCircle,
       name: "Nuevo",
@@ -169,6 +156,22 @@ export const Usuario = () => {
       },
     },
   ];
+  const handleEditar = useCallback(
+    (itemEditing: UsuarioItem) => {
+      if (noTienePermiso("Menu", "update")) {
+        return;
+      }
+      let params = new URLSearchParams(window.location.search);
+      console.log(params);
+
+      // Asegúrate de que 'params.toString()' devuelva la cadena de consulta con los parámetros que deseas mantener.
+      navigate(`/${path}/${itemEditing._id}?${params.toString()}`);
+      setItemActive(itemEditing);
+      setOpenModal(true);
+    },
+    [q]
+  );
+
   return (
     <>
       <PaperContainerPage
@@ -180,17 +183,7 @@ export const Usuario = () => {
         }}
       >
         <Routes>
-          <Route
-            path="/:_id"
-            element={
-              <ModalRoute
-                setItemActive={setItemActive}
-                openModal={openModal}
-                setOpenModal={setOpenModal}
-                activeItem={activeItem}
-              />
-            }
-          />
+          <Route path="/:_id" element={<ModalRoute />} />
         </Routes>
         <BuscadorPath />
         <>
@@ -240,6 +233,7 @@ export const Usuario = () => {
                         key={usuario._id}
                         usuario={usuario}
                         busqueda={busqueda}
+                        handleEditar={handleEditar}
                       />
                     );
                   })
