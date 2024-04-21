@@ -10,7 +10,9 @@ export const TablaLayout = ({
 }) => {
   return (
     <StyledTableContainer
-      sx={{ maxHeight }}
+      sx={{
+        maxHeight,
+      }}
       className="animate__animated animate__fadeInUp"
     >
       <Table size="small" stickyHeader aria-label="sticky table">

@@ -89,14 +89,13 @@ export const StaticUsuario = ({
         <StyledTableCell>
           <Box display={"flex"} justifyContent={"center"}>
             <StyledBadge
-              active={usuario.online ? 1 : 0}
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
+              active={usuario.online ? 1 : 0}
             >
-              <Box
-                display={"flex"}
-                justifyContent={"center"}
+              <Avatar
+                src={usuario.photo}
                 sx={{
                   cursor: "pointer",
                   transition: "all .5s",
@@ -106,9 +105,7 @@ export const StaticUsuario = ({
                   if (!usuario.photo) return;
                   window.open(usuario.photo);
                 }}
-              >
-                <Avatar src={usuario.photo} />
-              </Box>
+              />
             </StyledBadge>
           </Box>
         </StyledTableCell>

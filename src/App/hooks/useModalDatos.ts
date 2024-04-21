@@ -25,7 +25,7 @@ export const useModalConfig = (
     idModal: idModal,
     columns: columns || { lg: 2, md: 2, xs: 1 },
     vhContainer: vhContainer || {
-      height: { lg: "50", md: "60", xs: "90" },
+      height: { lg: "60", md: "70", xs: "90" },
       header_height: 40,
       footer_height: 40,
     },

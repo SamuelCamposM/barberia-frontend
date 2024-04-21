@@ -78,11 +78,7 @@ interface MyResponse {
   data: { result: Result };
 }
 
-type getUsuariosType = ({
-  busqueda,
-  pagination,
-  sort,
-}: setDataProps) => Promise<{
+type getUsuariosType = (params: setDataProps) => Promise<{
   error: string;
   result: Result;
 }>;
@@ -91,6 +87,7 @@ export const getUsuarios: getUsuariosType = async ({
   busqueda,
   pagination,
   sort,
+  rol,
 }) => {
   try {
     const {
@@ -101,6 +98,7 @@ export const getUsuarios: getUsuariosType = async ({
       pagination,
       sort,
       busqueda,
+      rol,
     });
 
     return {

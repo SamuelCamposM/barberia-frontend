@@ -4,8 +4,7 @@ import { Socket, io } from "socket.io-client";
 
 export const useSocket = (serverPath: string) => {
   const [online, setonline] = useState(false);
-  console.log(online);
-  
+
   const [socket, setsocket] = useState<Socket<
     DefaultEventsMap,
     DefaultEventsMap

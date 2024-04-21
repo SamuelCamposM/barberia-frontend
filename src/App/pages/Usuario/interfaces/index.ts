@@ -20,6 +20,7 @@ export interface setDataProps {
   busqueda: string;
   pagination: Pagination;
   sort: Sort;
+  rol: Roles;
 }
 export interface UsuarioState {
   openModal: boolean;

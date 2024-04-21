@@ -1,13 +1,13 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
-import { AddCircle, Refresh } from "@mui/icons-material";
+import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { StaticUsuario, UsuarioItem, setDataProps, useSocketEvents } from ".";
-import { paginationDefault, validateFunction } from "../../../helpers";
+import { paginationDefault, roles, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { columns, getUsuarios, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { useCommonStates, usePath } from "../../hooks";
+import { useCommonStates, usePath, useThemeSwal } from "../../hooks";
 import queryString from "query-string";
 
 import {
@@ -22,6 +22,7 @@ import {
   BuscadorPath,
   Cargando,
   TablaLayout,
+  TabsSlide,
   TableTitle,
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
@@ -29,6 +30,8 @@ import { toast } from "react-toastify"; // Definición de las columnas de la tab
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { ModalRoute } from "./components/ModalRoute";
 import { useUsuarioStore } from "./hooks/useUsuarioStore";
+import { Roles } from "../../../store/interfaces";
+import Swal from "sweetalert2";
 
 export const Usuario = () => {
   // Hooks de navegación y rutas.
@@ -37,7 +40,9 @@ export const Usuario = () => {
 
   // Hooks personalizados para permisos.
   const { noTienePermiso } = useMenuStore();
-  const { setItemActive, setOpenModal } = useUsuarioStore();
+  const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
+    useUsuarioStore();
+  const [rol, setRol] = useState<Roles>("CLIENTE");
   // Estados locales para el manejo de la UI y datos.
   const {
     // agregando,
@@ -55,61 +60,111 @@ export const Usuario = () => {
   const [pagination, setPagination] = useState(paginationDefault);
 
   // Funciones para el manejo de eventos y acciones.
-  const navigateWithParams = ({
-    newPagination,
-    newSort,
-  }: {
-    newPagination: Pagination;
-    newSort: Sort;
-  }) => {
-    const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
-      newPagination
-    )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
-    navigate(urlParams);
-    // let params = new URLSearchParams(window.location.search);
-    // params.set("q", busqueda);
-    // params.set("buscando", String(buscando));
-    // params.set("pagination", JSON.stringify(newPagination));
-    // params.set("sort", JSON.stringify(newSort));
-    // navigate(`?${params.toString()}`);
-  };
-  const handleChangePage = (_: unknown, newPage: number) => {
-    navigateWithParams({
-      newPagination: { ...pagination, page: newPage + 1 },
-      newSort: sort,
-    });
-  };
+  const navigateWithParams = useCallback(
+    ({
+      newPagination,
+      newSort,
+      newEstadoRequest,
+    }: {
+      newPagination: Pagination;
+      newSort: Sort;
+      newEstadoRequest: Roles;
+    }) => {
+      const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
+        newPagination
+      )}&sort=${JSON.stringify(
+        newSort
+      )}&buscando=${buscando}&rol=${newEstadoRequest}`;
+      navigate(urlParams);
+    },
+    [busqueda, navigate]
+  );
 
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    navigateWithParams({
-      newPagination: { ...pagination, page: 1, limit: +event.target.value },
-      newSort: sort,
-    });
-  };
+  const handleChangePage = useCallback(
+    (_: unknown, newPage: number) => {
+      navigateWithParams({
+        newPagination: { ...pagination, page: newPage + 1 },
+        newSort: sort,
+        newEstadoRequest: rol,
+      });
+    },
+    [pagination, sort, rol]
+  );
 
-  const sortFunction = (newSort: Sort) => {
-    navigateWithParams({ newPagination: pagination, newSort });
-  };
+  const handleChangeRowsPerPage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      navigateWithParams({
+        newPagination: { ...pagination, page: 1, limit: +event.target.value },
+        newSort: sort,
+        newEstadoRequest: rol,
+      });
+    },
+    [pagination, sort, rol]
+  );
 
-  // Función asíncrona para obtener y establecer datos.
-  const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
-    setCargando(true);
-    const { error, result } = await getUsuarios({
-      pagination,
-      sort,
-      busqueda,
-    });
-    if (error) {
-      toast.error(error);
-      return;
+  const sortFunction = useCallback(
+    (newSort: Sort) => {
+      navigateWithParams({
+        newPagination: pagination,
+        newSort,
+        newEstadoRequest: rol,
+      });
+    },
+    [pagination, rol]
+  );
+  const themeSwal = useThemeSwal();
+
+  const handleChangeEstado = (_: React.SyntheticEvent, newValue: Roles) => {
+    if (!itemActive._id) {
+      return navigateWithParams({
+        newPagination: pagination,
+        newSort: sort,
+        newEstadoRequest: newValue,
+      });
     }
-    const { docs, ...rest } = result;
-    setPagination(rest);
-    setUsuariosData(docs);
-    setSort(sort);
-    setBusqueda(busqueda);
-    setCargando(false);
+    if (itemActive._id) {
+      Swal.fire({
+        title: `La edición de un usuario esta en progreso`,
+        text: "¿Desea cambiar de rol?",
+        icon: "warning",
+        confirmButtonText: "Confirmar",
+        ...themeSwal,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setItemActive(itemDefault);
+          navigateWithParams({
+            newPagination: pagination,
+            newSort: sort,
+            newEstadoRequest: newValue,
+          });
+        }
+      });
+    }
   };
+  // Función asíncrona para obtener y establecer datos.
+  const setData = useCallback(
+    async ({ pagination, sort, busqueda, rol }: setDataProps) => {
+      setCargando(true);
+      const { error, result } = await getUsuarios({
+        pagination,
+        sort,
+        busqueda,
+        rol,
+      });
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      const { docs, ...rest } = result;
+      setPagination(rest);
+      setUsuariosData(docs);
+      setSort(sort);
+      setBusqueda(busqueda);
+      setRol(rol);
+      setCargando(false);
+    },
+    []
+  );
 
   // Efectos secundarios para la sincronización con la URL y sockets.
   const {
@@ -117,11 +172,13 @@ export const Usuario = () => {
     buscando: buscandoQuery = "",
     pagination: paginationQuery = "",
     sort: sortQuery = "",
+    rol: rolQuery = "CLIENTE",
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
+    rol: Roles | undefined;
   };
   useEffect(() => {
     const estaBuscando = Boolean(buscandoQuery === "true");
@@ -133,8 +190,9 @@ export const Usuario = () => {
         : paginationDefault,
       sort: sortQuery ? JSON.parse(sortQuery) : sort,
       busqueda: estaBuscando ? q : "",
+      rol: rolQuery,
     });
-  }, [q, paginationQuery, sortQuery, buscandoQuery]);
+  }, [q, paginationQuery, sortQuery, buscandoQuery, rolQuery]);
 
   useSocketEvents({ setUsuariosData, setPagination });
   // Acciones disponibles en la UI.
@@ -143,16 +201,51 @@ export const Usuario = () => {
       color: "primary",
       Icon: Refresh,
       name: "Actualizar",
-      onClick: () => setData({ pagination, sort, busqueda: q }),
+      onClick: () => setData({ pagination, sort, busqueda: q, rol }),
       tipo: "icono",
     },
     {
-      color: "error",
+      color: "success",
       Icon: AddCircle,
       name: "Nuevo",
       tipo: "icono",
       onClick() {
-        navigate(`/${path}/nuevo`, {});
+        setOpenModal(true);
+        let params = new URLSearchParams(window.location.search);
+
+        // Asegúrate de que 'params.toString()' devuelva la cadena de consulta con los parámetros que deseas mantener.
+        navigate(`/${path}/nuevo?${params.toString()}`);
+      },
+    },
+    {
+      color: "secondary",
+      tipo: "icono",
+      variant: "contained",
+      badge: "index",
+      disabled: false,
+      Icon: Create,
+      name: "Continuar Editando",
+      ocultar: !Boolean(itemActive._id),
+      onClick() {
+        if (!Boolean(itemActive._id)) return;
+        if (noTienePermiso("Menu", "update")) {
+          return;
+        }
+        setOpenModal(!openModal);
+      },
+    },
+    {
+      color: "error",
+      tipo: "icono",
+      badge: "index",
+      disabled: false,
+      Icon: Cancel,
+      name: "Cancelar Edición",
+      ocultar: !Boolean(itemActive._id),
+      onClick() {
+        if (!Boolean(itemActive._id)) return;
+        setItemActive(itemDefault);
+        navigate(`/${path}`, { replace: true });
       },
     },
   ];
@@ -162,9 +255,6 @@ export const Usuario = () => {
         return;
       }
       let params = new URLSearchParams(window.location.search);
-      console.log(params);
-
-      // Asegúrate de que 'params.toString()' devuelva la cadena de consulta con los parámetros que deseas mantener.
       navigate(`/${path}/${itemEditing._id}?${params.toString()}`);
       setItemActive(itemEditing);
       setOpenModal(true);
@@ -183,11 +273,26 @@ export const Usuario = () => {
         }}
       >
         <Routes>
-          <Route path="/:_id" element={<ModalRoute />} />
+          <Route
+            path="/:_id"
+            element={
+              <ModalRoute usuariosData={usuariosData} cargando={cargando} />
+            }
+          />
         </Routes>
         <BuscadorPath />
         <>
-          <TableTitle texto={path} />
+          <TableTitle
+            texto={path}
+            Tabs={
+              <TabsSlide
+                onChange={handleChangeEstado}
+                tabs={roles}
+                valueTab={rol}
+                cargando={cargando}
+              />
+            }
+          />
           <Box
             display={"flex"}
             justifyContent={"space-between"}

@@ -142,6 +142,7 @@ export const ModalUsuario = () => {
     setisSubmited(true);
     handleBlur();
     if (cargandoSubmit) return;
+
     if (isFormInvalidSubmit(formValues)) return;
     setCargandoSubmit(true);
     if (editar) handleEditar();

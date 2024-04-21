@@ -30,7 +30,7 @@ export const Menu = () => {
       name: "Continuar Editando",
       ocultar: !Boolean(itemActive._id),
       onClick() {
-        if (this && this.ocultar) return;
+        if (!Boolean(itemActive._id)) return;
         if (noTienePermiso("Menu", "update")) {
           return;
         }
@@ -46,7 +46,6 @@ export const Menu = () => {
       name: "Cancelar Edición",
       ocultar: !Boolean(itemActive._id),
       onClick() {
-        if (this && this.ocultar) return;
         if (!Boolean(itemActive._id)) return;
         setItemActive(itemDefault);
         navigate(`/${path}`, { replace: true });

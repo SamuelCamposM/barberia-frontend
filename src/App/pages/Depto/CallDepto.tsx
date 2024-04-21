@@ -13,10 +13,19 @@ import { useModalConfig } from "../../hooks";
 // import { usePath } from "../../../hooks";
 
 export const CallDepto = () => {
-  const { idModal, vhContainer, width } = useModalConfig("idModalDepto");
+  const { idModal, vhContainer, width } = useModalConfig(
+    "idModalDepto",
+    undefined,
+    {
+      height: { lg: "100", md: "100", xs: "100" },
+      footer_height: 0,
+      header_height: 40,
+    },
+    { lg: "100", md: "100", xs: "100" }
+  );
   const navigate = useNavigate();
   const handleClose = () => {
-    navigate(getSubPath(location.pathname));
+    navigate(getSubPath());
   };
   return (
     <ModalLayout
