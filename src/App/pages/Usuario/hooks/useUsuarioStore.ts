@@ -21,9 +21,9 @@ export const useUsuarioStore = () => {
     //Propiedades
     openModal,
     itemActive,
+    itemDefault,
     //Metodos
     setOpenModal,
     setItemActive,
-    itemDefault,
   };
 };

@@ -14,7 +14,7 @@ import { useMenuStore } from "../../pages/Menu";
 import { StyledListItem } from "./styled";
 
 export const ListSidebar = ({ openSidebar = true }) => {
-  const { data } = useMenuStore();
+  const { data, handleChangeComponent, count } = useMenuStore();
   const { usuario } = useAuthStore();
   return (
     <Box sx={{ overflow: "auto" }}>
@@ -26,6 +26,9 @@ export const ListSidebar = ({ openSidebar = true }) => {
               <StyledListItem disablePadding>
                 <NavLink
                   to={convertirPath(nombre)}
+                  onClick={() => {
+                    handleChangeComponent(count);
+                  }}
                   className={({ isActive }) => {
                     if (isActive) {
                       return "link link--active";

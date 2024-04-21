@@ -21,4 +21,5 @@ export interface MenuState {
   openModal: boolean;
   itemActive: PageItem;
   itemDefault: PageItem;
+  count: number;
 }

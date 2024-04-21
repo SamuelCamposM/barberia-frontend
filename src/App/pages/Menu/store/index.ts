@@ -20,6 +20,7 @@ const initialState: MenuState = {
   itemActive: itemDefault,
   itemDefault,
   data: [],
+  count: 0,
 };
 
 export const menuSlice = createSlice({
@@ -42,6 +43,9 @@ export const menuSlice = createSlice({
           : row
       );
     },
+    handleSliceChangeComponent: (state, action: PayloadAction<number>) => {
+      state.count = action.payload + 1 > 10 ? 0 : action.payload + 1;
+    },
   },
 });
 
@@ -51,4 +55,5 @@ export const {
   onSliceEditMenu,
   setSliceItemActive,
   setSliceOpenModalMenu,
+  handleSliceChangeComponent,
 } = menuSlice.actions;

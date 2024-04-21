@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UsuarioItem, UsuarioState } from "../interfaces";
 import { itemDefault } from "../helpers";
+import { handleSliceChangeComponent } from "../../Menu";
 
 const initialState: UsuarioState = {
   openModal: false,
@@ -18,6 +19,11 @@ export const usuarioSlice = createSlice({
     setSliceItemActive: (state, action: PayloadAction<UsuarioItem>) => {
       state.itemActive = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(handleSliceChangeComponent, () => {
+      return initialState;
+    });
   },
 });
 

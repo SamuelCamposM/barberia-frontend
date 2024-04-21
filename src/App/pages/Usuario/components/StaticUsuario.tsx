@@ -19,11 +19,13 @@ export const StaticUsuario = ({
   usuario,
   actionsJoins = [],
   handleEditar,
+  itemActive,
 }: {
   usuario: UsuarioItem;
   busqueda: string;
   actionsJoins?: Action[];
   handleEditar: (itemEditing: UsuarioItem) => void;
+  itemActive: UsuarioItem;
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
@@ -55,14 +57,14 @@ export const StaticUsuario = ({
       key={usuario._id}
       crud={usuario.crud}
       // onDoubleClick={() => {
-      //   setEditando(true);
+      // setEditando(true);
       // }}
     >
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[
             {
-              color: "primary",
+              color: itemActive?._id === usuario._id ? "secondary" : "primary",
               Icon: Create,
               name: `Editar`,
               onClick: () => {

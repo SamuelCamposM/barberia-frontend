@@ -1,74 +1,70 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { StaticUsuario, UsuarioItem, setDataProps, useSocketEvents } from ".";
-import { paginationDefault, roles, validateFunction } from "../../../helpers";
-import { PaperContainerPage } from "../../components/style";
+import { Box, TableBody, TablePagination } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import { columns, getUsuarios, sortDefault } from "./helpers";
-import { TableHeader } from "../../components/Tabla/TableHeader";
+import { ModalRoute } from "./components/ModalRoute";
+import { PaperContainerPage } from "../../components/style";
+import { Roles } from "../../../store/interfaces";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { StaticUsuario, UsuarioItem, setDataProps, useSocketEvents } from ".";
+import { TableCargando } from "../../components/Tabla/TableCargando";
+import { TableHeader } from "../../components/Tabla/TableHeader";
+import { TableNoData } from "../../components/Tabla/TableNoData";
+import { toast } from "react-toastify";
 import { useCommonStates, usePath, useThemeSwal } from "../../hooks";
+import { useMenuStore } from "../Menu";
+import { useUsuarioStore } from "./hooks/useUsuarioStore";
 import queryString from "query-string";
-
+import Swal from "sweetalert2";
 import {
-  Box,
-  TableBody,
-  TableCell,
-  TablePagination,
-  TableRow,
-} from "@mui/material";
+  getSubPath,
+  paginationDefault,
+  roles,
+  validateFunction,
+} from "../../../helpers";
 import {
   Acciones,
   BuscadorPath,
-  Cargando,
   TablaLayout,
-  TabsSlide,
   TableTitle,
-} from "../../components"; // Importaciones de hooks de menú y notificaciones.
-import { useMenuStore } from "../Menu";
-import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
-import { TableNoData } from "../../components/Tabla/TableNoData";
-import { ModalRoute } from "./components/ModalRoute";
-import { useUsuarioStore } from "./hooks/useUsuarioStore";
-import { Roles } from "../../../store/interfaces";
-import Swal from "sweetalert2";
+  TabsSlide,
+} from "../../components";
+import { useHandleNavigation } from "../../hooks/useHandleNavigation";
 
 export const Usuario = () => {
   // Hooks de navegación y rutas.
+  // Importaciones y definiciones de estado
   const navigate = useNavigate();
   const path = usePath();
-
-  // Hooks personalizados para permisos.
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso, data } = useMenuStore();
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useUsuarioStore();
+  const themeSwal = useThemeSwal();
   const [rol, setRol] = useState<Roles>("CLIENTE");
-  // Estados locales para el manejo de la UI y datos.
   const {
-    // agregando,
     buscando,
     busqueda,
     cargando,
-    // setAgregando,
+    setCargando,
     setBuscando,
     setBusqueda,
-    setCargando,
     setSort,
     sort,
   } = useCommonStates(sortDefault);
   const [usuariosData, setUsuariosData] = useState<UsuarioItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
-  // Funciones para el manejo de eventos y acciones.
-  const navigateWithParams = useCallback(
+  // Función de alto nivel para manejar eventos
+  const handleEvent = useCallback(
     ({
-      newPagination,
-      newSort,
-      newEstadoRequest,
+      newPagination = pagination,
+      newSort = sort,
+      newEstadoRequest = rol,
     }: {
-      newPagination: Pagination;
-      newSort: Sort;
-      newEstadoRequest: Roles;
+      newPagination?: Pagination;
+      newSort?: Sort;
+      newEstadoRequest?: Roles;
     }) => {
       const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
         newPagination
@@ -77,71 +73,28 @@ export const Usuario = () => {
       )}&buscando=${buscando}&rol=${newEstadoRequest}`;
       navigate(urlParams);
     },
-    [busqueda, navigate]
+    [busqueda, navigate, pagination, sort, rol]
   );
 
-  const handleChangePage = useCallback(
-    (_: unknown, newPage: number) => {
-      navigateWithParams({
-        newPagination: { ...pagination, page: newPage + 1 },
-        newSort: sort,
-        newEstadoRequest: rol,
-      });
+  const {
+    handleChangePage,
+    handleChangeRowsPerPage,
+    sortFunction,
+    handleChangeEstado,
+  } = useHandleNavigation<UsuarioItem, Roles>({
+    handleEvent,
+    pagination,
+    itemActive,
+    setItemActive,
+    itemDefault,
+    alertConfig: {
+      title: `La edición de un usuario esta en progreso`,
+      text: "¿Desea cambiar de rol?",
+      confirmButtonText: "Confirmar",
     },
-    [pagination, sort, rol]
-  );
+  });
 
-  const handleChangeRowsPerPage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      navigateWithParams({
-        newPagination: { ...pagination, page: 1, limit: +event.target.value },
-        newSort: sort,
-        newEstadoRequest: rol,
-      });
-    },
-    [pagination, sort, rol]
-  );
-
-  const sortFunction = useCallback(
-    (newSort: Sort) => {
-      navigateWithParams({
-        newPagination: pagination,
-        newSort,
-        newEstadoRequest: rol,
-      });
-    },
-    [pagination, rol]
-  );
-  const themeSwal = useThemeSwal();
-
-  const handleChangeEstado = (_: React.SyntheticEvent, newValue: Roles) => {
-    if (!itemActive._id) {
-      return navigateWithParams({
-        newPagination: pagination,
-        newSort: sort,
-        newEstadoRequest: newValue,
-      });
-    }
-    if (itemActive._id) {
-      Swal.fire({
-        title: `La edición de un usuario esta en progreso`,
-        text: "¿Desea cambiar de rol?",
-        icon: "warning",
-        confirmButtonText: "Confirmar",
-        ...themeSwal,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          setItemActive(itemDefault);
-          navigateWithParams({
-            newPagination: pagination,
-            newSort: sort,
-            newEstadoRequest: newValue,
-          });
-        }
-      });
-    }
-  };
-  // Función asíncrona para obtener y establecer datos.
+  // Función asíncrona para obtener y establecer datos
   const setData = useCallback(
     async ({ pagination, sort, busqueda, rol }: setDataProps) => {
       setCargando(true);
@@ -166,7 +119,7 @@ export const Usuario = () => {
     []
   );
 
-  // Efectos secundarios para la sincronización con la URL y sockets.
+  // Efectos secundarios para la sincronización con la URL y sockets
   const {
     q = "",
     buscando: buscandoQuery = "",
@@ -180,9 +133,9 @@ export const Usuario = () => {
     sort: string;
     rol: Roles | undefined;
   };
+
   useEffect(() => {
     const estaBuscando = Boolean(buscandoQuery === "true");
-
     setBuscando(estaBuscando);
     setData({
       pagination: paginationQuery
@@ -195,7 +148,8 @@ export const Usuario = () => {
   }, [q, paginationQuery, sortQuery, buscandoQuery, rolQuery]);
 
   useSocketEvents({ setUsuariosData, setPagination });
-  // Acciones disponibles en la UI.
+
+  // Acciones disponibles en la UI
   const actions: Action[] = [
     {
       color: "primary",
@@ -212,9 +166,8 @@ export const Usuario = () => {
       onClick() {
         setOpenModal(true);
         let params = new URLSearchParams(window.location.search);
-
-        // Asegúrate de que 'params.toString()' devuelva la cadena de consulta con los parámetros que deseas mantener.
-        navigate(`/${path}/nuevo?${params.toString()}`);
+        const pathNavigate = `/${path}/nuevo?${params.toString()}`;
+        navigate(pathNavigate);
       },
     },
     {
@@ -231,6 +184,9 @@ export const Usuario = () => {
         if (noTienePermiso("Menu", "update")) {
           return;
         }
+        let params = new URLSearchParams(window.location.search);
+        const pathNavigate = `/${path}/${itemActive._id}?${params.toString()}`;
+        navigate(pathNavigate);
         setOpenModal(!openModal);
       },
     },
@@ -244,22 +200,42 @@ export const Usuario = () => {
       ocultar: !Boolean(itemActive._id),
       onClick() {
         if (!Boolean(itemActive._id)) return;
+        navigate(getSubPath());
         setItemActive(itemDefault);
-        navigate(`/${path}`, { replace: true });
       },
     },
   ];
+
   const handleEditar = useCallback(
     (itemEditing: UsuarioItem) => {
       if (noTienePermiso("Menu", "update")) {
         return;
       }
       let params = new URLSearchParams(window.location.search);
-      navigate(`/${path}/${itemEditing._id}?${params.toString()}`);
-      setItemActive(itemEditing);
-      setOpenModal(true);
+      const pathNavigate = `/${path}/${itemEditing._id}?${params.toString()}`;
+
+      if (!itemActive._id || itemActive._id === itemEditing._id) {
+        navigate(pathNavigate);
+        setItemActive(itemEditing);
+        return setOpenModal(true);
+      }
+      if (itemActive._id) {
+        Swal.fire({
+          title: `La edición de un usuario esta en progreso`,
+          text: "¿Desea cambiar de edición?",
+          icon: "warning",
+          confirmButtonText: "Confirmar",
+          ...themeSwal,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(pathNavigate);
+            setItemActive(itemEditing);
+            setOpenModal(true);
+          }
+        });
+      }
     },
-    [q]
+    [q, itemActive, data]
   );
 
   return (
@@ -281,72 +257,63 @@ export const Usuario = () => {
           />
         </Routes>
         <BuscadorPath />
-        <>
-          <TableTitle
-            texto={path}
-            Tabs={
-              <TabsSlide
-                onChange={handleChangeEstado}
-                tabs={roles}
-                valueTab={rol}
-                cargando={cargando}
-              />
-            }
+
+        <TableTitle
+          texto={path}
+          Tabs={
+            <TabsSlide
+              onChange={handleChangeEstado}
+              tabs={roles}
+              valueTab={rol}
+              cargando={cargando}
+            />
+          }
+        />
+        <Box
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <Acciones actions={actions} />
+          <TablePagination
+            className="tablePagination"
+            rowsPerPageOptions={[10, 20, 100]}
+            component="div"
+            count={pagination.totalDocs}
+            rowsPerPage={pagination.limit}
+            page={pagination.page - 1}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Acciones actions={actions} />
-            <TablePagination
-              className="tablePagination"
-              rowsPerPageOptions={[10, 20, 100]}
-              component="div"
-              count={pagination.totalDocs}
-              rowsPerPage={pagination.limit}
-              page={pagination.page - 1}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Box>
-          <TablaLayout>
-            <TableHeader
-              columns={columns}
-              sort={sort}
-              sortFunction={sortFunction}
-            />
-            {cargando ? (
-              <TableBody>
-                <TableRow>
-                  <TableCell colSpan={columns.length + 1}>
-                    <Cargando titulo="Cargando Usuarios..." />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            ) : (
-              <TableBody>
-                {usuariosData.length === 0 ? (
-                  <TableNoData
-                    length={columns.length}
-                    title="No hay Usuarios"
-                  />
-                ) : (
-                  usuariosData.map((usuario) => {
-                    return (
-                      <StaticUsuario
-                        key={usuario._id}
-                        usuario={usuario}
-                        busqueda={busqueda}
-                        handleEditar={handleEditar}
-                      />
-                    );
-                  })
-                )}
-              </TableBody>
-            )}
-          </TablaLayout>
-        </>
+        </Box>
+        <TablaLayout>
+          <TableHeader
+            columns={columns}
+            sort={sort}
+            sortFunction={sortFunction}
+          />
+          {cargando ? (
+            <TableCargando columnsLength={columns.length} />
+          ) : (
+            <TableBody>
+              {usuariosData.length === 0 ? (
+                <TableNoData length={columns.length} title="No hay Usuarios" />
+              ) : (
+                usuariosData.map((usuario) => {
+                  return (
+                    <StaticUsuario
+                      key={usuario._id}
+                      usuario={usuario}
+                      busqueda={busqueda}
+                      handleEditar={handleEditar}
+                      itemActive={itemActive}
+                    />
+                  );
+                })
+              )}
+            </TableBody>
+          )}
+        </TablaLayout>
       </PaperContainerPage>
     </>
   );

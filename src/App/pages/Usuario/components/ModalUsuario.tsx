@@ -54,9 +54,9 @@ export const ModalUsuario = () => {
       email: [validarEmail],
       tel: [required],
       photo: [],
-      newPassword: [
-        editar ? (value: string) => minNoRequired(value, 6) : required,
-      ],
+      newPassword: editar
+        ? [(value: string) => minNoRequired(value, 6)]
+        : [required, (value: string) => minNoRequired(value, 6)],
       rol: [required],
     }),
     [editar]
@@ -139,6 +139,8 @@ export const ModalUsuario = () => {
 
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log('a');
+    
     setisSubmited(true);
     handleBlur();
     if (cargandoSubmit) return;
@@ -153,6 +155,7 @@ export const ModalUsuario = () => {
   useEffect(() => {
     onNewForm({ ...itemActive, newPassword: "" });
   }, [itemActive]);
+
   const { defaultPropsGenerator, refs } = useFieldProps({
     config,
     errorValues,

@@ -11,7 +11,7 @@ export const TableTitle = ({
 }) => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} flexWrap={"wrap"}>
+      <Box display={"flex"} alignItems={"center"} flexWrap={"wrap-reverse"}>
         {Tabs}
         <Divider textAlign={align} sx={{ flexGrow: 1 }}>
           <Typography

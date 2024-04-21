@@ -1,5 +1,6 @@
 import {
   getSliceDataMenu,
+  handleSliceChangeComponent,
   onSliceEditMenu,
   setSliceItemActive,
   setSliceOpenModalMenu,
@@ -13,7 +14,7 @@ import { toast } from "react-toastify";
 import { useCallback } from "react";
 import { ConvertirIcono, convertirPath } from "../../../../helpers";
 export const useMenuStore = () => {
-  const { openModal, itemActive, data, itemDefault } = useSelector(
+  const { openModal, itemActive, data, itemDefault, count } = useSelector(
     (state: RootState) => state.menu
   );
   const {
@@ -66,18 +67,23 @@ export const useMenuStore = () => {
     };
   };
 
+  const handleChangeComponent = (newCount: number) => {
+    dispatch(handleSliceChangeComponent(newCount));
+  };
   return {
     //Propiedades
     openModal,
     itemActive,
     data,
+    itemDefault,
+    count,
     //Metodos
     getDataMenu,
     onEditMenu,
     setOpenModalMenu,
     setItemActive,
-    itemDefault,
     noTienePermiso,
     getPathPage,
+    handleChangeComponent,
   };
 };
