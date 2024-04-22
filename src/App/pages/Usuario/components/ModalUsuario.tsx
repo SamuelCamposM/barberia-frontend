@@ -43,7 +43,8 @@ export const ModalUsuario = () => {
   const { columns, idModal, vhContainer, width } =
     useModalConfig("modalProfile");
   const { socket } = useProvideSocket();
-  const editar = useMemo(() => Boolean(itemActive._id), [itemActive]);
+
+  const editar = useMemo(() => itemActive._id, [itemActive]);
   const [showPass, setShowPass] = useState(false);
 
   // Configuración de validación
@@ -108,7 +109,7 @@ export const ModalUsuario = () => {
         setCargandoSubmit(false);
         if (error) return;
         setOpenModal(false);
-        setItemActive(itemDefault);
+        setItemActive(itemDefault, true);
       }
     );
   };
@@ -132,15 +133,14 @@ export const ModalUsuario = () => {
         setCargandoSubmit(false);
         if (error) return;
         setOpenModal(false);
-        setItemActive(itemDefault);
+        setItemActive(itemDefault, true);
       }
     );
   };
 
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('a');
-    
+
     setisSubmited(true);
     handleBlur();
     if (cargandoSubmit) return;
@@ -204,6 +204,7 @@ export const ModalUsuario = () => {
               <StyledGridContainer {...columns}>
                 {ComponentUpload}
                 <TextField
+                  autoFocus
                   label={"Apellido"}
                   {...defaultPropsGenerator("lastname", true, true)}
                 />

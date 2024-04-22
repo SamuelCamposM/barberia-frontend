@@ -5,6 +5,7 @@ export interface Crud {
   editado?: boolean;
   eliminado?: boolean;
   nuevo?: boolean;
+  agregando?: boolean;
 }
 
 export interface Action {

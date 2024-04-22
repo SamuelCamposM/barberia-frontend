@@ -14,28 +14,24 @@ export const ModalRoute = ({
   usuariosData: UsuarioItem[];
   cargando: boolean;
 }) => {
-  const { itemDefault, setItemActive, setOpenModal } = useUsuarioStore();
+  const { setOpenModal } = useUsuarioStore();
   const { _id } = useParams();
 
   const navigate = useNavigate();
 
   const onBackPage = () => {
-    console.log(getSubPath());
-
     navigate(getSubPath(), {
       replace: true,
     });
-    setItemActive(itemDefault);
+
     setOpenModal(false);
   };
   useEffect(() => {
     if (cargando) return;
     if (_id === "nuevo") {
-      setItemActive(itemDefault);
     } else {
       const itemFind = usuariosData.find((usuarioI) => usuarioI._id === _id);
       if (itemFind) {
-        setItemActive(itemFind);
       } else onBackPage();
     }
   }, [_id, cargando]);

@@ -1,7 +1,7 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
 import { Box, TableBody, TablePagination } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { columns, getUsuarios, sortDefault } from "./helpers";
 import { ModalRoute } from "./components/ModalRoute";
 import { PaperContainerPage } from "../../components/style";
@@ -12,13 +12,11 @@ import { TableCargando } from "../../components/Tabla/TableCargando";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify";
-import { useCommonStates, usePath, useThemeSwal } from "../../hooks";
+import { useCommonStates, usePath } from "../../hooks";
 import { useMenuStore } from "../Menu";
 import { useUsuarioStore } from "./hooks/useUsuarioStore";
 import queryString from "query-string";
-import Swal from "sweetalert2";
-import {
-  getSubPath,
+import { 
   paginationDefault,
   roles,
   validateFunction,
@@ -40,7 +38,6 @@ export const Usuario = () => {
   const { noTienePermiso, data } = useMenuStore();
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useUsuarioStore();
-  const themeSwal = useThemeSwal();
   const [rol, setRol] = useState<Roles>("CLIENTE");
   const {
     buscando,
@@ -84,14 +81,8 @@ export const Usuario = () => {
   } = useHandleNavigation<UsuarioItem, Roles>({
     handleEvent,
     pagination,
-    itemActive,
     setItemActive,
     itemDefault,
-    alertConfig: {
-      title: `La edición de un usuario esta en progreso`,
-      text: "¿Desea cambiar de rol?",
-      confirmButtonText: "Confirmar",
-    },
   });
 
   // Función asíncrona para obtener y establecer datos
@@ -148,8 +139,19 @@ export const Usuario = () => {
   }, [q, paginationQuery, sortQuery, buscandoQuery, rolQuery]);
 
   useSocketEvents({ setUsuariosData, setPagination });
+  const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
 
-  // Acciones disponibles en la UI
+  const navigateToPath = (
+    path: string,
+    id: string,
+    params: URLSearchParams
+  ) => {
+    const pathNavigate = `/${path}/${id}?${params.toString()}`;
+    navigate(pathNavigate);
+  };
+
+  const handleOnClick = async (item: UsuarioItem, path: string) => {};
+
   const actions: Action[] = [
     {
       color: "primary",
@@ -163,30 +165,30 @@ export const Usuario = () => {
       Icon: AddCircle,
       name: "Nuevo",
       tipo: "icono",
-      onClick() {
-        setOpenModal(true);
-        let params = new URLSearchParams(window.location.search);
-        const pathNavigate = `/${path}/nuevo?${params.toString()}`;
-        navigate(pathNavigate);
-      },
+      disabled: nuevoActive,
+      onClick: () =>
+        handleOnClick({ ...itemDefault, crud: { agregando: true } }, path),
     },
     {
-      color: "secondary",
+      color: nuevoActive ? "success" : "secondary",
       tipo: "icono",
       variant: "contained",
       badge: "index",
       disabled: false,
       Icon: Create,
-      name: "Continuar Editando",
-      ocultar: !Boolean(itemActive._id),
-      onClick() {
-        if (!Boolean(itemActive._id)) return;
-        if (noTienePermiso("Menu", "update")) {
+      name: `Continuar ${nuevoActive ? "Creando" : "Editando"}`,
+      ocultar: !Boolean(itemActive._id) && !nuevoActive,
+      onClick: () => {
+        if (!Boolean(itemActive._id) && !nuevoActive) return;
+        if (noTienePermiso("Usuario", "update")) {
           return;
         }
         let params = new URLSearchParams(window.location.search);
-        const pathNavigate = `/${path}/${itemActive._id}?${params.toString()}`;
-        navigate(pathNavigate);
+        navigateToPath(
+          path,
+          nuevoActive ? "nuevo" : itemActive._id || "nuevo",
+          params
+        );
         setOpenModal(!openModal);
       },
     },
@@ -196,43 +198,16 @@ export const Usuario = () => {
       badge: "index",
       disabled: false,
       Icon: Cancel,
-      name: "Cancelar Edición",
+      name: `Cancelar ${nuevoActive ? "Creando" : "Edición"}`,
       ocultar: !Boolean(itemActive._id),
-      onClick() {
-        if (!Boolean(itemActive._id)) return;
-        navigate(getSubPath());
-        setItemActive(itemDefault);
-      },
+      onClick: async () => {},
     },
   ];
 
   const handleEditar = useCallback(
-    (itemEditing: UsuarioItem) => {
+    async (itemEditing: UsuarioItem) => {
       if (noTienePermiso("Menu", "update")) {
         return;
-      }
-      let params = new URLSearchParams(window.location.search);
-      const pathNavigate = `/${path}/${itemEditing._id}?${params.toString()}`;
-
-      if (!itemActive._id || itemActive._id === itemEditing._id) {
-        navigate(pathNavigate);
-        setItemActive(itemEditing);
-        return setOpenModal(true);
-      }
-      if (itemActive._id) {
-        Swal.fire({
-          title: `La edición de un usuario esta en progreso`,
-          text: "¿Desea cambiar de edición?",
-          icon: "warning",
-          confirmButtonText: "Confirmar",
-          ...themeSwal,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate(pathNavigate);
-            setItemActive(itemEditing);
-            setOpenModal(true);
-          }
-        });
       }
     },
     [q, itemActive, data]
