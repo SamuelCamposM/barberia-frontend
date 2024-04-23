@@ -1,15 +1,14 @@
 import { Action } from "../../../interfaces/global";
-import { BuscadorPath } from "../../components";
+import { BuscadorPath, TableTitle } from "../../components";
 import { Cancel, Create } from "@mui/icons-material";
 import { PaperContainerPage } from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useMenuStore, Tabla, ModalRoute } from "./";
-import { usePath } from "../../hooks";
 import { validateFunction } from "../../../helpers";
+import { useMemo } from "react";
 
 export const Menu = () => {
   const navigate = useNavigate();
-  const path = usePath();
   const {
     noTienePermiso,
     openModal,
@@ -17,6 +16,8 @@ export const Menu = () => {
     itemDefault,
     setItemActive,
     setOpenModalMenu,
+    getPathPage,
+    data,
   } = useMenuStore();
 
   const actions: Action[] = [
@@ -48,7 +49,7 @@ export const Menu = () => {
       onClick() {
         if (!Boolean(itemActive._id)) return;
         setItemActive(itemDefault);
-        navigate(`/${path}`, { replace: true });
+        navigate(`/${"path"}`, { replace: true });
       },
     },
     // {
@@ -75,8 +76,10 @@ export const Menu = () => {
   //   buscando: string;
   // };
 
+  const { path } = useMemo(() => getPathPage("Menu", false), [data]);
   return (
     <>
+      <TableTitle texto={path} />
       <PaperContainerPage
         tabIndex={-1}
         onKeyDown={(e) => {

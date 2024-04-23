@@ -10,10 +10,10 @@ import {
 } from "../../../components/style";
 import queryString from "query-string";
 import { filterFunction } from "../helpers";
-import { usePath, useTablePagination } from "../../../hooks";
+import { useTablePagination } from "../../../hooks";
 import { useCallback } from "react";
 import "animate.css/animate.min.css";
-import { Acciones, TablaLayout, TableTitle } from "../../../components";
+import { Acciones, TablaLayout } from "../../../components";
 import { Action, Column } from "../../../../interfaces/global";
 import { ConvertirIcono } from "../../../../helpers";
 
@@ -31,7 +31,6 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
   const navigate = useNavigate();
   const { data, noTienePermiso, setOpenModalMenu, setItemActive, itemActive } =
     useMenuStore();
-  const path = usePath();
   const { q = "", buscando = "" } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
@@ -44,7 +43,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
       if (noTienePermiso("Menu", "update")) {
         return;
       }
-      navigate(`/${path}/${row._id}${q && `?q=${q}&buscando=${buscando}`}`);
+      navigate(`/${"path"}/${row._id}${q && `?q=${q}&buscando=${buscando}`}`);
       setItemActive(row);
       setOpenModalMenu(true);
     },
@@ -54,7 +53,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
 
   return (
     <>
-      <TableTitle texto={path} />
+      {/* <TableTitle texto={path} /> */}
       <Box
         display={"flex"}
         justifyContent={"space-between"}

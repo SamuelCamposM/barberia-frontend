@@ -7,7 +7,7 @@ import { PaperContainerPage } from "../../components/style";
 import { columns, getSucursals, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { useCommonStates, usePath } from "../../hooks";
+import { useCommonStates } from "../../hooks";
 import queryString from "query-string";
 
 import {
@@ -34,10 +34,9 @@ import { CallDepto } from "../Depto";
 export const Sucursal = () => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
-  const path = usePath();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso, getPathPage } = useMenuStore();
+  const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
 
   // Estados locales para el manejo de la UI y datos.
   const {
@@ -159,6 +158,7 @@ export const Sucursal = () => {
     },
   ];
   const { path: deptoPath } = useMemo(() => getPathPage("Depto"), []);
+  const { path } = useMemo(() => getPathPage("Sucursal", false), [dataMenu]);
   return (
     <>
       <PaperContainerPage

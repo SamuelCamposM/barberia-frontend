@@ -12,15 +12,11 @@ import { TableCargando } from "../../components/Tabla/TableCargando";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify";
-import { useCommonStates, usePath } from "../../hooks";
+import { useCommonStates } from "../../hooks";
 import { useMenuStore } from "../Menu";
 import { useUsuarioStore } from "./hooks/useUsuarioStore";
 import queryString from "query-string";
-import { 
-  paginationDefault,
-  roles,
-  validateFunction,
-} from "../../../helpers";
+import { paginationDefault, roles, validateFunction } from "../../../helpers";
 import {
   Acciones,
   BuscadorPath,
@@ -34,8 +30,8 @@ export const Usuario = () => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
-  const path = usePath();
-  const { noTienePermiso, data } = useMenuStore();
+  const { noTienePermiso, data: dataMenu, getPathPage } = useMenuStore();
+  const { path } = useMemo(() => getPathPage("Usuario", false), [dataMenu]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useUsuarioStore();
   const [rol, setRol] = useState<Roles>("CLIENTE");
@@ -210,7 +206,7 @@ export const Usuario = () => {
         return;
       }
     },
-    [q, itemActive, data]
+    [dataMenu]
   );
 
   return (

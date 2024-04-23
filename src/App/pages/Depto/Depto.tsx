@@ -1,13 +1,13 @@
 import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DeptoItem, setDataProps, useSocketEvents } from ".";
 import { paginationDefault, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { columns, getDeptos, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
-import { useCommonStates, usePath } from "../../hooks";
+import { useCommonStates } from "../../hooks";
 import queryString from "query-string";
 
 import {
@@ -33,11 +33,11 @@ import { TableNoData } from "../../components/Tabla/TableNoData";
 export const Depto = () => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
-  const path = usePath();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
 
+  const { path } = useMemo(() => getPathPage("Depto", false), [dataMenu]);
   // Estados locales para el manejo de la UI y datos.
   const {
     agregando,

@@ -56,15 +56,24 @@ export const useMenuStore = () => {
     },
     [data, rol]
   );
-  const getPathPage: (component: Components) => {
+  const getPathPage: (
+    component: Components,
+    withIcon?: boolean
+  ) => {
     path: string;
-    Icono: JSX.Element;
-  } = (component: Components) => {
+    Icono?: JSX.Element;
+  } = (component: Components, withIcon = false) => {
     const res = data.find((itemMenu) => itemMenu.componente === component);
-    return {
-      path: convertirPath(res?.componente || ""),
-      Icono: ConvertirIcono(res?.icono),
-    };
+    if (withIcon) {
+      return {
+        path: convertirPath(res?.componente || ""),
+        Icono: ConvertirIcono(res?.icono),
+      };
+    } else {
+      return {
+        path: convertirPath(res?.componente || ""),
+      };
+    }
   };
 
   const handleChangeComponent = (newCount: number) => {

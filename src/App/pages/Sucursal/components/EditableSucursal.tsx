@@ -151,7 +151,7 @@ export const EditableSucursal = ({
       }
     },
   });
-  const { Icono, path } = useMemo(() => getPathPage("Depto"), []);
+  const { Icono, path } = useMemo(() => getPathPage("Depto", true), []);
   return (
     <StyledTableRow key={sucursal._id} crud={sucursal.crud}>
       <StyledTableCell padding="checkbox">

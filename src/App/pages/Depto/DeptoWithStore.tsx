@@ -12,7 +12,6 @@ import { PaperContainerPage } from "../../components/style";
 import { SocketOnDepto, columns, itemDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
-import { usePath } from "../../hooks";
 import { useProvideSocket } from "../../../hooks";
 import queryString from "query-string";
 
@@ -27,8 +26,7 @@ import {
   Acciones,
   BuscadorPath,
   Cargando,
-  TablaLayout,
-  TableTitle,
+  TablaLayout, 
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
@@ -38,7 +36,6 @@ import { RowDepto } from "./components/RowDepto";
 export const Depto = () => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
-  const path = usePath();
   // Hooks personalizados para socket y permisos.
   const { socket } = useProvideSocket();
   const { noTienePermiso } = useMenuStore();
@@ -182,7 +179,7 @@ export const Depto = () => {
       tabIndex={-1}
       onKeyDown={(e) => {
         if (e.key === "Escape") {
-          return navigate(`/${path}`);
+          return navigate(`/${"path"}`);
         }
 
         if (validateFunction(e)) return;
@@ -192,7 +189,6 @@ export const Depto = () => {
     >
       <BuscadorPath />
       <>
-        <TableTitle texto={path} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}

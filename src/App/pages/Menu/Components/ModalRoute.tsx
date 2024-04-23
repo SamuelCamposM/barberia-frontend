@@ -1,17 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ModalMenu, useMenuStore } from "..";
-import { useEffect } from "react";
-import { usePath } from "../../../hooks";
+import { useEffect } from "react"; 
 
 export const ModalRoute = () => {
   const { itemActive, data, setItemActive, setOpenModalMenu, itemDefault } =
     useMenuStore();
   const { _id } = useParams();
 
-  const navigate = useNavigate();
-  const path = usePath();
+  const navigate = useNavigate(); 
   const onBackPage = () => {
-    navigate(`/${path}`);
+    navigate(`/${'path'}`);
   };
   useEffect(() => {
     if (_id === "nuevo") {
