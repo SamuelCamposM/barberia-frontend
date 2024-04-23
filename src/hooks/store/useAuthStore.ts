@@ -1,21 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
-import { clienteAxios } from "../../api";
-import {
-  clearErrorMessage,
-  onSliceEditUsuario,
-  onSliceLogin,
-  onSliceLogout,
-  // onSlicechecking,
-} from "../../store/auth";
 import {
   LoginParams,
   RegisterParams,
   RootState,
   Usuario,
 } from "../../store/interfaces";
+import {
+  clearErrorMessage,
+  onSliceEditUsuario,
+  onSliceLogin,
+  onSliceLogout,
+} from "../../store/auth";
+import { clienteAxios } from "../../api";
+
 interface UsuarioWithToken extends Usuario {
   token: string;
 }
+
 export const useAuthStore = () => {
   const { status, usuario, errorMessage } = useSelector(
     (state: RootState) => state.auth
@@ -26,78 +27,69 @@ export const useAuthStore = () => {
     // dispatch(onSlicechecking());
     try {
       const {
-        data: { token, ...usuarioSinToken },
+        data: { token, ...rest },
       }: { data: UsuarioWithToken } = await clienteAxios.post("/auth", {
         email,
         password,
       });
       localStorage.setItem("token", token);
-      localStorage.setItem("token-init-data", String(new Date().getTime()));
-      dispatch(onSliceLogin(usuarioSinToken));
+      localStorage.setItem("token-init-data", new Date().getTime().toString());
+      dispatch(onSliceLogin(rest));
     } catch (error) {
       dispatch(onSliceLogout("Credenciales incorrectas"));
       setTimeout(() => {
         dispatch(clearErrorMessage());
-      }, 2000);
+      }, 10);
     }
   };
 
-  const onStartRegister = async ({
-    name,
-    email,
-    password,
-    lastname,
-    tel,
-  }: RegisterParams) => {
+  const onStartRegister = async (arg: RegisterParams) => {
     // dispatch(onSlicechecking());
     try {
       const {
-        data: { token, ...usuarioSinToken },
-      }: { data: UsuarioWithToken } = await clienteAxios.post("/auth/new", {
-        name,
-        email,
-        password,
-        lastname,
-        tel,
-      });
+        data: { token, ...rest },
+      }: { data: UsuarioWithToken } = await clienteAxios.post("/auth/new", arg);
       localStorage.setItem("token", token);
-      localStorage.setItem("token-init-data", String(new Date().getTime()));
-      dispatch(onSliceLogin(usuarioSinToken));
+      localStorage.setItem("token-init-data", new Date().getTime().toString());
+      dispatch(onSliceLogin(rest));
     } catch (error: any) {
-      dispatch(onSliceLogout(error.response?.data?.msg));
+      const msgError =
+        error?.response?.data?.msg || "Error al consultar los departamentos";
+      dispatch(onSliceLogout(msgError));
       setTimeout(() => {
         dispatch(clearErrorMessage());
-      }, 2000);
+      }, 10);
     }
   };
 
   const onStartSheckAuthToken = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return dispatch(onSliceLogout(undefined));
+    if (!token) return dispatch(onSliceLogout());
     try {
       const {
-        data: { token, ...usuarioSinToken },
-      } = await clienteAxios.get("/auth/renew");
+        data: { token, ...rest },
+      }: { data: UsuarioWithToken } = await clienteAxios.get("/auth/renew");
       localStorage.setItem("token", token);
-      localStorage.setItem("token-init-data", String(new Date().getTime()));
-
-      dispatch(onSliceLogin(usuarioSinToken));
-    } catch (error: any) {
-      localStorage.clear();
-      dispatch(onSliceLogout(error?.response?.data?.msg || "Sesión expirada"));
+      localStorage.setItem("token-init-data", new Date().getTime().toString());
+      dispatch(onSliceLogin(rest));
+    } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("token-init-data");
+      dispatch(onSliceLogout());
     }
   };
 
   const onStartLogout = () => {
-    localStorage.clear();
-    dispatch(onSliceLogout(undefined));
+    localStorage.removeItem("token");
+    localStorage.removeItem("token-init-data");
+    dispatch(onSliceLogout());
   };
   const onEditUsuario = (usuario: Usuario) => {
     dispatch(onSliceEditUsuario(usuario));
   };
 
   return {
-    //Propiedades
+    //*Propiedades
     status,
     usuario,
     errorMessage,

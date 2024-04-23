@@ -1,5 +1,11 @@
-import { TextField, Box, Typography } from "@mui/material";
-import { useAuthStore, useForm } from "../../hooks";
+import {
+  TextField,
+  Box,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
+import { useAuthStore, useForm, useLocalStorage } from "../../hooks";
 import Button from "@mui/material/Button";
 import { AuthLayout } from "../Layout/AuthLayout";
 import { useMemo, useEffect } from "react";
@@ -7,22 +13,17 @@ import { required } from "../../helpers";
 import { Link } from "react-router-dom";
 import { DataAlerta } from "../../App/components";
 import { toast } from "react-toastify";
+import { LoginParams } from "../../store/interfaces";
 
-interface RegisterInterface {
-  [key: string]: string | string[] | number;
-  email: string;
-  password: string;
-  // campoTexto: string[];
-}
-
+const keyFormStorage = "formValues";
 export const LoginPage = () => {
-  const initialValues = useMemo<RegisterInterface>(
-    () => ({
-      email: "",
-      password: "",
-      // campoTexto: ["1", "2"],
-    }),
-    []
+  const [storedValues, setStoredValues] = useLocalStorage<LoginParams>(keyFormStorage, {
+    email: "",
+    password: "",
+  });
+  const [rememberPassword, setRememberPassword] = useLocalStorage(
+    "rememberPassword",
+    true
   );
   const config = useMemo(
     () => ({
@@ -40,7 +41,7 @@ export const LoginPage = () => {
     handleBlur,
     isFormInvalidSubmit,
     // setformValues,
-  } = useForm(initialValues, config);
+  } = useForm(storedValues, config);
   const { onStartLogin, errorMessage } = useAuthStore();
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,7 +51,13 @@ export const LoginPage = () => {
       return;
     }
 
-    onStartLogin({ email: formValues.email, password: formValues.password });
+    if (rememberPassword) {
+      setStoredValues(formValues);
+    } else {
+      localStorage.removeItem(keyFormStorage);
+    }
+
+    onStartLogin(formValues);
   };
   useEffect(() => {
     if (errorMessage !== undefined) {
@@ -87,39 +94,27 @@ export const LoginPage = () => {
           helperText={errorValues.password.join(" - ")}
           onBlur={handleBlur}
         />
-        {/* <Divider sx={{ mt: 2 }}>
-          <Typography color={"error"}>
-            {errorValues.campoTexto.join(" - ")}
-          </Typography>
-        </Divider>
-        {formValues.campoTexto.map((campo, index) => (
-          <TextField
-            key={index}
-            sx={{ mt: 1 }}
-            fullWidth
-            type="number"
-            label={`Campo ${index + 1}`}
-            value={campo}
-            error={errorValues.campoTexto.length > 0}
-            onBlur={handleBlur}
-            onChange={(e) => {
-              setformValues((prev) => {
-                let newCampos = prev.campoTexto;
-                newCampos[index] = e.target.value;
-                return { ...prev, campoTexto: newCampos };
-              });
-            }}
-          />
-        ))} */}
+
         <Button
           sx={{ mt: 2 }}
           variant="contained"
-          color={isFormInvalid ? "error" : "secondary"}
+          color={isFormInvalid ? "error" : "primary"}
           fullWidth
           type="submit"
         >
           SING IN
         </Button>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={rememberPassword}
+              onChange={(e) => setRememberPassword(e.target.checked)}
+              name="rememberPassword"
+              color="secondary"
+            />
+          }
+          label="Recordar Credenciales"
+        />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="subtitle1" color="secondary.light">
             Aun no tienes una cuenta?

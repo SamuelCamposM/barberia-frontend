@@ -20,14 +20,14 @@ export const AppRouter = () => {
     <>
       <Alerta />
       <Routes>
-        {status === "authenticated" ? (
-          <>
-            <Route path="/*" element={<MainPage />} />
-          </>
-        ) : (
+        {status === "not-authenticated" ? (
           <>
             <Route path="/auth/*" element={<AuthRouter />} />
             <Route path="/*" element={<Navigate to={"/auth/login"} />} />
+          </>
+        ) : (
+          <>
+            <Route path="/*" element={<MainPage />} />
           </>
         )}
         <Route path="/*" element={<Navigate to={"/auth/login"} />} />

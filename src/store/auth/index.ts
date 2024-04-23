@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { Usuario, AuthState } from "../interfaces";
+import { AuthState, Usuario } from "../interfaces";
 
 const initialState: AuthState = {
   status: "checking",
@@ -15,7 +14,7 @@ const initialState: AuthState = {
     tel: "",
     createdAt: "",
     updatedAt: "",
-  }, // You might want to replace this with a proper initial value
+  }, // Initialize with the default values
   errorMessage: undefined,
 };
 
@@ -23,28 +22,19 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    onSlicechecking: (state /* action */) => {
+    onSlicechecking: (state) => {
       state.status = "checking";
+      state.usuario = initialState.usuario; // Reset to the default values
       state.errorMessage = undefined;
     },
     onSliceLogin: (state, action: PayloadAction<Usuario>) => {
-      //   {
-      //     "": true,
-      //     "": "Samuel Benjamin",
-      //     "": "s.cmelara12@gmail.com",
-      //     "": true,
-      //     "": "CLIENTE",
-      //     "": "Campos",
-      //     "": "+50376681782",
-      //     "": "65f9f915df006187fc65b648"
-      // }
       state.status = "authenticated";
       state.usuario = action.payload;
       state.errorMessage = undefined;
     },
     onSliceLogout: (state, action: PayloadAction<string | undefined>) => {
       state.status = "not-authenticated";
-      state.usuario = initialState.usuario; // You might want to replace this with a proper initial value
+      state.usuario = initialState.usuario; // Reset to the default values
       state.errorMessage = action.payload;
     },
     clearErrorMessage: (state) => {

@@ -7,15 +7,10 @@ import { required, validarEmail } from "../../helpers";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DataAlerta } from "../../App/components";
+import { RegisterParams } from "../../store/interfaces";
 
-interface RegisterInterface {
-  [key: string]: string | string[] | number;
-  email: string;
-  lastname: string;
-  name: string;
-  password: string;
+interface RegisterInterface extends RegisterParams {
   password2: string;
-  tel: string;
 }
 
 export const RegisterPage = () => {
@@ -159,7 +154,7 @@ export const RegisterPage = () => {
         <Button
           sx={{ mt: 2 }}
           variant="contained"
-          color={isFormInvalid ? "error" : "secondary"}
+          color={isFormInvalid ? "error" : "primary"}
           fullWidth
           type="submit"
         >
