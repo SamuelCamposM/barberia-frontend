@@ -49,7 +49,7 @@ export const Menu = () => {
       onClick() {
         if (!Boolean(itemActive._id)) return;
         setItemActive(itemDefault);
-        navigate(`/${"path"}`, { replace: true });
+        navigate(`/${path}`, { replace: true });
       },
     },
     // {

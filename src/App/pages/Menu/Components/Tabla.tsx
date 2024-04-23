@@ -43,7 +43,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
       if (noTienePermiso("Menu", "update")) {
         return;
       }
-      navigate(`/${"path"}/${row._id}${q && `?q=${q}&buscando=${buscando}`}`);
+      navigate(`${row._id}${q && `?q=${q}&buscando=${buscando}`}`);
       setItemActive(row);
       setOpenModalMenu(true);
     },

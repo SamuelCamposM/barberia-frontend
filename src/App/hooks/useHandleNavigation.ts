@@ -39,6 +39,8 @@ export const useHandleNavigation = <
 
   const handleChangeEstado = async (_: React.SyntheticEvent, newValue: T) => {
     const res = await setItemActive(itemDefault);
+    console.log(res);
+
     if (res) {
       handleEvent({ newEstadoRequest: newValue });
     }

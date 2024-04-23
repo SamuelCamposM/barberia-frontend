@@ -17,9 +17,104 @@ export const useUsuarioStore = () => {
   };
   const setItemActive = async (
     itemToActive: UsuarioItem,
-    sinValidar?: boolean
+    sinValidacion?: boolean
   ) => {
-    dispatch(setSliceItemActive(itemToActive));
+    if (sinValidacion) {
+      dispatch(setSliceItemActive(itemToActive));
+      return true;
+    }
+
+    const isEditingToDefault =
+      itemActive._id && !itemToActive.crud?.agregando && !itemToActive._id;
+
+    const isNewToEditing = itemActive.crud?.agregando && itemToActive._id;
+
+    const isDefaultToNew =
+      !itemActive._id &&
+      !itemActive.crud?.agregando &&
+      itemToActive.crud?.agregando;
+
+    const isDefaultToEdit =
+      !itemActive._id && !itemActive.crud?.agregando && itemToActive._id;
+
+    const isChangingStateWithNew =
+      itemActive.crud?.agregando &&
+      !itemToActive._id &&
+      !itemToActive.crud?.agregando;
+
+    const isChangingStateWitDefault =
+      !itemActive._id &&
+      !itemActive.crud?.agregando &&
+      !itemToActive._id &&
+      !itemToActive.crud?.agregando;
+    const isEditingTheSame =
+      itemActive._id === itemToActive._id && !itemActive.crud?.agregando;
+    const isEditingAnother =
+      itemActive._id !== itemToActive._id && itemActive._id;
+
+    if (isEditingTheSame) {
+      dispatch(setSliceItemActive(itemToActive));
+      return true;
+    }
+
+    if (isChangingStateWithNew) {
+      // dispatch(setSliceItemActive(itemToActive));
+      return true;
+    }
+
+    if (isChangingStateWitDefault) {
+      // dispatch(setSliceItemActive(itemToActive));
+      return true;
+    }
+
+    if (isDefaultToNew || isDefaultToEdit) {
+      dispatch(setSliceItemActive(itemToActive));
+      return true;
+    }
+    // Si el usuario está cambiando de tab, actualiza el item activo
+    if (isEditingToDefault) {
+      const result = await Swal.fire({
+        title: `Estás editando un usuario`,
+        text: "Si realizas esta acción Los cambios no se guardarán.",
+        icon: "warning",
+        confirmButtonText: "Confirmar",
+        ...themeSwal,
+      });
+      if (result.isConfirmed) {
+        dispatch(setSliceItemActive(itemToActive));
+        return true;
+      }
+    }
+    console.log("a");
+
+    if (isNewToEditing) {
+      const result = await Swal.fire({
+        title: `Estás creando un usuario`,
+        text: "Si realizas esta acción Los cambios no se guardarán.",
+        icon: "warning",
+        confirmButtonText: "Confirmar",
+        ...themeSwal,
+      });
+      if (result.isConfirmed) {
+        dispatch(setSliceItemActive(itemToActive));
+        return true;
+      }
+    }
+    if (isEditingAnother) {
+      const result = await Swal.fire({
+        title: `Estas editando un usuario`,
+        text: "Si realizas esta acción Los cambios no se guardarán.",
+        icon: "warning",
+        confirmButtonText: "Confirmar",
+        ...themeSwal,
+      });
+      if (result.isConfirmed) {
+        dispatch(setSliceItemActive(itemToActive));
+        return true;
+      }
+    }
+    // Si el usuario está en el estado por defecto, no hace nada
+
     return false;
   };
 

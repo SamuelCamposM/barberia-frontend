@@ -2,7 +2,11 @@ import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SucursalItem, setDataProps, useSocketEvents } from ".";
-import { paginationDefault, validateFunction } from "../../../helpers";
+import {
+  hasSubroute,
+  paginationDefault,
+  validateFunction,
+} from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { columns, getSucursals, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
@@ -124,6 +128,8 @@ export const Sucursal = () => {
     sort: string;
   };
   useEffect(() => {
+    if (hasSubroute(location.pathname, path)) return;
+
     const estaBuscando = Boolean(buscandoQuery === "true");
 
     setBuscando(estaBuscando);

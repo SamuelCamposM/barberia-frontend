@@ -66,12 +66,12 @@ export const useMenuStore = () => {
     const res = data.find((itemMenu) => itemMenu.componente === component);
     if (withIcon) {
       return {
-        path: convertirPath(res?.componente || ""),
+        path: convertirPath(res?.nombre || ""),
         Icono: ConvertirIcono(res?.icono),
       };
     } else {
       return {
-        path: convertirPath(res?.componente || ""),
+        path: convertirPath(res?.nombre || ""),
       };
     }
   };

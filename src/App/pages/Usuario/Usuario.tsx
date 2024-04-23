@@ -47,7 +47,6 @@ export const Usuario = () => {
   } = useCommonStates(sortDefault);
   const [usuariosData, setUsuariosData] = useState<UsuarioItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
-
   // Función de alto nivel para manejar eventos
   const handleEvent = useCallback(
     ({
@@ -137,17 +136,6 @@ export const Usuario = () => {
   useSocketEvents({ setUsuariosData, setPagination });
   const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
 
-  const navigateToPath = (
-    path: string,
-    id: string,
-    params: URLSearchParams
-  ) => {
-    const pathNavigate = `/${path}/${id}?${params.toString()}`;
-    navigate(pathNavigate);
-  };
-
-  const handleOnClick = async (item: UsuarioItem, path: string) => {};
-
   const actions: Action[] = [
     {
       color: "primary",
@@ -162,8 +150,18 @@ export const Usuario = () => {
       name: "Nuevo",
       tipo: "icono",
       disabled: nuevoActive,
-      onClick: () =>
-        handleOnClick({ ...itemDefault, crud: { agregando: true } }, path),
+      onClick: async () => {
+        const canActive = await setItemActive({
+          ...itemDefault,
+          crud: { agregando: true },
+        });
+        if (canActive) {
+          let params = new URLSearchParams(window.location.search);
+
+          navigate(`nuevo?${params.toString()}`);
+          setOpenModal(true);
+        }
+      },
     },
     {
       color: nuevoActive ? "success" : "secondary",
@@ -176,15 +174,7 @@ export const Usuario = () => {
       ocultar: !Boolean(itemActive._id) && !nuevoActive,
       onClick: () => {
         if (!Boolean(itemActive._id) && !nuevoActive) return;
-        if (noTienePermiso("Usuario", "update")) {
-          return;
-        }
-        let params = new URLSearchParams(window.location.search);
-        navigateToPath(
-          path,
-          nuevoActive ? "nuevo" : itemActive._id || "nuevo",
-          params
-        );
+
         setOpenModal(!openModal);
       },
     },
@@ -195,8 +185,10 @@ export const Usuario = () => {
       disabled: false,
       Icon: Cancel,
       name: `Cancelar ${nuevoActive ? "Creando" : "Edición"}`,
-      ocultar: !Boolean(itemActive._id),
-      onClick: async () => {},
+      ocultar: !Boolean(itemActive._id) && !nuevoActive,
+      onClick: async () => {
+        setItemActive(itemDefault, true);
+      },
     },
   ];
 
@@ -205,8 +197,15 @@ export const Usuario = () => {
       if (noTienePermiso("Menu", "update")) {
         return;
       }
+
+      const canActive = await setItemActive(itemEditing);
+      if (canActive) {
+        let params = new URLSearchParams(window.location.search);
+        navigate(`${itemEditing._id || ""}?${params.toString()}`);
+        setOpenModal(!openModal);
+      }
     },
-    [dataMenu]
+    [dataMenu, itemActive, nuevoActive]
   );
 
   return (

@@ -4,8 +4,6 @@ import { useUsuarioStore } from "../hooks/useUsuarioStore";
 import { ModalUsuario } from "./ModalUsuario";
 import { UsuarioItem } from "../interfaces";
 import { getSubPath } from "../../../../helpers";
-import { Backdrop } from "@mui/material";
-import { Cargando } from "../../../components";
 
 export const ModalRoute = ({
   usuariosData,
@@ -36,14 +34,5 @@ export const ModalRoute = ({
     }
   }, [_id, cargando]);
 
-  return cargando ? (
-    <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open
-    >
-      <Cargando titulo="Cargando" />
-    </Backdrop>
-  ) : (
-    <ModalUsuario />
-  );
+  return <ModalUsuario />;
 };

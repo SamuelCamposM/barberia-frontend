@@ -16,3 +16,14 @@ export const getSubPath = () => {
   parts.pop(); // Elimina el último elemento del array
   return `${parts.join("/")}?${params.toString()}`; // Une los elementos del array en una cadena
 };
+
+export const hasSubroute = (pathname: string, path: string) => {
+  // Elimina la barra inicial y divide la ruta en segmentos
+  const segments = pathname.replace(/^\//, "").split("/");
+  // Encuentra el índice del segmento de ruta en los segmentos
+  const pathIndex = segments.indexOf(path);
+  // Si la ruta no se encuentra en los segmentos, devuelve false
+  if (pathIndex === -1) return false;
+  // Si hay un segmento después del segmento de ruta, devuelve true
+  return pathIndex < segments.length - 1;
+};
