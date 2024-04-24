@@ -72,7 +72,6 @@ export const ModalUsuario = () => {
     isFormInvalid,
     handleBlur,
     isFormInvalidSubmit,
-    onResetForm,
     onNewForm,
     setformValues,
     setCargandoSubmit,
@@ -109,6 +108,7 @@ export const ModalUsuario = () => {
         setCargandoSubmit(false);
         if (error) return;
         setOpenModal(false);
+        setCargandoSubmit(false);
         setItemActive(itemDefault, true);
       }
     );
@@ -133,6 +133,7 @@ export const ModalUsuario = () => {
         setCargandoSubmit(false);
         if (error) return;
         setOpenModal(false);
+        setCargandoSubmit(false);
         setItemActive(itemDefault, true);
       }
     );
@@ -190,7 +191,6 @@ export const ModalUsuario = () => {
                 aria-label="Cancelar"
                 onClick={() => {
                   setOpenModal(false);
-                  onResetForm();
                   // setImage(null);
                 }}
                 color="error"

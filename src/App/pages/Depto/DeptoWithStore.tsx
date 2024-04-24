@@ -7,7 +7,7 @@ import {
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { DeptoItem, setDataProps, useDeptoStore } from ".";
-import { paginationDefault, validateFunction } from "../../../helpers";
+import { paginationDefault, rowsPerPageOptions, validateFunction } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { SocketOnDepto, columns, itemDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
@@ -197,7 +197,7 @@ export const Depto = () => {
           <Acciones actions={actions} />
           <TablePagination
             className="tablePagination"
-            rowsPerPageOptions={[10, 20, 100]}
+            rowsPerPageOptions={rowsPerPageOptions}
             component="div"
             count={pagination.totalDocs}
             rowsPerPage={pagination.limit}

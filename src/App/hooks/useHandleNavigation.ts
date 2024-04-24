@@ -6,8 +6,6 @@ export const useHandleNavigation = <
 >({
   handleEvent,
   pagination,
-  setItemActive,
-  itemDefault,
 }: {
   handleEvent: ({
     newPagination,
@@ -38,12 +36,7 @@ export const useHandleNavigation = <
   };
 
   const handleChangeEstado = async (_: React.SyntheticEvent, newValue: T) => {
-    const res = await setItemActive(itemDefault);
-    console.log(res);
-
-    if (res) {
-      handleEvent({ newEstadoRequest: newValue });
-    }
+    handleEvent({ newEstadoRequest: newValue });
   };
 
   return {

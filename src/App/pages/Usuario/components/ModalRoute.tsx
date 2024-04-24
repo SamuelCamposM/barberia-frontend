@@ -12,15 +12,14 @@ export const ModalRoute = ({
   usuariosData: UsuarioItem[];
   cargando: boolean;
 }) => {
-  const { setOpenModal } = useUsuarioStore();
+  const { setOpenModal, setItemActive, itemDefault, itemActive } =
+    useUsuarioStore();
   const { _id } = useParams();
 
   const navigate = useNavigate();
 
   const onBackPage = () => {
-    navigate(getSubPath(), {
-      replace: true,
-    });
+    navigate(getSubPath());
 
     setOpenModal(false);
   };
@@ -28,9 +27,21 @@ export const ModalRoute = ({
     if (cargando) return;
     if (_id === "nuevo") {
     } else {
-      const itemFind = usuariosData.find((usuarioI) => usuarioI._id === _id);
+      let itemFind = usuariosData.find((usuarioI) => usuarioI._id === _id);
+
       if (itemFind) {
-      } else onBackPage();
+        if (itemActive._id !== itemFind._id) {
+          setItemActive(itemFind);
+        }
+      } else {
+        if (itemActive._id) {
+          setItemActive(itemActive, true);
+        } else {
+          console.log(getSubPath());
+          onBackPage();
+          setItemActive(itemDefault, true);
+        }
+      }
     }
   }, [_id, cargando]);
 

@@ -2,7 +2,11 @@ import { Action, Pagination, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DeptoItem, setDataProps, useSocketEvents } from ".";
-import { paginationDefault, validateFunction } from "../../../helpers";
+import {
+  paginationDefault,
+  rowsPerPageOptions,
+  validateFunction,
+} from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
 import { columns, getDeptos, itemDefault, sortDefault } from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
@@ -177,7 +181,7 @@ export const Depto = () => {
           <Acciones actions={actions} />
           <TablePagination
             className="tablePagination"
-            rowsPerPageOptions={[10, 20, 100]}
+            rowsPerPageOptions={rowsPerPageOptions}
             component="div"
             count={pagination.totalDocs}
             rowsPerPage={pagination.limit}

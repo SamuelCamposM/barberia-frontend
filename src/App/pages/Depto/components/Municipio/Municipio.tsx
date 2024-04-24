@@ -2,7 +2,7 @@ import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { getMunicipios, columns, itemDefault } from "./helpers";
 import { MunicipioItem, setDataProps } from "./interfaces";
-import { paginationDefault } from "../../../../../helpers";
+import { paginationDefault, rowsPerPageOptions } from "../../../../../helpers";
 import { RowMunicipio } from "./components/RowMunicipio";
 import { Sort } from "../../../../../interfaces/global";
 import { TableHeader } from "../../../../components/Tabla/TableHeader";
@@ -143,7 +143,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
 
         <TablePagination
           className="tablePagination"
-          rowsPerPageOptions={[10, 20, 100]}
+          rowsPerPageOptions={rowsPerPageOptions}
           component="div"
           count={pagination.totalDocs}
           rowsPerPage={pagination.limit}

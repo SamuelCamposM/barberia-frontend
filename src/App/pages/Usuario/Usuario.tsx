@@ -16,7 +16,13 @@ import { useCommonStates } from "../../hooks";
 import { useMenuStore } from "../Menu";
 import { useUsuarioStore } from "./hooks/useUsuarioStore";
 import queryString from "query-string";
-import { paginationDefault, roles, validateFunction } from "../../../helpers";
+import {
+  getSubPath,
+  paginationDefault,
+  roles,
+  rowsPerPageOptions,
+  validateFunction,
+} from "../../../helpers";
 import {
   Acciones,
   BuscadorPath,
@@ -174,7 +180,6 @@ export const Usuario = () => {
       ocultar: !Boolean(itemActive._id) && !nuevoActive,
       onClick: () => {
         if (!Boolean(itemActive._id) && !nuevoActive) return;
-
         setOpenModal(!openModal);
       },
     },
@@ -187,6 +192,7 @@ export const Usuario = () => {
       name: `Cancelar ${nuevoActive ? "Creando" : "Edición"}`,
       ocultar: !Boolean(itemActive._id) && !nuevoActive,
       onClick: async () => {
+        navigate(getSubPath());
         setItemActive(itemDefault, true);
       },
     },
@@ -247,7 +253,7 @@ export const Usuario = () => {
           <Acciones actions={actions} />
           <TablePagination
             className="tablePagination"
-            rowsPerPageOptions={[10, 20, 100]}
+            rowsPerPageOptions={rowsPerPageOptions}
             component="div"
             count={pagination.totalDocs}
             rowsPerPage={pagination.limit}

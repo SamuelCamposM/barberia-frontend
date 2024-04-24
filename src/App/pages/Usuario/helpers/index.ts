@@ -26,7 +26,7 @@ export const columns: Column[] = [
   },
   {
     campo: "lastname",
-    label: "Nombre Completo",
+    label: "Nombre",
     minWidth: 175,
     sortable: true,
     required: false,

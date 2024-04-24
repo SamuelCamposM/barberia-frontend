@@ -15,7 +15,7 @@ import { useCallback } from "react";
 import "animate.css/animate.min.css";
 import { Acciones, TablaLayout } from "../../../components";
 import { Action, Column } from "../../../../interfaces/global";
-import { ConvertirIcono } from "../../../../helpers";
+import { ConvertirIcono, rowsPerPageOptions } from "../../../../helpers";
 
 const columns: readonly Column[] = [
   { label: "", minWidth: 50, align: "center", sortable: false },
@@ -62,7 +62,7 @@ export const Tabla = ({ actions }: { actions: Action[] }) => {
         <Acciones actions={actions} />
         <TablePagination
           className="tablePagination"
-          rowsPerPageOptions={[10, 20, 100]}
+          rowsPerPageOptions={rowsPerPageOptions}
           component="div"
           count={filterFunction(q, buscando, data).length}
           rowsPerPage={rowsPerPage}

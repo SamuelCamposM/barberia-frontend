@@ -80,12 +80,16 @@ export const useUsuarioStore = () => {
         confirmButtonText: "Confirmar",
         ...themeSwal,
       });
+      console.log(result);
+
       if (result.isConfirmed) {
         dispatch(setSliceItemActive(itemToActive));
         return true;
       }
+      if (result.isDismissed) {
+        return false;
+      }
     }
-    console.log("a");
 
     if (isNewToEditing) {
       const result = await Swal.fire({

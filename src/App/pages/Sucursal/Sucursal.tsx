@@ -5,6 +5,7 @@ import { SucursalItem, setDataProps, useSocketEvents } from ".";
 import {
   hasSubroute,
   paginationDefault,
+  rowsPerPageOptions,
   validateFunction,
 } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
@@ -189,7 +190,7 @@ export const Sucursal = () => {
             <Acciones actions={actions} />
             <TablePagination
               className="tablePagination"
-              rowsPerPageOptions={[10, 20, 100]}
+              rowsPerPageOptions={rowsPerPageOptions}
               component="div"
               count={pagination.totalDocs}
               rowsPerPage={pagination.limit}
