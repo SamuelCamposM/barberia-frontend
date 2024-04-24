@@ -1,14 +1,15 @@
 import { Crud } from "../../../../interfaces/global";
+import { Roles } from "../../../../store/interfaces";
 
 export interface PageItem {
   _id: string;
   nombre: string;
   icono: string;
-  delete: string[];
-  update: string[];
-  insert: string[];
-  select: string[];
-  ver: string[];
+  delete: Roles[];
+  update: Roles[];
+  insert: Roles[];
+  select: Roles[];
+  ver: Roles[];
   createdAt: string;
   updatedAt: string;
   orden: number;
@@ -22,4 +23,5 @@ export interface MenuState {
   itemActive: PageItem;
   itemDefault: PageItem;
   count: number;
+  cargando: boolean;
 }

@@ -77,8 +77,8 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
       depto,
       busqueda,
     });
-    if (error) {
-      return toast.error(error);
+    if (error.error) {
+      return toast.error(error.msg);
     }
     const { docs, ...rest } = result;
     setPagination(rest);

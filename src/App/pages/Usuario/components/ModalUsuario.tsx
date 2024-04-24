@@ -142,11 +142,18 @@ export const ModalUsuario = () => {
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log("a");
+
     setisSubmited(true);
     handleBlur();
     if (cargandoSubmit) return;
+    console.log("a");
+
+    console.log(isFormInvalidSubmit(formValues));
+    console.log(errorValues);
 
     if (isFormInvalidSubmit(formValues)) return;
+    console.log("a");
     setCargandoSubmit(true);
     if (editar) handleEditar();
     else handleGuardar();

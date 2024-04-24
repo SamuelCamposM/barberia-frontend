@@ -1,5 +1,9 @@
 import { clienteAxios } from "../../../../api";
-import { Column, Pagination } from "../../../../interfaces/global";
+import {
+  Column,
+  ErrorBackend,
+  Pagination,
+} from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import { DeptoItem, setDataProps } from "../interfaces";
 export enum SocketOnDepto {
@@ -45,8 +49,8 @@ interface MyResponse {
   data: { result: Result };
 }
 
-type getDeptosType = ({ busqueda, pagination, sort }: setDataProps) => Promise<{
-  error: string;
+type getDeptosType = (arg: setDataProps) => Promise<{
+  error: ErrorBackend;
   result: Result;
 }>;
 
@@ -67,13 +71,17 @@ export const getDeptos: getDeptosType = async ({
     });
 
     return {
-      error: "",
+      error: {
+        error: false,
+        msg: "",
+      },
       result: { docs, limit, page, totalDocs, totalPages },
     };
   } catch (error: any) {
-    const msgError =
-      error?.response?.data?.error || "Error al consultar los departamentos";
-
-    return { error: msgError, result: { docs: [], ...paginationDefault } };
+    const errorResult = {
+      msg: error?.response?.data?.msg || "Error al consultar los departamentos",
+      error: true,
+    };
+    return { error: errorResult, result: { docs: [], ...paginationDefault } };
   }
 };

@@ -1,5 +1,9 @@
 import { clienteAxios } from "../../../../../../api";
-import { Column, Pagination } from "../../../../../../interfaces/global";
+import {
+  Column,
+  ErrorBackend,
+  Pagination,
+} from "../../../../../../interfaces/global";
 import { paginationDefault } from "../../../../../../helpers";
 import { MunicipioItem, setDataProps } from "../interfaces";
 export enum SocketOnMunicipio {
@@ -37,13 +41,8 @@ interface MyResponse {
   data: { result: Result };
 }
 
-type getMunicipiosType = ({
-  busqueda,
-  depto,
-  pagination,
-  sort,
-}: setDataProps) => Promise<{
-  error: string;
+type getMunicipiosType = (arg: setDataProps) => Promise<{
+  error: ErrorBackend;
   result: Result;
 }>;
 
@@ -61,11 +60,18 @@ export const getMunicipios: getMunicipiosType = async ({
       depto,
     });
 
-    return { error: "", result: data.data.result };
+    return {
+      error: {
+        error: false,
+        msg: "",
+      },
+      result: data.data.result,
+    };
   } catch (error: any) {
-    const msgError =
-      error?.response?.data?.error || "Error al consultar los departamentos";
-
-    return { error: msgError, result: { docs: [], ...paginationDefault } };
+    const errorResult = {
+      msg: error?.response?.data?.msg || "Error al consultar los departamentos",
+      error: true,
+    };
+    return { error: errorResult, result: { docs: [], ...paginationDefault } };
   }
 };

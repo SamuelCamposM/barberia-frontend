@@ -14,7 +14,7 @@ export const ModalRoute = ({
 }) => {
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useUsuarioStore();
-  const { _id } = useParams();
+  const { _id } = useParams<{ _id: string }>();
 
   const navigate = useNavigate();
 
@@ -43,6 +43,12 @@ export const ModalRoute = ({
         }
       }
     }
+    return () => {
+      const saliendo = !location.pathname.includes(_id!);
+      if (saliendo) {
+        setItemActive(itemDefault, true);
+      }
+    };
   }, [_id, cargando]);
 
   return <ModalUsuario />;

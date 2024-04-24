@@ -102,8 +102,8 @@ export const Depto = () => {
     setCargando(true);
     const { error, result } = await getDeptos({ pagination, sort, busqueda });
 
-    if (error) {
-      toast.error(error);
+    if (error.error) {
+      toast.error(error.msg);
       return;
     }
     const { docs, ...rest } = result;

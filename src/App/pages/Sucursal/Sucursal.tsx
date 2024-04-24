@@ -104,8 +104,8 @@ export const Sucursal = () => {
       sort,
       busqueda,
     });
-    if (error) {
-      toast.error(error);
+    if (error.error) {
+      toast.error(error.msg);
       return;
     }
     const { docs, ...rest } = result;

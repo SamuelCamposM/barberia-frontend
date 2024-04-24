@@ -35,8 +35,9 @@ export const useAuthStore = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("token-init-data", new Date().getTime().toString());
       dispatch(onSliceLogin(rest));
-    } catch (error) {
-      dispatch(onSliceLogout("Credenciales incorrectas"));
+    } catch (error: any) {
+      const msgError = error?.response?.data?.msg || "Credenciales incorrectas";
+      dispatch(onSliceLogout(msgError));
       setTimeout(() => {
         dispatch(clearErrorMessage());
       }, 10);
@@ -53,8 +54,7 @@ export const useAuthStore = () => {
       localStorage.setItem("token-init-data", new Date().getTime().toString());
       dispatch(onSliceLogin(rest));
     } catch (error: any) {
-      const msgError =
-        error?.response?.data?.msg || "Error al consultar los departamentos";
+      const msgError = error?.response?.data?.msg || "Error al registrarse";
       dispatch(onSliceLogout(msgError));
       setTimeout(() => {
         dispatch(clearErrorMessage());
@@ -64,7 +64,7 @@ export const useAuthStore = () => {
 
   const onStartSheckAuthToken = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return dispatch(onSliceLogout());
+    if (!token) return dispatch(onSliceLogout('No hay token'));
     try {
       const {
         data: { token, ...rest },
@@ -72,10 +72,13 @@ export const useAuthStore = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("token-init-data", new Date().getTime().toString());
       dispatch(onSliceLogin(rest));
-    } catch (error) {
+    } catch (error: any) {
+      console.log({ error });
+
+      const msgError = error?.response?.data?.msg || "Error al loguearse";
+      dispatch(onSliceLogout(msgError));
       localStorage.removeItem("token");
       localStorage.removeItem("token-init-data");
-      dispatch(onSliceLogout());
     }
   };
 

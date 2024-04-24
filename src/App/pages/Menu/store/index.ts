@@ -21,6 +21,7 @@ const initialState: MenuState = {
   itemDefault,
   data: [],
   count: 0,
+  cargando: true,
 };
 
 export const menuSlice = createSlice({
@@ -29,6 +30,7 @@ export const menuSlice = createSlice({
   reducers: {
     getSliceDataMenu: (state, action: PayloadAction<PageItem[]>) => {
       state.data = action.payload;
+      state.cargando = false;
     },
     setSliceOpenModalMenu: (state, action: PayloadAction<boolean>) => {
       state.openModal = action.payload;

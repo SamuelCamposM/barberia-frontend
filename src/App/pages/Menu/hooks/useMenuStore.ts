@@ -14,9 +14,8 @@ import { toast } from "react-toastify";
 import { useCallback } from "react";
 import { ConvertirIcono, convertirPath } from "../../../../helpers";
 export const useMenuStore = () => {
-  const { openModal, itemActive, data, itemDefault, count } = useSelector(
-    (state: RootState) => state.menu
-  );
+  const { openModal, itemActive, data, itemDefault, count, cargando } =
+    useSelector((state: RootState) => state.menu);
   const {
     usuario: { rol },
   } = useSelector((state: RootState) => state.auth);
@@ -24,8 +23,10 @@ export const useMenuStore = () => {
   const dispatch = useDispatch();
 
   const getDataMenu = async () => {
-    const res = await getPages();
-    const { data } = res.data;
+    const { data, error } = await getPages();
+    if (error.error) {
+      toast.error(error.msg);
+    }
 
     dispatch(getSliceDataMenu(data));
   };
@@ -86,6 +87,7 @@ export const useMenuStore = () => {
     data,
     itemDefault,
     count,
+    cargando,
     //Metodos
     getDataMenu,
     onEditMenu,

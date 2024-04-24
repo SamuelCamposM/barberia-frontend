@@ -1,5 +1,9 @@
 import { clienteAxios } from "../../../../api";
-import { Column, Pagination } from "../../../../interfaces/global";
+import {
+  Column,
+  ErrorBackend,
+  Pagination,
+} from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import {
   DeptoSuc,
@@ -82,7 +86,7 @@ type getSucursalsType = ({
   pagination,
   sort,
 }: setDataProps) => Promise<{
-  error: string;
+  error: ErrorBackend;
   result: Result;
 }>;
 
@@ -103,21 +107,27 @@ export const getSucursals: getSucursalsType = async ({
     });
 
     return {
-      error: "",
+      error: {
+        error: false,
+        msg: "",
+      },
       result: { docs, limit, page, totalDocs, totalPages },
     };
   } catch (error: any) {
-    const msgError =
-      error?.response?.data?.error || "Error al consultar las sucursales";
-
-    return { error: msgError, result: { docs: [], ...paginationDefault } };
+    return {
+      error: {
+        error: true,
+        msg: error?.response?.data?.msg || "Error al consultar las sucursales",
+      },
+      result: { docs: [], ...paginationDefault },
+    };
   }
 };
 
 // Define la estructura de la respuesta
 interface searchDeptoResponse {
   data: DeptoSuc[];
-  error: boolean;
+  error: ErrorBackend;
 }
 
 export interface searchDeptoProps {
@@ -137,19 +147,31 @@ export const searchDepto = async (
     if (res.data.length === 0) {
       toast.error("No se encontraron departamentos");
     }
-    return res;
+    return {
+      data: res.data,
+      error: {
+        error: false,
+        msg: "",
+      },
+    };
   } catch (error: any) {
     const msgError =
-      error?.response?.data?.error || "Error al consultar los departamentos";
+      error?.response?.data?.msg || "Error al consultar los departamentos";
     toast.error(msgError);
-    return { error: msgError, data: [] };
+    return {
+      error: {
+        error: true,
+        msg: msgError,
+      },
+      data: [],
+    };
   }
 };
 
 // Define la estructura de la respuesta
 interface searchMunicipioResponse {
   data: MunicipioSuc[];
-  error: boolean;
+  error: ErrorBackend;
 }
 
 export interface searchMunicipioProps {
@@ -167,13 +189,23 @@ export const searchMunicipio = async (
     if (res.data.length === 0) {
       toast.error("No se encontraron municipios");
     }
-    return res;
+    return {
+      data: res.data,
+      error: {
+        error: false,
+        msg: "",
+      },
+    };
   } catch (error: any) {
-    console.log(error);
-    
     const msgError =
-      error?.response?.data?.error || "Error al consultar los municipios";
+      error?.response?.data?.msg || "Error al consultar los municipios";
     toast.error(msgError);
-    return { error: msgError, data: [] };
+    return {
+      error: {
+        error: true,
+        msg: msgError,
+      },
+      data: [],
+    };
   }
 };

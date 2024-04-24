@@ -244,9 +244,12 @@ export const ModalProfile = () => {
       setCargandoSubmit(false);
       onNewForm(formAllData);
       setOpenProfileModal(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error);
+      const msgError =
+        error?.response?.data?.msg || "¡No se pudieron actualizar los datos!";
       setCargandoSubmit(false);
-      toast.error("¡No se pudieron actualizar los datos!");
+      toast.error(msgError);
     }
   };
 

@@ -55,16 +55,23 @@ export const useForm = <
     return Object.fromEntries(res);
   }, [onBlur, isSubmited]);
 
-  const isFormInvalidSubmit = useCallback((formValues: ValueTypes) => {
-    const entries = Object.entries(ObjectValidations);
-    const res = entries.some(([name]) => {
-      return ObjectValidations[name].some((validation) => {
-        const result = validation(formValues[name], formValues);
-        return result !== "";
+  const isFormInvalidSubmit = useCallback(
+    (formValues: ValueTypes) => {
+      const entries = Object.entries(ObjectValidations);
+      const res = entries.some(([name]) => {
+        return ObjectValidations[name].some((validation) => {
+          const result = validation(formValues[name], formValues);
+          console.log(result, name);
+
+          return result !== "";
+        });
       });
-    });
-    return res;
-  }, []);
+      console.log(res);
+
+      return res;
+    },
+    [onBlur]
+  );
 
   const onResetForm = useCallback(() => {
     setCargandoSubmit(false);

@@ -8,7 +8,13 @@ import {
 } from "./components";
 import { Cargando } from "../components";
 import { LayoutBox, LayoutBox2 } from "./components/styled";
-import { Box, CssBaseline, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  CssBaseline,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { Suspense, useEffect } from "react";
 import { PageItem, useMenuStore } from "../pages/Menu";
 import { useProvideSocket, useUiStore } from "../../hooks";
@@ -20,7 +26,7 @@ export const AppLayout = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   const { socket } = useProvideSocket();
-  const { getDataMenu, onEditMenu } = useMenuStore();
+  const { getDataMenu, onEditMenu, cargando } = useMenuStore();
   const { openDrawerSidebar } = useUiStore();
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
@@ -65,7 +71,20 @@ export const AppLayout = ({
             <Suspense fallback={<Cargando />}>
               <LayoutBox2>
                 <MigasDePan />
-                <LayoutBox2>{children}</LayoutBox2>
+                <LayoutBox2>
+                  {cargando && (
+                    <Backdrop
+                      sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                      }}
+                      open
+                    >
+                      <Cargando />
+                    </Backdrop>
+                  )}
+                  {children}
+                </LayoutBox2>
               </LayoutBox2>
             </Suspense>
           </Box>

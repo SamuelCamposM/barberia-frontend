@@ -61,3 +61,8 @@ export interface ErrorSocket {
 }
 
 export type socketChildListener = "remove" | "add";
+
+export interface ErrorBackend {
+  error: boolean;
+  msg: string;
+}
