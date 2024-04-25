@@ -1,16 +1,10 @@
 import { Acciones } from "../../../components";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { DeptoSuc, MunicipioSuc, SucursalItem } from "..";
-import {
-  SocketEmitSucursal,
-  searchDepto,
-  searchDeptoProps,
-  searchMunicipio,
-  searchMunicipioProps,
-} from "../helpers";
+import { SocketEmitSucursal } from "../helpers";
 
 import { useForm, useProvideSocket } from "../../../../hooks";
-import { Dispatch, useMemo, useState } from "react";
+import { Dispatch, useMemo } from "react";
 import { handleSocket, required } from "../../../../helpers";
 import { Action, ErrorSocket } from "../../../../interfaces/global";
 import { CancelOutlined, Check } from "@mui/icons-material";
@@ -18,15 +12,23 @@ import {
   Autocomplete,
   IconButton,
   InputAdornment,
+  LinearProgress,
   TextField,
   Tooltip,
 } from "@mui/material";
 
 import { useMenuStore } from "../../Menu";
-import { useDebouncedCallback } from "../../../hooks";
+import { useDebouncedCallback, useHttp } from "../../../hooks";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { useNavigate } from "react-router-dom";
-
+interface SearchMunicipioProps {
+  search: string;
+  deptoId: string;
+}
+const bodySearchMunicipio: SearchMunicipioProps = {
+  deptoId: "",
+  search: "",
+};
 export const EditableSucursal = ({
   sucursal,
   setAgregando,
@@ -113,27 +115,41 @@ export const EditableSucursal = ({
       handleEditar();
     }
   };
-  const [deptosData, setDeptosData] = useState<DeptoSuc[]>([formValues.depto]);
 
-  const handleSearchDepto = async ({ search }: searchDeptoProps) => {
-    if (required(search) !== "") return;
-    const { data } = await searchDepto({ search });
-    setDeptosData(data.length === 0 ? [formValues.depto] : data);
-  };
-  const debounceSearchDepto = useDebouncedCallback(handleSearchDepto);
+  // const [deptosData, setDeptosData] = useState<DeptoSuc[]>([formValues.depto]);
 
-  const [municipiosData, setMunicipiosData] = useState<MunicipioSuc[]>([
-    formValues.municipio,
-  ]);
+  // const handleSearchDepto = async ({ search }: searchDeptoProps) => {
+  //   if (required(search) !== "") return;
+  //   const { data } = await searchDepto({ search });
+  //   setDeptosData(data.length === 0 ? [formValues.depto] : data);
+  // };
+  // const debounceSearchDepto = useDebouncedCallback(handleSearchDepto);
+  const { data, loading, refetchWithNewBody } = useHttp<
+    DeptoSuc[],
+    { search: string }
+  >({
+    initialUrl: "/depto/search",
+    initialMethod: "post",
+    initialBody: {
+      search: "",
+    },
+    initialData: [],
+  });
 
-  const handleSearchMunicipio = async ({
-    search,
-    deptoId,
-  }: searchMunicipioProps) => {
-    const { data } = await searchMunicipio({ search, deptoId });
-    setMunicipiosData(data.length === 0 ? [formValues.municipio] : data);
-  };
-  const debounceSearchMunicipio = useDebouncedCallback(handleSearchMunicipio);
+  const {
+    data: dataMunicipios,
+    loading: loadingMunicipios,
+    refetchWithNewBody: refetchWithNewBodyMunicipios,
+  } = useHttp<MunicipioSuc[], SearchMunicipioProps>({
+    initialUrl: "/municipio/searchByDepto",
+    initialMethod: "post",
+    initialBody: bodySearchMunicipio,
+    initialData: [],
+  });
+  const debounceSearchDepto = useDebouncedCallback(refetchWithNewBody);
+  const debounceSearchMunicipio = useDebouncedCallback(
+    refetchWithNewBodyMunicipios
+  );
 
   const { defaultPropsGenerator, refs } = useFieldProps({
     config,
@@ -184,10 +200,10 @@ export const EditableSucursal = ({
       <>
         <StyledTableCell>
           <Autocomplete
-            options={deptosData}
+            options={data}
             disableClearable={false}
             value={
-              deptosData.some((option) => option._id === formValues.depto._id)
+              data.some((option) => option._id === formValues.depto._id)
                 ? formValues.depto
                 : null
             }
@@ -198,8 +214,16 @@ export const EditableSucursal = ({
               setformValues((prev) => ({
                 ...prev,
                 depto: newValue,
+                municipio: {
+                  _id: "",
+                  name: "",
+                },
               }));
-              handleSearchMunicipio({ deptoId: newValue._id, search: "" });
+
+              refetchWithNewBodyMunicipios({
+                deptoId: newValue._id,
+                search: "",
+              });
             }}
             renderInput={(params) => (
               <TextField
@@ -230,13 +254,14 @@ export const EditableSucursal = ({
               />
             )}
           />
+          {loading && <LinearProgress color="primary" variant="query" />}
         </StyledTableCell>
         <StyledTableCell>
           <Autocomplete
-            options={municipiosData}
+            options={dataMunicipios}
             disableClearable={false}
             value={
-              municipiosData.some(
+              dataMunicipios.some(
                 (option) => option._id === formValues.municipio._id
               )
                 ? formValues.municipio
@@ -265,6 +290,9 @@ export const EditableSucursal = ({
               />
             )}
           />
+          {loadingMunicipios && (
+            <LinearProgress color="primary" variant="query" />
+          )}
         </StyledTableCell>
         <StyledTableCell>
           <TextField {...defaultPropsGenerator("name", true, true)} />
