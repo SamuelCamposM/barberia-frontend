@@ -228,7 +228,11 @@ export const Usuario = () => {
           <Route
             path="/:_id"
             element={
-              <ModalRoute usuariosData={usuariosData} cargando={cargando} />
+              <ModalRoute
+                usuariosData={usuariosData}
+                cargando={cargando}
+                prevPath={path}
+              />
             }
           />
         </Routes>

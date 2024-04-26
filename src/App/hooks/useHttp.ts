@@ -47,6 +47,8 @@ export const useHttp = <T, BodyType>({
           default:
             throw new Error("Invalid method");
         }
+        console.log({ res });
+
         setData(res.data);
         setError({ error: false, msg: "" });
       } catch (error: any) {
@@ -82,5 +84,6 @@ export const useHttp = <T, BodyType>({
     setBody,
     refetch: fetchData,
     refetchWithNewBody,
+    setData,
   };
 };

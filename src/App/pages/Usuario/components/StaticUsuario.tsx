@@ -4,7 +4,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../../components/style";
-import { useThemeSwal } from "../../../hooks";
+import { useResaltarTexto, useThemeSwal } from "../../../hooks";
 import { useMenuStore } from "../../Menu";
 import { UsuarioItem, SocketEmitUsuario } from "..";
 import Swal from "sweetalert2";
@@ -20,6 +20,7 @@ export const StaticUsuario = ({
   actionsJoins = [],
   handleEditar,
   itemActive,
+  busqueda,
 }: {
   usuario: UsuarioItem;
   busqueda: string;
@@ -111,8 +112,19 @@ export const StaticUsuario = ({
             </StyledBadge>
           </Box>
         </StyledTableCell>
-        <StyledTableCell>{`${usuario.lastname} ${usuario.name}`}</StyledTableCell>
-        <StyledTableCell>{usuario.email}</StyledTableCell>
+        <StyledTableCell>
+          {useResaltarTexto({
+            busqueda,
+            texto: usuario.lastname,
+          })} {' '}
+          {useResaltarTexto({
+            busqueda,
+            texto: usuario.name,
+          })}
+        </StyledTableCell>
+        <StyledTableCell>
+          {useResaltarTexto({ busqueda, texto: usuario.email })}
+        </StyledTableCell>
         <StyledTableCell>{usuario.tel}</StyledTableCell>
         <StyledTableCell>{formatearFecha(usuario.createdAt)}</StyledTableCell>
       </>

@@ -3,15 +3,19 @@ import { useEffect } from "react";
 import { useUsuarioStore } from "../hooks/useUsuarioStore";
 import { ModalUsuario } from "./ModalUsuario";
 import { UsuarioItem } from "../interfaces";
-import { getSubPath } from "../../../../helpers";
+import { getSubPath, isThereNextPath } from "../../../../helpers";
 
 export const ModalRoute = ({
   usuariosData,
   cargando,
+  prevPath,
 }: {
   usuariosData: UsuarioItem[];
   cargando: boolean;
+  prevPath: string;
 }) => {
+  console.log(prevPath);
+
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useUsuarioStore();
   const { _id } = useParams<{ _id: string }>();
@@ -44,8 +48,8 @@ export const ModalRoute = ({
       }
     }
     return () => {
-      const saliendo = !location.pathname.includes(_id!);
-      if (saliendo) {
+       
+      if (!isThereNextPath(prevPath)) {
         setItemActive(itemDefault, true);
       }
     };

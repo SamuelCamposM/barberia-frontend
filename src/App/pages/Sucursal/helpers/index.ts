@@ -73,34 +73,25 @@ export const itemDefault: SucursalItem = {
   name: "",
   tel: "",
 };
-interface Result extends Pagination {
+
+interface MyResponse extends Pagination {
   docs: SucursalItem[];
 }
 
-interface MyResponse {
-  data: { result: Result };
-}
-
-type getSucursalsType = ({
-  busqueda,
-  pagination,
-  sort,
-}: setDataProps) => Promise<{
+type getSucursalsType = (arg: setDataProps) => Promise<{
   error: ErrorBackend;
-  result: Result;
+  result: MyResponse;
 }>;
 
 export const getSucursals: getSucursalsType = async ({
   busqueda,
   pagination,
   sort,
-}: setDataProps) => {
+}) => {
   try {
     const {
-      data: {
-        result: { docs, limit, page, totalDocs, totalPages },
-      },
-    }: MyResponse = await clienteAxios.post("/sucursal", {
+      data: { docs, limit, page, totalDocs, totalPages },
+    } = await clienteAxios.post<MyResponse>("/sucursal", {
       pagination,
       sort,
       busqueda,
