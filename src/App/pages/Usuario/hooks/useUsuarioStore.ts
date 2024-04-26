@@ -71,7 +71,7 @@ export const useUsuarioStore = () => {
       dispatch(setSliceItemActive(itemToActive));
       return true;
     }
-    // Si el usuario está cambiando de tab, actualiza el item activo
+    // Si el usuario está cambiando de tab, actualiza el item estado
     if (isEditingToDefault) {
       const result = await Swal.fire({
         title: `Estás editando un usuario`,
@@ -80,7 +80,6 @@ export const useUsuarioStore = () => {
         confirmButtonText: "Confirmar",
         ...themeSwal,
       });
-      console.log(result);
 
       if (result.isConfirmed) {
         dispatch(setSliceItemActive(itemToActive));

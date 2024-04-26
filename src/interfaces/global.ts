@@ -11,13 +11,14 @@ export interface Crud {
 export interface Action {
   badge?: string;
   color: "primary" | "secondary" | "error" | "success";
+  active?: boolean;
   disabled?: boolean;
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   name: string;
   ocultar?: boolean;
   onClick: (arg: any) => void;
   size?: "small" | "medium" | "large";
-  tipo: "icono" | "boton";
+  tipo: "icono" | "boton" | "tab";
   variant?: "text" | "outlined" | "contained";
 }
 

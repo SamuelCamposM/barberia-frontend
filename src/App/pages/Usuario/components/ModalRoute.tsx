@@ -14,8 +14,6 @@ export const ModalRoute = ({
   cargando: boolean;
   prevPath: string;
 }) => {
-  console.log(prevPath);
-
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useUsuarioStore();
   const { _id } = useParams<{ _id: string }>();
@@ -41,14 +39,12 @@ export const ModalRoute = ({
         if (itemActive._id) {
           setItemActive(itemActive, true);
         } else {
-          console.log(getSubPath());
           onBackPage();
           setItemActive(itemDefault, true);
         }
       }
     }
     return () => {
-       
       if (!isThereNextPath(prevPath)) {
         setItemActive(itemDefault, true);
       }

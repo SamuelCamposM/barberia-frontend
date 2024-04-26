@@ -2,7 +2,8 @@ import { ChangeEvent } from "react";
 import { Pagination, Sort } from "../../interfaces/global";
 export const useHandleNavigation = <
   Item extends { _id?: string | undefined },
-  T = ""
+  T,
+  EstadoType
 >({
   handleEvent,
   pagination,
@@ -10,11 +11,12 @@ export const useHandleNavigation = <
   handleEvent: ({
     newPagination,
     newSort,
-    newEstadoRequest,
+    newTabValue,
   }: {
     newPagination?: Pagination;
     newSort?: Sort;
-    newEstadoRequest?: T;
+    newTabValue?: T;
+    newEstadoValue?: EstadoType;
   }) => void;
   pagination: Pagination;
   setItemActive: (arg: Item) => Promise<boolean>;
@@ -35,14 +37,18 @@ export const useHandleNavigation = <
     handleEvent({ newSort: newSort });
   };
 
-  const handleChangeEstado = async (_: React.SyntheticEvent, newValue: T) => {
-    handleEvent({ newEstadoRequest: newValue });
+  const handleChangeTab = async (newValue: T) => {
+    handleEvent({ newTabValue: newValue });
+  };
+  const handleChangeEstado = async (newValue: EstadoType) => {
+    handleEvent({ newEstadoValue: newValue });
   };
 
   return {
     handleChangePage,
     handleChangeRowsPerPage,
     sortFunction,
+    handleChangeTab,
     handleChangeEstado,
   };
 };

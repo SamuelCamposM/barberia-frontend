@@ -92,6 +92,7 @@ export const getUsuarios: getUsuariosType = async ({
   pagination,
   sort,
   rol,
+  estado,
 }) => {
   try {
     const {
@@ -103,6 +104,7 @@ export const getUsuarios: getUsuariosType = async ({
       sort,
       busqueda,
       rol,
+      estado,
     });
 
     return {

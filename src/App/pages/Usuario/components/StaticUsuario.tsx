@@ -83,6 +83,7 @@ export const StaticUsuario = ({
               },
               tipo: "icono",
               size: "small",
+              ocultar: true,
             },
             ...actionsJoins,
           ]}
@@ -116,7 +117,7 @@ export const StaticUsuario = ({
           {useResaltarTexto({
             busqueda,
             texto: usuario.lastname,
-          })} {' '}
+          })}{" "}
           {useResaltarTexto({
             busqueda,
             texto: usuario.name,

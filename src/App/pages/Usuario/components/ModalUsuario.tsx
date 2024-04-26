@@ -15,6 +15,7 @@ import {
   Tooltip,
   Typography,
   MenuItem,
+  Switch,
 } from "@mui/material";
 import { Cancel, Save, Visibility, VisibilityOff } from "@mui/icons-material";
 import { ModalLayout } from "../../../components";
@@ -142,18 +143,12 @@ export const ModalUsuario = () => {
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("a");
-
     setisSubmited(true);
     handleBlur();
     if (cargandoSubmit) return;
-    console.log("a");
-
-    console.log(isFormInvalidSubmit(formValues));
-    console.log(errorValues);
 
     if (isFormInvalidSubmit(formValues)) return;
-    console.log("a");
+
     setCargandoSubmit(true);
     if (editar) handleEditar();
     else handleGuardar();
@@ -187,12 +182,29 @@ export const ModalUsuario = () => {
       >
         <>
           <StyledModalBoxHeader>
-            <StyledTypographyHeader
-              color={isFormInvalid ? "error" : "primary"}
-              id={idModal}
-            >
-              {editar ? "editando" : "creando"}
-            </StyledTypographyHeader>
+            <Box display={"flex"} alignItems={"center"}>
+              <StyledTypographyHeader
+                color={isFormInvalid ? "error" : "primary"}
+                id={idModal}
+              >
+                {editar ? "editando" : "creando"}{" "}
+              </StyledTypographyHeader>
+              {editar && (
+                <Tooltip title="Estado">
+                  <Switch
+                    checked={formValues.estado}
+                    onChange={(e) => {
+                      setformValues({
+                        ...formValues,
+                        estado: e.target.checked,
+                      });
+                    }}
+                    inputProps={{ "aria-label": "Value" }}
+                    color="success"
+                  />
+                </Tooltip>
+              )}
+            </Box>
             <Tooltip title="Cancelar">
               <IconButton
                 aria-label="Cancelar"

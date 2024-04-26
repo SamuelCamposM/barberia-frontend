@@ -21,6 +21,7 @@ export interface setDataProps {
   pagination: Pagination;
   sort: Sort;
   rol: Roles;
+  estado: boolean;
 }
 export interface UsuarioState {
   openModal: boolean;

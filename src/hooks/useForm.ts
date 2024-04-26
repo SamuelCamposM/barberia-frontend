@@ -61,12 +61,10 @@ export const useForm = <
       const res = entries.some(([name]) => {
         return ObjectValidations[name].some((validation) => {
           const result = validation(formValues[name], formValues);
-          console.log(result, name);
 
           return result !== "";
         });
       });
-      console.log(res);
 
       return res;
     },

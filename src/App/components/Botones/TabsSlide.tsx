@@ -18,6 +18,8 @@ export const TabsSlide = ({
       variant="scrollable"
       scrollButtons="auto"
       aria-label="scrollable auto tabs example"
+      textColor="secondary"
+      indicatorColor="secondary"
     >
       {tabs.map((rol) => (
         <Tab

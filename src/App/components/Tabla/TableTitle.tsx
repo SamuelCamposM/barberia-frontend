@@ -12,7 +12,7 @@ export const TableTitle = ({
   return (
     <>
       <Box display={"flex"} alignItems={"center"} flexWrap={"wrap-reverse"}>
-        {Tabs}
+        <Box  overflow={'auto'}>{Tabs}</Box>
         <Divider textAlign={align} sx={{ flexGrow: 1 }}>
           <Typography
             variant="subtitle1"

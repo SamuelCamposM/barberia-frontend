@@ -28,10 +28,14 @@ import {
   BuscadorPath,
   TablaLayout,
   TableTitle,
-  TabsSlide,
 } from "../../components";
 import { useHandleNavigation } from "../../hooks/useHandleNavigation";
-
+interface handleEventProps {
+  newPagination?: Pagination;
+  newSort?: Sort;
+  newTabValue?: Roles;
+  newEstadoValue?: boolean;
+}
 export const Usuario = () => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
@@ -41,6 +45,8 @@ export const Usuario = () => {
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useUsuarioStore();
   const [rol, setRol] = useState<Roles>("CLIENTE");
+  const [estado, setEstado] = useState(false);
+
   const {
     buscando,
     busqueda,
@@ -58,28 +64,26 @@ export const Usuario = () => {
     ({
       newPagination = pagination,
       newSort = sort,
-      newEstadoRequest = rol,
-    }: {
-      newPagination?: Pagination;
-      newSort?: Sort;
-      newEstadoRequest?: Roles;
-    }) => {
+      newTabValue = rol,
+      newEstadoValue = estado,
+    }: handleEventProps) => {
       const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
         newPagination
       )}&sort=${JSON.stringify(
         newSort
-      )}&buscando=${buscando}&rol=${newEstadoRequest}`;
+      )}&buscando=${buscando}&rol=${newTabValue}&estado=${newEstadoValue}`;
       navigate(urlParams);
     },
-    [busqueda, navigate, pagination, sort, rol]
+    [busqueda, navigate, pagination, sort, rol, estado]
   );
 
   const {
     handleChangePage,
     handleChangeRowsPerPage,
     sortFunction,
+    handleChangeTab,
     handleChangeEstado,
-  } = useHandleNavigation<UsuarioItem, Roles>({
+  } = useHandleNavigation<UsuarioItem, Roles, boolean>({
     handleEvent,
     pagination,
     setItemActive,
@@ -88,13 +92,14 @@ export const Usuario = () => {
 
   // Función asíncrona para obtener y establecer datos
   const setData = useCallback(
-    async ({ pagination, sort, busqueda, rol }: setDataProps) => {
+    async ({ pagination, sort, busqueda, rol, estado }: setDataProps) => {
       setCargando(true);
       const { error, result } = await getUsuarios({
         pagination,
         sort,
         busqueda,
         rol,
+        estado,
       });
       if (error.error) {
         toast.error(error.msg);
@@ -107,6 +112,7 @@ export const Usuario = () => {
       setBusqueda(busqueda);
       setRol(rol);
       setCargando(false);
+      setEstado(estado);
     },
     []
   );
@@ -118,17 +124,20 @@ export const Usuario = () => {
     pagination: paginationQuery = "",
     sort: sortQuery = "",
     rol: rolQuery = "CLIENTE",
+    estado: estadoQuery = "true",
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
     rol: Roles | undefined;
+    estado: string;
   };
 
   useEffect(() => {
     const estaBuscando = Boolean(buscandoQuery === "true");
     setBuscando(estaBuscando);
+
     setData({
       pagination: paginationQuery
         ? JSON.parse(paginationQuery)
@@ -136,18 +145,42 @@ export const Usuario = () => {
       sort: sortQuery ? JSON.parse(sortQuery) : sort,
       busqueda: estaBuscando ? q : "",
       rol: rolQuery,
+      estado: estadoQuery === "true",
     });
-  }, [q, paginationQuery, sortQuery, buscandoQuery, rolQuery]);
+  }, [q, paginationQuery, sortQuery, buscandoQuery, rolQuery, estadoQuery]);
 
   useSocketEvents({ setUsuariosData, setPagination });
   const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
+
+  const tabsRoles: Action[] = roles.map((rolMap) => ({
+    color: "primary",
+    Icon: Refresh,
+    name: rolMap,
+    onClick: () => {
+      handleChangeTab(rolMap);
+    },
+    size: "small",
+    tipo: "tab",
+    active: rolMap === rol,
+  }));
+  const tabEstado: Action = {
+    color: "error",
+    Icon: Refresh,
+    name: "Inactivos",
+    onClick: () => {
+      handleChangeEstado(!estado);
+    },
+    size: "small",
+    tipo: "tab",
+    active: !estado,
+  };
 
   const actions: Action[] = [
     {
       color: "primary",
       Icon: Refresh,
       name: "Actualizar",
-      onClick: () => setData({ pagination, sort, busqueda: q, rol }),
+      onClick: () => setData({ pagination, sort, busqueda: q, rol, estado }),
       tipo: "icono",
     },
     {
@@ -172,7 +205,6 @@ export const Usuario = () => {
     {
       color: nuevoActive ? "success" : "secondary",
       tipo: "icono",
-      variant: "contained",
       badge: "index",
       disabled: false,
       Icon: Create,
@@ -211,7 +243,7 @@ export const Usuario = () => {
         setOpenModal(!openModal);
       }
     },
-    [dataMenu, itemActive, nuevoActive]
+    [dataMenu, itemActive]
   );
 
   return (
@@ -240,14 +272,7 @@ export const Usuario = () => {
 
         <TableTitle
           texto={path}
-          Tabs={
-            <TabsSlide
-              onChange={handleChangeEstado}
-              tabs={roles}
-              valueTab={rol}
-              cargando={cargando}
-            />
-          }
+          Tabs={<Acciones actions={[...tabsRoles, tabEstado]} />}
         />
         <Box
           display={"flex"}
