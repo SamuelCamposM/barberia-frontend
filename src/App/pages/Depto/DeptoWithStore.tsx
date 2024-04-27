@@ -95,8 +95,8 @@ export const Depto = () => {
       sort,
       busqueda,
     });
-    if (error) {
-      toast.error(error);
+    if (error.error) {
+      toast.error(error.msg);
       return;
     }
 

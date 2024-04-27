@@ -3,17 +3,19 @@ import { Roles } from "../../../../store/interfaces";
 
 export interface PageItem {
   _id: string;
-  nombre: string;
   icono: string;
   delete: Roles[];
   update: Roles[];
   insert: Roles[];
-  select: Roles[];
   ver: Roles[];
+
+  permisoSelect: boolean;
+  select: Roles[]; //QUE SOLO PUEDA VER REGISROS CREADOS POR EL
   createdAt: string;
   updatedAt: string;
   orden: number;
-  componente: string;
+  nombre: string; //NOMBRE QUE SE VE EN PANTALLA
+  componente: string; // NOMBRE DEL ARCHIVO A RENDERIZAR
   crud?: Crud;
 }
 

@@ -96,12 +96,19 @@ export const Accion = ({
   }
 };
 
-export const Acciones = ({ actions }: { actions: Action[] }) => {
+export const Acciones = ({
+  actions,
+  children,
+}: {
+  actions: Action[];
+  children?: JSX.Element;
+}) => {
   return (
-    <Box display={"flex"} alignItems={"center"}>
+    <Box display={"flex"} alignItems={"center"} justifyContent={'start'}>
       {actions.map((action, index) => (
         <Accion action={action} key={action.name} index={index} />
       ))}
+      {children}
     </Box>
   );
 };

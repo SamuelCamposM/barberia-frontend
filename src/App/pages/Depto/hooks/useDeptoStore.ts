@@ -44,7 +44,13 @@ export const useDeptoStore = () => {
     }
 
     dispatch(getSliceDataDepto({ docs, paginationResult }));
-    return { paginationResult, error: "" };
+    return {
+      paginationResult,
+      error: {
+        error: false,
+        msg: "",
+      },
+    };
     // navigate(`?pagination=${JSON.stringify(pagination)}`);
   };
   const onEditDepto = (item: DeptoItem) => {

@@ -1,10 +1,6 @@
 import { ChangeEvent } from "react";
 import { Pagination, Sort } from "../../interfaces/global";
-export const useHandleNavigation = <
-  Item extends { _id?: string | undefined },
-  T,
-  EstadoType
->({
+export const useHandleNavigation = <T = string, EstadoType = boolean>({
   handleEvent,
   pagination,
 }: {
@@ -19,8 +15,6 @@ export const useHandleNavigation = <
     newEstadoValue?: EstadoType;
   }) => void;
   pagination: Pagination;
-  setItemActive: (arg: Item) => Promise<boolean>;
-  itemDefault: Item;
 }) => {
   // Manejadores de eventos
   const handleChangePage = (_: unknown, newPage: number) => {

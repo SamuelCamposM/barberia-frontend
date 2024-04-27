@@ -45,7 +45,7 @@ export const Usuario = () => {
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useUsuarioStore();
   const [rol, setRol] = useState<Roles>("CLIENTE");
-  const [estado, setEstado] = useState(false);
+  const [estado, setEstado] = useState(true);
 
   const {
     buscando,
@@ -83,11 +83,9 @@ export const Usuario = () => {
     sortFunction,
     handleChangeTab,
     handleChangeEstado,
-  } = useHandleNavigation<UsuarioItem, Roles, boolean>({
+  } = useHandleNavigation<Roles, boolean>({
     handleEvent,
     pagination,
-    setItemActive,
-    itemDefault,
   });
 
   // Función asíncrona para obtener y establecer datos
@@ -270,10 +268,7 @@ export const Usuario = () => {
         </Routes>
         <BuscadorPath />
 
-        <TableTitle
-          texto={path}
-          Tabs={<Acciones actions={[...tabsRoles, tabEstado]} />}
-        />
+        <TableTitle texto={path} Tabs={[...tabsRoles, tabEstado]} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}

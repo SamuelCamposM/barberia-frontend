@@ -18,7 +18,7 @@ export interface Action {
   ocultar?: boolean;
   onClick: (arg: any) => void;
   size?: "small" | "medium" | "large";
-  tipo: "icono" | "boton" | "tab";
+  tipo: "icono" | "boton" | "tab" | "checkbox";
   variant?: "text" | "outlined" | "contained";
 }
 
