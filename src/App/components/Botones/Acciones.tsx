@@ -39,7 +39,7 @@ export const Accion = ({
               onClick(null);
             }}
             size={size}
-            variant={active ? variant : "text"}
+            variant={active ? "contained" : "outlined"}
           >
             {name}
           </Button>
@@ -104,7 +104,7 @@ export const Acciones = ({
   children?: JSX.Element;
 }) => {
   return (
-    <Box display={"flex"} alignItems={"center"} justifyContent={'start'}>
+    <Box display={"flex"} alignItems={"center"} justifyContent={"start"}>
       {actions.map((action, index) => (
         <Accion action={action} key={action.name} index={index} />
       ))}
