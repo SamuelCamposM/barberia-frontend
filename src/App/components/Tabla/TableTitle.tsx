@@ -13,7 +13,7 @@ export const TableTitle = ({
 }) => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} flexWrap={"wrap-reverse"}>
+      <Box display={"flex"} alignItems={"center"} flexWrap={"wrap-reverse"} mt={.25}>
         <Box overflow={"auto"}>
           <Acciones actions={Tabs} />
         </Box>

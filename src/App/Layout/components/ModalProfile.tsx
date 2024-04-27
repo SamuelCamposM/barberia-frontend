@@ -211,7 +211,6 @@ export const ModalProfile = () => {
     e.preventDefault();
     if (cargandoSubmit) return;
     setisSubmited(true);
-    handleBlur();
     try {
       setCargandoSubmit(true);
 

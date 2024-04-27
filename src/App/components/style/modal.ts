@@ -12,8 +12,9 @@ export const StyledModalBoxHeader = styled(Box)(
 
 export const StyledTypographyHeader = styled(Typography)(
   ({ theme }: { theme: Theme }) => ({
-    fontSize: "1.8rem",
+    fontSize: "1.5rem",
     textTransform: "uppercase",
+    fontStyle: "italic",
     fontWeight: "bold",
     marginLeft: theme.spacing(1),
   })

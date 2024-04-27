@@ -42,7 +42,7 @@ export const ModalUsuario = () => {
   const { itemActive, itemDefault, openModal, setItemActive, setOpenModal } =
     useUsuarioStore();
   const { columns, idModal, vhContainer, width } =
-    useModalConfig("modalProfile");
+    useModalConfig("modalUsuario");
   const { socket } = useProvideSocket();
 
   const editar = useMemo(() => itemActive._id, [itemActive]);

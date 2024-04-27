@@ -9,6 +9,13 @@ export const required = (value: string | string[] | number) => {
   }
   return "";
 };
+export const min = (value: number, min: number) => {
+  if (value < min) {
+    return `Valor Minimo: ${min}`;
+  }
+
+  return "";
+};
 
 export const minNoRequired = (
   value: string | string[] | number,

@@ -4,6 +4,7 @@ import { authSlice } from "./auth";
 import { uiSlice } from "./ui";
 import { menuSlice } from "../App/pages/Menu/store";
 import { usuarioSlice } from "../App/pages/Usuario/store";
+import { productoSlice } from "../App/pages/Productos/store";
 // import { deptoSlice } from "../App/pages/Depto/store";
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     ui: uiSlice.reducer,
     menu: menuSlice.reducer,
     usuario: usuarioSlice.reducer,
+    producto: productoSlice.reducer,
     // depto: deptoSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

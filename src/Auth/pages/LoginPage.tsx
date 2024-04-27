@@ -4,27 +4,34 @@ import {
   Typography,
   FormControlLabel,
   Checkbox,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useAuthStore, useForm, useLocalStorage } from "../../hooks";
 import Button from "@mui/material/Button";
 import { AuthLayout } from "../Layout/AuthLayout";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { required } from "../../helpers";
 import { Link } from "react-router-dom";
 import { DataAlerta } from "../../App/components";
 import { toast } from "react-toastify";
 import { LoginParams } from "../../store/interfaces";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const keyFormStorage = "formValues";
 export const LoginPage = () => {
-  const [storedValues, setStoredValues] = useLocalStorage<LoginParams>(keyFormStorage, {
-    email: "",
-    password: "",
-  });
+  const [storedValues, setStoredValues] = useLocalStorage<LoginParams>(
+    keyFormStorage,
+    {
+      email: "",
+      password: "",
+    }
+  );
   const [rememberPassword, setRememberPassword] = useLocalStorage(
     "rememberPassword",
     true
   );
+  const [showPass, setshowPass] = useState(false);
   const config = useMemo(
     () => ({
       email: [required],
@@ -85,7 +92,7 @@ export const LoginPage = () => {
         <TextField
           sx={{ mt: 1 }}
           fullWidth
-          type="password"
+          type={showPass ? "text" : "password"}
           label="Password"
           value={formValues.password}
           onChange={handleChange}
@@ -93,6 +100,20 @@ export const LoginPage = () => {
           error={errorValues.password.length > 0}
           helperText={errorValues.password.join(" - ")}
           onBlur={handleBlur}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle-mostrar-contraseña"
+                  onClick={() => {
+                    setshowPass(!showPass);
+                  }}
+                >
+                  {showPass ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <Button

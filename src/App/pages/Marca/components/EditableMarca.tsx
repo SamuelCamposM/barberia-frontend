@@ -8,7 +8,7 @@ import { Dispatch, useMemo } from "react";
 import { handleSocket, required } from "../../../../helpers";
 import { Action, ErrorSocket } from "../../../../interfaces/global";
 import { CancelOutlined, Check } from "@mui/icons-material";
-import { TextField, Checkbox, Box, Tooltip } from "@mui/material";
+import { TextField, Checkbox, Tooltip } from "@mui/material";
 
 import { useMenuStore } from "../../Menu";
 import { useFieldProps } from "../../../hooks/useFieldProps";
@@ -113,45 +113,43 @@ export const EditableMarca = ({
   return (
     <StyledTableRow key={marca._id} crud={marca.crud}>
       <StyledTableCell padding="checkbox">
-        <Box display={"flex"} justifyContent={"center"}>
-          <Acciones
-            actions={[
-              {
-                color: "error",
-                disabled: cargandoSubmit,
-                Icon: CancelOutlined,
-                name: `Editar`,
-                onClick: onClickEditar,
-                tipo: "icono",
-                size: "small",
+        <Acciones
+          actions={[
+            {
+              color: "error",
+              disabled: cargandoSubmit,
+              Icon: CancelOutlined,
+              name: `Editar`,
+              onClick: onClickEditar,
+              tipo: "icono",
+              size: "small",
+            },
+            {
+              color: "success",
+              disabled: cargandoSubmit,
+              Icon: Check,
+              name: `Guardar cambios`,
+              onClick: () => {
+                onSubmit();
               },
-              {
-                color: "success",
-                disabled: cargandoSubmit,
-                Icon: Check,
-                name: `Guardar cambios`,
-                onClick: () => {
-                  onSubmit();
-                },
-                tipo: "icono",
-                size: "small",
-              },
-              ...actionsJoins,
-            ]}
-          >
-            <Tooltip title="Estado">
-              <Checkbox
-                sx={{ p: 0.5, m: 0 }}
-                size="small"
-                checked={formValues.estado}
-                onChange={(e) => {
-                  setformValues({ ...formValues, estado: e.target.checked });
-                }}
-                color="primary"
-              />
-            </Tooltip>
-          </Acciones>
-        </Box>
+              tipo: "icono",
+              size: "small",
+            },
+            ...actionsJoins,
+          ]}
+        >
+          <Tooltip title="Estado" sx={{ display: esNuevo ? "none" : "" }}>
+            <Checkbox
+              sx={{ p: 0.5, m: 0, display: esNuevo ? "none" : "" }}
+              size="small"
+              checked={formValues.estado}
+              onChange={(e) => {
+                setformValues({ ...formValues, estado: e.target.checked });
+              }}
+              color="primary"
+            />
+          </Tooltip>
+        </Acciones>
       </StyledTableCell>
       <StyledTableCell>
         <TextField {...defaultPropsGenerator("name", true, true)} autoFocus />

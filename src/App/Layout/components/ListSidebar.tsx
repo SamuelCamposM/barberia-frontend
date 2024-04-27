@@ -5,6 +5,7 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
+  TextField,
 } from "@mui/material";
 import { ConvertirIcono } from "../../../helpers/stringToComponents";
 import { convertirPath } from "../../../helpers";
@@ -18,6 +19,17 @@ export const ListSidebar = ({ openSidebar = true }) => {
   const { usuario } = useAuthStore();
   return (
     <Box sx={{ overflow: "auto" }}>
+      <Tooltip title={"Buscar"} followCursor placement="right">
+        <StyledListItem disablePadding>
+          <TextField
+            label="Buscar"
+            variant="filled"
+            color="primary"
+            size="small"
+            fullWidth
+          />
+        </StyledListItem>
+      </Tooltip>
       <List>
         {data
           .filter(({ ver }) => ver.includes(usuario.rol))
