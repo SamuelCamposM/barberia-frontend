@@ -20,7 +20,8 @@ import { ModalLayout } from "../../components";
 import {
   formatearFecha,
   minNoRequired,
-  procesarUploadsArray,
+  procesarDocsValues,
+  procesarDocsValuesUpload,
   required,
 } from "../../../helpers";
 import { useMemo, useState } from "react";
@@ -175,10 +176,10 @@ export const ModalProfile = () => {
     handleBlur,
     isFormInvalidSubmit,
     onResetForm,
-    onNewForm,
-    setformValues,
     setCargandoSubmit,
     cargandoSubmit,
+    setformValues,
+    onNewForm,
   } = useForm(
     { ...usuario, newPassword: "" },
     config
@@ -186,7 +187,7 @@ export const ModalProfile = () => {
     // getValidations(formularioDinamico)
   );
 
-  const { ComponentUpload, onSubmitUpload } = useFileUpload({
+  const { ComponentUpload, onSubmitUpload, getValues } = useFileUpload({
     label: "Foto de perfil",
     prevUrl: formValues.photo || "",
     propiedad: "photo",
@@ -194,50 +195,40 @@ export const ModalProfile = () => {
     helperText: errorValues.photo.join(" - "),
     setformValues,
   });
-  // const onSubmitUploadFunctions: Array<
-  //   () => Promise<{
-  //     config: {
-  //       error: string | boolean;
-  //       eliminado: boolean;
-  //       prevUrl: string;
-  //     };
-  //     data: {
-  //       [x: string]: string;
-  //     };
-  //   }>
-  // > = [];
 
   const onHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (cargandoSubmit) return;
     setisSubmited(true);
-    try {
-      setCargandoSubmit(true);
+    if (cargandoSubmit) return;
+    setCargandoSubmit(true);
+    const docsValues = [getValues()];
 
+    const { eliminados, values } = procesarDocsValues(docsValues);
+
+    if (isFormInvalidSubmit({ ...formValues, ...values })) {
+      setCargandoSubmit(false);
+      return;
+    }
+    try {
       const onSubmitUploadFunctions = [onSubmitUpload()];
       const docsUrls = await Promise.all(onSubmitUploadFunctions);
+      const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
 
-      const { error, uploadProperties, eliminados } =
-        procesarUploadsArray(docsUrls);
-
-      const formAllData = {
-        ...formValues,
-        ...uploadProperties,
-      };
       if (error) {
         setCargandoSubmit(false);
         return toast.error(error);
       }
 
-      if (isFormInvalidSubmit(formAllData)) {
-        setCargandoSubmit(false);
-        return;
-      }
-      //SI CUMPLE LAS CONDICIONES PASA A ACTUALIZAR
+      const formAllData = {
+        ...formValues,
+        ...uploadProperties,
+      };
+
       await clienteAxios.post("/auth/edit", {
         data: formAllData,
         eliminados,
       });
+
       onEditUsuario(formAllData);
       toast.success("¡Actualizado con exito!");
       setCargandoSubmit(false);

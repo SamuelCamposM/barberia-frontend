@@ -1,4 +1,4 @@
-import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+import { Crud, Pagination, Photo, Sort } from "../../../../interfaces/global";
 
 export type TipoProducto = "PRODUCTO" | "SERVICIO";
 interface ProductoMarca {
@@ -17,9 +17,9 @@ interface ProductoUsuario {
   dui: string;
 }
 
- 
+
 export interface ProductoItem {
-  photo: string;
+  photos: Photo[];
   name: string;
   description?: string;
   price: number;

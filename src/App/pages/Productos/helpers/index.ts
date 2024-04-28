@@ -22,7 +22,7 @@ export const tiposProducto: TipoProducto[] = ["PRODUCTO", "SERVICIO"];
 export const columns: Column[] = [
   { campo: "", label: "", minWidth: 10, align: "center", sortable: false },
   {
-    campo: "photo",
+    campo: "photos",
     label: "Foto",
     align: "left",
     minWidth: 100,
@@ -87,7 +87,7 @@ export const itemDefault: ProductoItem = {
   },
   estado: true,
   name: "",
-  photo: "",
+  photos: [],
   price: 0,
   tipoProducto: "PRODUCTO",
   createdAt: new Date().toISOString(),

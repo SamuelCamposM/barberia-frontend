@@ -23,7 +23,8 @@ import {
   formatearFecha,
   handleSocket,
   minNoRequired,
-  procesarUploadsArray,
+  procesarDocsValues,
+  procesarDocsValuesUpload,
   required,
   roles,
   validarEmail,
@@ -79,8 +80,7 @@ export const ModalUsuario = () => {
     cargandoSubmit,
   } = useForm({ ...itemDefault, newPassword: "" }, config);
 
-  // Carga de archivos
-  const { ComponentUpload, onSubmitUpload } = useFileUpload({
+  const { ComponentUpload, onSubmitUpload, getValues } = useFileUpload({
     label: "Foto de perfil",
     prevUrl: formValues.photo || "",
     propiedad: "photo",
@@ -93,13 +93,17 @@ export const ModalUsuario = () => {
   const handleGuardar = async () => {
     const onSubmitUploadFunctions = [onSubmitUpload()];
     const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { error, uploadProperties } = procesarUploadsArray(docsUrls);
-    const formAllData = { ...formValues, ...uploadProperties };
+    const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
 
     if (error) {
       setCargandoSubmit(false);
       return toast.error(error);
     }
+
+    const formAllData = {
+      ...formValues,
+      ...uploadProperties,
+    };
 
     socket?.emit(
       SocketEmitUsuario.agregar,
@@ -114,17 +118,20 @@ export const ModalUsuario = () => {
       }
     );
   };
-  const handleEditar = async () => {
+  const handleEditar = async (eliminados: string[]) => {
     const onSubmitUploadFunctions = [onSubmitUpload()];
     const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { error, uploadProperties, eliminados } =
-      procesarUploadsArray(docsUrls);
-    const formAllData = { ...formValues, ...uploadProperties };
+    const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
 
     if (error) {
       setCargandoSubmit(false);
       return toast.error(error);
     }
+
+    const formAllData = {
+      ...formValues,
+      ...uploadProperties,
+    };
 
     socket?.emit(
       SocketEmitUsuario.editar,
@@ -144,13 +151,17 @@ export const ModalUsuario = () => {
     e.preventDefault();
 
     setisSubmited(true);
-    handleBlur();
     if (cargandoSubmit) return;
-
-    if (isFormInvalidSubmit(formValues)) return;
-
     setCargandoSubmit(true);
-    if (editar) handleEditar();
+    const docsValues = [getValues()];
+    const { eliminados, values } = procesarDocsValues(docsValues);
+
+    if (isFormInvalidSubmit({ ...formValues, ...values })) {
+      setCargandoSubmit(false);
+      return;
+    }
+
+    if (editar) handleEditar(eliminados);
     else handleGuardar();
   };
 

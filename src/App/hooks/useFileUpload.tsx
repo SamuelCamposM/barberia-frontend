@@ -1,7 +1,8 @@
 import { Avatar, Badge, Box, Typography, IconButton } from "@mui/material";
-import React, { Dispatch, useRef, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { fileUpload } from "../../helpers";
 import { Delete } from "@mui/icons-material";
+import { Photo } from "../../interfaces/global";
 
 export const useFileUpload = ({
   label,
@@ -18,51 +19,78 @@ export const useFileUpload = ({
   helperText: string;
   setformValues: Dispatch<any>;
 }) => {
-  const [eliminado, setEliminado] = useState(true);
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<Photo>({
+    url: prevUrl,
+    antiguo: prevUrl,
+    eliminado: false,
+  });
   const [file, setFile] = useState<File | null>(null);
   const inputEl = useRef<HTMLInputElement>(null);
 
-  const onButtonClick = () => {
-    // `current` apunta al campo de entrada montado en el DOM
+  useEffect(() => {
+    if (prevUrl !== "url" && prevUrl !== "") {
+      setImage({
+        url: prevUrl,
+        antiguo: prevUrl,
+        eliminado: false,
+      });
+    }
+  }, [prevUrl]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setFile(file);
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      setImage((prev) => ({
+        ...prev,
+        url: e.target?.result as string,
+        eliminado: true,
+      }));
+      setformValues((prev: any) => ({
+        ...prev,
+        [propiedad]: "url",
+      }));
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleDeleteImage = () => {
+    setFile(null);
+    setImage((prev) => ({
+      ...prev,
+      url: "",
+      eliminado: true,
+    }));
+    setformValues((prev: any) => ({ ...prev, [propiedad]: "" }));
+  };
+
+  const handleUploadClick = () => {
     inputEl.current?.click();
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setEliminado(true);
-      setFile(file);
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        // El resultado del archivo se encuentra en e.target.result
-        // console.log("Contenido del archivo:", e.target?.result);
-        setImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file); // lee el archivo como URL de datos
-    }
-  };
-  const deleteImage = () => {
-    setEliminado(true);
-    setformValues((prev: any) => ({ ...prev, [propiedad]: "" }));
-  };
   return {
+    getValues: () => ({ [propiedad]: image }),
+
     onSubmitUpload: async () => {
       const res = await fileUpload(file);
 
       setTimeout(() => {
         setFile(null);
-        setImage(null);
-        setEliminado(false);
       }, 0);
-
+      setImage({ ...image, eliminado: false });
       return {
-        config: {
+        [propiedad]: {
+          image: {
+            ...image,
+            url: res.url || image.url,
+          },
           error: res.error ? `Hubo un error al subir ${label}` : false,
-          eliminado,
-          prevUrl,
         },
-        data: { [propiedad]: res.url || prevUrl },
       };
     },
 
@@ -78,19 +106,19 @@ export const useFileUpload = ({
           type="file"
           style={{ display: "none" }}
           ref={inputEl}
-          onChange={handleFileUpload}
+          onChange={handleFileChange}
         />
         <Badge
           badgeContent={
-            <IconButton aria-label="" onClick={deleteImage} size="small">
+            <IconButton aria-label="" onClick={handleDeleteImage} size="small">
               <Delete color="error" fontSize="small" />
             </IconButton>
           }
         >
           <Avatar
-            onClick={onButtonClick}
+            onClick={handleUploadClick}
             alt={label}
-            src={image || prevUrl}
+            src={image.url}
             sx={{
               width: 125,
               height: 125,

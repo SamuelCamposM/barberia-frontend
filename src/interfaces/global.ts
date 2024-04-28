@@ -67,3 +67,8 @@ export interface ErrorBackend {
   error: boolean;
   msg: string;
 }
+export interface Photo {
+  url: string;
+  eliminado?: boolean;
+  antiguo?: string;
+}

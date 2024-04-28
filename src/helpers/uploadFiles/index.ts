@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { getEnvVariables } from "../env/getEnvVariables";
+import { Photo } from "../../interfaces/global";
 
 export const fileUpload = async (file: File | null) => {
   if (!file) {
@@ -28,12 +29,10 @@ export const procesarUploadsArray = (
   arreglo: {
     config: {
       error: string | boolean;
-      eliminado: boolean;
+      eliminado: boolean | undefined;
       prevUrl: string;
     };
-    data: {
-      [x: string]: string;
-    };
+    [x: string]: string;
   }[]
 ) => {
   let resultado: {
@@ -57,9 +56,71 @@ export const procesarUploadsArray = (
 
     resultado.uploadProperties = {
       ...resultado.uploadProperties,
-      ...objeto.data,
+      ...objeto,
     };
   }
 
   return resultado;
+};
+export const procesarDocsValuesUpload = (
+  fotos: {
+    [x: string]: {
+      image: {
+        url: string;
+        eliminado?: boolean | undefined;
+        antiguo?: string | undefined;
+      };
+      error: string | boolean;
+    };
+  }[]
+) => {
+  let error: string | boolean = false;
+  let uploadProperties: { [key: string]: string } = {};
+
+  fotos.forEach((foto) => {
+    // Obtenemos la clave y el valor del objeto
+    let clave = Object.keys(foto)[0];
+    let valor = foto[clave];
+
+    if (valor.error) {
+      // Si la foto tiene un error, marcamos error como true
+      error = error;
+    }
+    // Agregamos la url de la foto a los valores
+
+    uploadProperties[clave] = valor.image.url;
+  });
+
+  return {
+    error: error,
+    uploadProperties: uploadProperties,
+  };
+};
+
+export const procesarDocsValues = (fotos: { [key: string]: Photo }[]) => {
+  let eliminados: string[] = [];
+  let values: { [key: string]: string } = {};
+
+  fotos.forEach((foto) => {
+    // Obtenemos la clave y el valor del objeto
+    let clave = Object.keys(foto)[0];
+    let valor = foto[clave];
+
+    if (valor.eliminado) {
+      // Si la foto está eliminada, la agregamos a la lista de eliminados
+      console.log(valor.antiguo);
+      
+      eliminados.push(valor.antiguo || "");
+      // Si hay un nuevo url, lo asignamos a values
+      values[clave] = valor.url !== valor.antiguo ? valor.url : "";
+    } else {
+      // Si no está eliminada, la agregamos a los valores
+      values[clave] = valor.url;
+    }
+  });
+
+  return {
+    eliminados: eliminados,
+    values: values,
+  };
 };
