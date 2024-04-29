@@ -24,44 +24,65 @@ export const fileUpload = async (file: File | null) => {
     return { url: "", error: true };
   }
 };
-
-export const procesarUploadsArray = (
-  arreglo: {
-    config: {
-      error: string | boolean;
-      eliminado: boolean | undefined;
-      prevUrl: string;
-    };
-    [x: string]: string;
+export const procesarFotosArray = (
+  fotos: {
+    [x: string]: {
+      url: string;
+      error: boolean;
+    }[];
   }[]
 ) => {
-  let resultado: {
-    error: boolean;
-    eliminados: string[];
-    uploadProperties: { [x: string]: string };
-  } = {
-    error: false,
-    eliminados: [],
-    uploadProperties: {},
+  let values: { [key: string]: string[] } = {};
+  let hasError: boolean = false;
+
+  fotos.forEach((grupo) => {
+    // Obtenemos la clave y el valor del objeto
+    let clave = Object.keys(grupo)[0];
+    let valor = grupo[clave];
+
+    let urls = valor.map((item) => item.url);
+    values[clave] = urls;
+
+    // Si alguna foto tiene error, marcamos hasError como true
+    if (valor.some((item) => item.error)) {
+      hasError = true;
+    }
+  });
+
+  return {
+    values: values,
+    error: hasError,
   };
-
-  for (let objeto of arreglo) {
-    if (objeto.config.error) {
-      resultado.error = true;
-    }
-
-    if (objeto.config.eliminado) {
-      resultado.eliminados.push(objeto.config.prevUrl);
-    }
-
-    resultado.uploadProperties = {
-      ...resultado.uploadProperties,
-      ...objeto,
-    };
-  }
-
-  return resultado;
 };
+
+export const procesarFotos = (fotos: { [key: string]: Photo[] }[]) => {
+  let eliminados: string[] = [];
+  let values: { [key: string]: string[] } = {};
+
+  fotos.forEach((foto) => {
+    // Obtenemos la clave y el valor del objeto
+    let clave = Object.keys(foto)[0];
+    let valor = foto[clave];
+
+    let urlsEliminadas = valor
+      .filter((item) => item.eliminado)
+      .map((item) => item.url);
+    let urlsNoEliminadas = valor
+      .filter((item) => !item.eliminado)
+      .map((item) => item.url);
+
+    if (urlsEliminadas.length > 0) {
+      eliminados.push(...urlsEliminadas);
+    }
+    values[clave] = urlsNoEliminadas;
+  });
+
+  return {
+    eliminados: eliminados,
+    values: values,
+  };
+};
+
 export const procesarDocsValuesUpload = (
   fotos: {
     [x: string]: {
@@ -109,7 +130,7 @@ export const procesarDocsValues = (fotos: { [key: string]: Photo }[]) => {
     if (valor.eliminado) {
       // Si la foto está eliminada, la agregamos a la lista de eliminados
       console.log(valor.antiguo);
-      
+
       eliminados.push(valor.antiguo || "");
       // Si hay un nuevo url, lo asignamos a values
       values[clave] = valor.url !== valor.antiguo ? valor.url : "";

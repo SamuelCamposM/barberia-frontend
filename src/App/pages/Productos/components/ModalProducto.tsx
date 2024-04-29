@@ -25,7 +25,8 @@ import {
   formatearFecha,
   handleSocket,
   min,
-  procesarUploadsArray,
+  procesarFotos,
+  procesarFotosArray,
   required,
 } from "../../../../helpers";
 import { useEffect, useMemo } from "react";
@@ -33,7 +34,7 @@ import { useAuthStore, useForm, useProvideSocket } from "../../../../hooks";
 import { toast } from "react-toastify";
 import {
   useDebouncedCallback,
-  useFileUpload,
+  useFileUploads,
   useHttp,
   useModalConfig,
 } from "../../../hooks";
@@ -55,10 +56,13 @@ export const ModalProducto = () => {
   const editar = useMemo(() => itemActive._id, [itemActive]);
 
   // Configuración de validación
-
   const config = useMemo(
     () => ({
-      photo: [],
+      photos: [
+        (e: string[]) => {
+          return e.length === 0 ? "Al menos una imagen requerida" : "";
+        },
+      ],
       name: [required],
       price: [(value: number) => min(value, 1)],
       "categoria.name": [required],
@@ -98,12 +102,12 @@ export const ModalProducto = () => {
     },
   });
   // Carga de archivos
-  const { ComponentUpload, onSubmitUpload } = useFileUpload({
-    label: "Foto",
-    prevUrl: formValues.photo || "",
-    propiedad: "photo",
-    error: errorValues.photo.length > 0,
-    helperText: errorValues.photo.join(" - "),
+  const { ComponentUpload, getValues, onSubmitUpload } = useFileUploads({
+    label: "Fotos",
+    prevPhotos: formValues.photos,
+    propiedad: "photos",
+    error: errorValues.photos.length > 0,
+    helperText: errorValues.photos.join(" - "),
     setformValues,
   });
 
@@ -139,23 +143,25 @@ export const ModalProducto = () => {
 
   // Funciones de manejo
   const handleGuardar = async () => {
-    const onSubmitUploadFunctions = [onSubmitUpload()];
+    const onSubmitUploadFunctions = [onSubmitUpload(), onSubmitUpload()];
     const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { error, uploadProperties } = procesarUploadsArray(docsUrls);
-    const formAllData: ProductoItem = {
-      ...formValues,
-      ...uploadProperties,
-      rUsuario: {
-        _id: usuario.uid,
-        name: `${usuario.lastname} ${usuario.name}`,
-        dui: ``,
-      },
-    };
+    const { values, error } = procesarFotosArray(docsUrls);
+    // const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
 
     if (error) {
       setCargandoSubmit(false);
       return toast.error(error);
     }
+
+    const formAllData: ProductoItem = {
+      ...formValues,
+      ...values,
+      rUsuario: {
+        _id: usuario.uid,
+        name: `${usuario.lastname} ${usuario.name}`,
+        dui: "",
+      },
+    };
 
     socket?.emit(
       SocketEmitProducto.agregar,
@@ -170,17 +176,20 @@ export const ModalProducto = () => {
       }
     );
   };
-  const handleEditar = async () => {
+  const handleEditar = async (eliminados: string[]) => {
     const onSubmitUploadFunctions = [onSubmitUpload()];
     const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { error, uploadProperties, eliminados } =
-      procesarUploadsArray(docsUrls);
-    const formAllData = { ...formValues, ...uploadProperties };
+    const { values, error } = procesarFotosArray(docsUrls);
 
     if (error) {
       setCargandoSubmit(false);
       return toast.error(error);
     }
+
+    const formAllData = {
+      ...formValues,
+      ...values,
+    };
 
     socket?.emit(
       SocketEmitProducto.editar,
@@ -200,13 +209,17 @@ export const ModalProducto = () => {
     e.preventDefault();
 
     setisSubmited(true);
-    handleBlur();
     if (cargandoSubmit) return;
-
-    if (isFormInvalidSubmit(formValues)) return;
-
     setCargandoSubmit(true);
-    if (editar) handleEditar();
+    const docsValues = [getValues()];
+    const { eliminados, values } = procesarFotos(docsValues);
+    console.log({ docsValues, eliminados, values });
+
+    if (isFormInvalidSubmit({ ...formValues, ...values })) {
+      setCargandoSubmit(false);
+      return;
+    }
+    if (editar) handleEditar(eliminados);
     else handleGuardar();
   };
 

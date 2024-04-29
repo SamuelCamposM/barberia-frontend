@@ -17,9 +17,8 @@ interface ProductoUsuario {
   dui: string;
 }
 
-
 export interface ProductoItem {
-  photos: Photo[];
+  photos: string[];
   name: string;
   description?: string;
   price: number;

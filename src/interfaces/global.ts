@@ -71,4 +71,5 @@ export interface Photo {
   url: string;
   eliminado?: boolean;
   antiguo?: string;
+  name?: string;
 }

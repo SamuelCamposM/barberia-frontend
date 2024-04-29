@@ -97,18 +97,20 @@ export const StaticProducto = ({
       <>
         <StyledTableCell>
           <Box display={"flex"} justifyContent={"center"}>
-            <Avatar
-              src={producto.photo}
-              sx={{
-                cursor: "pointer",
-                transition: "all .5s",
-                ":hover": { opacity: 0.5 },
-              }}
-              onClick={() => {
-                if (!producto.photo) return;
-                window.open(producto.photo);
-              }}
-            />
+            {producto.photos.map((photo) => (
+              <Avatar
+                src={photo}
+                sx={{
+                  cursor: "pointer",
+                  transition: "all .5s",
+                  ":hover": { opacity: 0.5 },
+                }}
+                onClick={() => {
+                  if (!photo) return;
+                  window.open(photo);
+                }}
+              />
+            ))}
           </Box>
         </StyledTableCell>
         <StyledTableCell>

@@ -158,7 +158,7 @@ export const ModalProfile = () => {
       lastname: [required],
       name: [required],
       tel: [required],
-      photo: [],
+      photo: [required],
       newPassword: [
         (value: string) => {
           return minNoRequired(value, 6);
