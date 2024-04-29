@@ -1,4 +1,4 @@
-import { Action, Pagination, Sort } from "../../../interfaces/global";
+import { Action, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DeptoItem, setDataProps, useSocketEvents } from ".";
@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import {
   Acciones,
-  BuscadorPath,
+  Buscador,
   Cargando,
   TablaLayout,
   TableTitle,
@@ -34,7 +34,11 @@ import { RowDepto } from "./components/RowDepto";
 import { EditableDepto } from "./components/EditableDepto";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 
-export const Depto = () => {
+export const Depto = ({
+  dontChangePath = false,
+}: {
+  dontChangePath?: boolean;
+}) => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
 
@@ -58,43 +62,28 @@ export const Depto = () => {
   const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
-  // Funciones para el manejo de eventos y acciones.
-  const navigateWithParams = ({
-    newPagination,
-    newSort,
-  }: {
-    newPagination: Pagination;
-    newSort: Sort;
-  }) => {
-    const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
-      newPagination
-    )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
-    console.log(urlParams);
-
-    navigate(urlParams);
-    // let params = new URLSearchParams(window.location.search);
-    // params.set("q", busqueda);
-    // params.set("buscando", String(buscando));
-    // params.set("pagination", JSON.stringify(newPagination));
-    // params.set("sort", JSON.stringify(newSort));
-    // navigate(`?${params.toString()}`);
-  };
   const handleChangePage = (_: unknown, newPage: number) => {
-    navigateWithParams({
-      newPagination: { ...pagination, page: newPage + 1 },
-      newSort: sort,
+    setData({
+      pagination: { ...pagination, page: newPage + 1 },
+      busqueda,
+      sort,
     });
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    navigateWithParams({
-      newPagination: { ...pagination, page: 1, limit: +event.target.value },
-      newSort: sort,
+    setData({
+      pagination: { ...pagination, page: 1, limit: +event.target.value },
+      busqueda,
+      sort,
     });
   };
 
   const sortFunction = (newSort: Sort) => {
-    navigateWithParams({ newPagination: pagination, newSort });
+    setData({ pagination, busqueda, sort: newSort });
+  };
+  const searchFunction = (newBuscando: boolean, value: string) => {
+    setBuscando(newBuscando);
+    setData({ pagination: paginationDefault, sort, busqueda: value });
   };
 
   // Función asíncrona para obtener y establecer datos.
@@ -117,27 +106,48 @@ export const Depto = () => {
   // Efectos secundarios para la sincronización con la URL y sockets.
   const {
     q = "",
-    buscando: buscandoQuery = "",
-    pagination: paginationQuery = "",
-    sort: sortQuery = "",
+    buscando: buscandoQuery,
+    pagination: paginationQuery,
+    sort: sortQuery,
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
   };
-  useEffect(() => {
-    const estaBuscando = Boolean(buscandoQuery === "true");
 
-    setBuscando(estaBuscando);
-    setData({
-      pagination: paginationQuery
-        ? JSON.parse(paginationQuery)
-        : paginationDefault,
-      sort: sortQuery ? JSON.parse(sortQuery) : sort,
-      busqueda: estaBuscando ? q : "",
-    });
-  }, [q, paginationQuery, sortQuery, buscandoQuery]);
+  useEffect(() => {
+    if (!dontChangePath) {
+      let params = new URLSearchParams(window.location.search);
+      params.set("q", busqueda);
+      params.set("buscando", buscando ? "true" : "false");
+      params.set("sort", JSON.stringify(sort));
+      params.set("pagination", JSON.stringify(pagination));
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [busqueda, buscando, sort, pagination]);
+
+  useEffect(() => {
+    if (dontChangePath) {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination,
+        sort,
+        busqueda,
+      });
+    } else {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination: paginationQuery
+          ? JSON.parse(paginationQuery)
+          : paginationDefault,
+        sort: sortQuery ? JSON.parse(sortQuery) : sort,
+        busqueda: estaBuscando ? q : "",
+      });
+    }
+  }, []);
 
   useSocketEvents({ setDeptosData, setPagination });
   // Acciones disponibles en la UI.
@@ -146,7 +156,7 @@ export const Depto = () => {
       color: "primary",
       Icon: Refresh,
       name: "Actualizar",
-      onClick: () => setData({ pagination, sort, busqueda: q }),
+      onClick: () => setData({ pagination, sort, busqueda }),
       tipo: "icono",
     },
     {
@@ -170,7 +180,12 @@ export const Depto = () => {
         actions[Number(e.key) - 1].onClick(null);
       }}
     >
-      <BuscadorPath />
+      <Buscador
+        buscando={buscando}
+        cargando={cargando}
+        onSearch={(value) => searchFunction(true, value)}
+        onSearchCancel={() => searchFunction(false, "")}
+      />
       <>
         <TableTitle texto={path} />
         <Box

@@ -8,9 +8,11 @@ export const Buscador = ({
   buscando,
   onSearch,
   onSearchCancel,
+  cargando,
 }: {
   label?: string;
   buscando: boolean;
+  cargando: boolean;
   onSearch: (arg: string) => void;
   onSearchCancel: () => void;
 }) => {
@@ -34,9 +36,13 @@ export const Buscador = ({
   };
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (cargando) return;
     setisSubmited(true);
     if (formValues.search === "") {
-      return onLeaveSearch();
+      if (buscando) {
+        onLeaveSearch();
+      }
+      return;
     }
     onSearch(formValues.search);
   };
@@ -61,6 +67,7 @@ export const Buscador = ({
             <InputAdornment position="end">
               {buscando && (
                 <IconButton
+                  disabled={cargando}
                   aria-label="Cancelar Busqueda"
                   onClick={() => {
                     onLeaveSearch();

@@ -101,6 +101,7 @@ export const TablaMunicipio = ({ depto }: { depto: string }) => {
   return (
     <>
       <Buscador
+        cargando={cargando}
         buscando={buscando}
         onSearch={(value) => {
           setBuscando(true);

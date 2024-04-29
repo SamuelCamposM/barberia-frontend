@@ -1,7 +1,7 @@
-import { Action, Pagination, Sort } from "../../../interfaces/global";
+import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
 import { Box, TableBody, TablePagination } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { columns, getProductos, sortDefault, tiposProducto } from "./helpers";
 import { ModalRoute } from "./components/ModalRoute";
 import { PaperContainerPage } from "../../components/style";
@@ -22,20 +22,9 @@ import {
   rowsPerPageOptions,
   validateFunction,
 } from "../../../helpers";
-import {
-  Acciones,
-  BuscadorPath,
-  TablaLayout,
-  TableTitle,
-} from "../../components";
-import { useHandleNavigation } from "../../hooks/useHandleNavigation";
-interface handleEventProps {
-  newPagination?: Pagination;
-  newSort?: Sort;
-  newTabValue?: TipoProducto;
-  newEstadoValue?: boolean;
-}
-export const Productos = () => {
+import { Acciones, Buscador, TablaLayout, TableTitle } from "../../components";
+
+export const Productos = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
@@ -58,107 +47,141 @@ export const Productos = () => {
   } = useCommonStates(sortDefault);
   const [productosData, setProductosData] = useState<ProductoItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
-  // Función de alto nivel para manejar eventos
-  const handleEvent = useCallback(
-    ({
-      newPagination = pagination,
-      newSort = sort,
-      newTabValue = tipoProducto,
-      newEstadoValue = estado,
-    }: handleEventProps) => {
-      const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
-        newPagination
-      )}&sort=${JSON.stringify(
-        newSort
-      )}&buscando=${buscando}&tipoProducto=${newTabValue}&estado=${newEstadoValue}`;
-      navigate(urlParams);
-    },
-    [busqueda, navigate, pagination, sort, tipoProducto, estado]
-  );
+  
+  // Función de alto nivel para manejar
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setData({
+      pagination: { ...pagination, page: newPage + 1 },
+      busqueda,
+      sort,
+      estado,
+      tipoProducto,
+    });
+  };
 
-  const {
-    handleChangePage,
-    handleChangeRowsPerPage,
-    sortFunction,
-    handleChangeTab,
-    handleChangeEstado,
-  } = useHandleNavigation<TipoProducto, boolean>({
-    handleEvent,
-    pagination,
-  });
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setData({
+      pagination: { ...pagination, page: 1, limit: +event.target.value },
+      busqueda,
+      sort,
+      estado,
+      tipoProducto,
+    });
+  };
 
-  // Función asíncrona para obtener y establecer datos
-  const setData = useCallback(
-    async ({
+  const sortFunction = (newSort: Sort) => {
+    setData({ pagination, busqueda, sort: newSort, estado, tipoProducto });
+  };
+  const searchFunction = (newBuscando: boolean, value: string) => {
+    setBuscando(newBuscando);
+    setData({
+      pagination: paginationDefault,
+      sort,
+      busqueda: value,
+      estado,
+      tipoProducto,
+    });
+  };
+  const handleChangeEstado = (newEstado: boolean) => {
+    setData({ pagination, sort, busqueda, estado: newEstado, tipoProducto });
+  };
+  const handleChangeTab = (newTipoProducto: TipoProducto) => {
+    setData({
       pagination,
       sort,
       busqueda,
-      tipoProducto,
       estado,
-    }: setDataProps) => {
-      setCargando(true);
-      const { error, result } = await getProductos({
-        pagination,
-        sort,
-        busqueda,
-        tipoProducto,
-        estado,
-      });
-      if (error.error) {
-        toast.error(error.msg);
-        return;
-      }
-      const { docs, ...rest } = result;
-      setPagination(rest);
-      setProductosData(docs);
-      setSort(sort);
-      setBusqueda(busqueda);
-      setTipoProducto(tipoProducto);
-      setCargando(false);
-      setEstado(estado);
-    },
-    []
-  );
+      tipoProducto: newTipoProducto,
+    });
+  };
 
-  // Efectos secundarios para la sincronización con la URL y sockets
+  // Función asíncrona para obtener y establecer datos.
+  const setData = async ({
+    pagination,
+    sort,
+    busqueda,
+    estado,
+    tipoProducto,
+  }: setDataProps) => {
+    console.log("consultando");
+    setCargando(true);
+    const { error, result } = await getProductos({
+      pagination,
+      sort,
+      busqueda,
+      estado,
+      tipoProducto,
+    });
+
+    if (error.error) {
+      toast.error(error.msg);
+      return;
+    }
+    const { docs, ...rest } = result;
+    setPagination(rest);
+    setProductosData(docs);
+    setSort(sort);
+    setBusqueda(busqueda);
+    setCargando(false);
+    setEstado(estado);
+    setTipoProducto(tipoProducto);
+  };
+
+  // Efectos secundarios para la sincronización con la URL y sockets.
   const {
     q = "",
-    buscando: buscandoQuery = "",
-    pagination: paginationQuery = "",
-    sort: sortQuery = "",
+    buscando: buscandoQuery,
+    pagination: paginationQuery,
+    sort: sortQuery,
+    estado: estadoQuery,
     tipoProducto: tipoProductoQuery = "PRODUCTO",
-    estado: estadoQuery = "true",
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
-    tipoProducto: TipoProducto | undefined;
     estado: string;
+    tipoProducto: TipoProducto | undefined;
   };
 
   useEffect(() => {
-    const estaBuscando = Boolean(buscandoQuery === "true");
-    setBuscando(estaBuscando);
+    if (!dontChangePath) {
+      let params = new URLSearchParams(window.location.search);
+      params.set("q", busqueda);
+      params.set("buscando", buscando ? "true" : "false");
+      params.set("sort", JSON.stringify(sort));
+      params.set("pagination", JSON.stringify(pagination));
+      params.set("estado", estado ? "true" : "false");
+      params.set("tipoProducto", tipoProducto);
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [busqueda, buscando, sort, pagination, estado, tipoProducto]);
 
-    setData({
-      pagination: paginationQuery
-        ? JSON.parse(paginationQuery)
-        : paginationDefault,
-      sort: sortQuery ? JSON.parse(sortQuery) : sort,
-      busqueda: estaBuscando ? q : "",
-      tipoProducto: tipoProductoQuery,
-      estado: estadoQuery === "true",
-    });
-  }, [
-    q,
-    paginationQuery,
-    sortQuery,
-    buscandoQuery,
-    tipoProductoQuery,
-    estadoQuery,
-  ]);
-
+  useEffect(() => {
+    if (dontChangePath) {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination,
+        sort,
+        busqueda,
+        estado,
+        tipoProducto,
+      });
+    } else {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination: paginationQuery
+          ? JSON.parse(paginationQuery)
+          : paginationDefault,
+        sort: sortQuery ? JSON.parse(sortQuery) : sort,
+        busqueda: estaBuscando ? q : "",
+        estado: estadoQuery ? estadoQuery === "true" : estado,
+        tipoProducto: tipoProductoQuery,
+      });
+    }
+  }, []);
   useSocketEvents({ setProductosData, setPagination });
   const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
 
@@ -285,7 +308,13 @@ export const Productos = () => {
             }
           />
         </Routes>
-        <BuscadorPath label="Buscar por Producto, Marca y Categoria" />
+        <Buscador
+          label="Buscar por Producto, Marca y Categoria"
+          buscando={buscando}
+          cargando={cargando}
+          onSearch={(value) => searchFunction(true, value)}
+          onSearchCancel={() => searchFunction(false, "")}
+        />
 
         <TableTitle texto={path} Tabs={[...tabs, tabEstado]} />
         <Box

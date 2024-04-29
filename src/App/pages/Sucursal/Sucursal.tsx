@@ -1,9 +1,8 @@
-import { Action, Pagination, Sort } from "../../../interfaces/global";
+import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SucursalItem, setDataProps, useSocketEvents } from ".";
 import {
-  hasSubroute,
   paginationDefault,
   rowsPerPageOptions,
   validateFunction,
@@ -24,7 +23,7 @@ import {
 } from "@mui/material";
 import {
   Acciones,
-  BuscadorPath,
+  Buscador,
   Cargando,
   TablaLayout,
   TableTitle,
@@ -36,7 +35,7 @@ import { RowSucursal } from "./components/RowSucursal";
 import { EditableSucursal } from "./components/EditableSucursal";
 import { CallDepto } from "../Depto";
 
-export const Sucursal = () => {
+export const Sucursal = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
 
@@ -59,41 +58,28 @@ export const Sucursal = () => {
   const [sucursalesData, setSucursalsData] = useState<SucursalItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
-  // Funciones para el manejo de eventos y acciones.
-  const navigateWithParams = ({
-    newPagination,
-    newSort,
-  }: {
-    newPagination: Pagination;
-    newSort: Sort;
-  }) => {
-    const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
-      newPagination
-    )}&sort=${JSON.stringify(newSort)}&buscando=${buscando}`;
-    navigate(urlParams);
-    // let params = new URLSearchParams(window.location.search);
-    // params.set("q", busqueda);
-    // params.set("buscando", String(buscando));
-    // params.set("pagination", JSON.stringify(newPagination));
-    // params.set("sort", JSON.stringify(newSort));
-    // navigate(`?${params.toString()}`);
-  };
   const handleChangePage = (_: unknown, newPage: number) => {
-    navigateWithParams({
-      newPagination: { ...pagination, page: newPage + 1 },
-      newSort: sort,
+    setData({
+      pagination: { ...pagination, page: newPage + 1 },
+      busqueda,
+      sort,
     });
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    navigateWithParams({
-      newPagination: { ...pagination, page: 1, limit: +event.target.value },
-      newSort: sort,
+    setData({
+      pagination: { ...pagination, page: 1, limit: +event.target.value },
+      busqueda,
+      sort,
     });
   };
 
   const sortFunction = (newSort: Sort) => {
-    navigateWithParams({ newPagination: pagination, newSort });
+    setData({ pagination, busqueda, sort: newSort });
+  };
+  const searchFunction = (newBuscando: boolean, value: string) => {
+    setBuscando(newBuscando);
+    setData({ pagination: paginationDefault, sort, busqueda: value });
   };
 
   // Función asíncrona para obtener y establecer datos.
@@ -104,6 +90,7 @@ export const Sucursal = () => {
       sort,
       busqueda,
     });
+
     if (error.error) {
       toast.error(error.msg);
       return;
@@ -119,29 +106,55 @@ export const Sucursal = () => {
   // Efectos secundarios para la sincronización con la URL y sockets.
   const {
     q = "",
-    buscando: buscandoQuery = "",
-    pagination: paginationQuery = "",
-    sort: sortQuery = "",
+    buscando: buscandoQuery,
+    pagination: paginationQuery,
+    sort: sortQuery,
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
   };
+
   useEffect(() => {
-    if (hasSubroute(location.pathname, path)) return;
+    if (!dontChangePath) {
+      let params = new URLSearchParams(window.location.search);
+      params.set("q", busqueda);
+      params.set("buscando", buscando ? "true" : "false");
+      params.set("sort", JSON.stringify(sort));
+      params.set("pagination", JSON.stringify(pagination));
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [busqueda, buscando, sort, pagination]);
 
-    const estaBuscando = Boolean(buscandoQuery === "true");
+  useEffect(() => {
+    if (dontChangePath) {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination,
+        sort,
+        busqueda,
+      });
+    } else {
+      console.log({
+        q,
+        buscandoQuery,
+        paginationQuery,
+        sortQuery,
+      });
 
-    setBuscando(estaBuscando);
-    setData({
-      pagination: paginationQuery
-        ? JSON.parse(paginationQuery)
-        : paginationDefault,
-      sort: sortQuery ? JSON.parse(sortQuery) : sort,
-      busqueda: estaBuscando ? q : "",
-    });
-  }, [q, paginationQuery, sortQuery, buscandoQuery]);
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination: paginationQuery
+          ? JSON.parse(paginationQuery)
+          : paginationDefault,
+        sort: sortQuery ? JSON.parse(sortQuery) : sort,
+        busqueda: estaBuscando ? q : "",
+      });
+    }
+  }, []);
 
   useSocketEvents({ setSucursalsData, setPagination });
   // Acciones disponibles en la UI.
@@ -179,7 +192,12 @@ export const Sucursal = () => {
         <Routes>
           <Route path={`${deptoPath}`} element={<CallDepto />} />
         </Routes>
-        <BuscadorPath />
+        <Buscador
+          buscando={buscando}
+          cargando={cargando}
+          onSearch={(value) => searchFunction(true, value)}
+          onSearchCancel={() => searchFunction(false, "")}
+        />
         <>
           <TableTitle texto={path} />
           <Box

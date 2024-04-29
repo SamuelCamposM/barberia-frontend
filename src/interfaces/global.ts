@@ -73,3 +73,7 @@ export interface Photo {
   antiguo?: string;
   name?: string;
 }
+
+export interface FromAnotherComponent {
+  dontChangePath?: boolean;
+}

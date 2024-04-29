@@ -1,7 +1,7 @@
-import { Action, Pagination, Sort } from "../../../interfaces/global";
+import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
 import { Box, TableBody, TablePagination } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { columns, getUsuarios, sortDefault } from "./helpers";
 import { ModalRoute } from "./components/ModalRoute";
 import { PaperContainerPage } from "../../components/style";
@@ -23,20 +23,8 @@ import {
   rowsPerPageOptions,
   validateFunction,
 } from "../../../helpers";
-import {
-  Acciones,
-  BuscadorPath,
-  TablaLayout,
-  TableTitle,
-} from "../../components";
-import { useHandleNavigation } from "../../hooks/useHandleNavigation";
-interface handleEventProps {
-  newPagination?: Pagination;
-  newSort?: Sort;
-  newTabValue?: Roles;
-  newEstadoValue?: boolean;
-}
-export const Usuario = () => {
+import { Acciones, Buscador, TablaLayout, TableTitle } from "../../components";
+export const Usuario = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
@@ -59,93 +47,141 @@ export const Usuario = () => {
   } = useCommonStates(sortDefault);
   const [usuariosData, setUsuariosData] = useState<UsuarioItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
-  // Función de alto nivel para manejar eventos
-  const handleEvent = useCallback(
-    ({
-      newPagination = pagination,
-      newSort = sort,
-      newTabValue = rol,
-      newEstadoValue = estado,
-    }: handleEventProps) => {
-      const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
-        newPagination
-      )}&sort=${JSON.stringify(
-        newSort
-      )}&buscando=${buscando}&rol=${newTabValue}&estado=${newEstadoValue}`;
-      navigate(urlParams);
-    },
-    [busqueda, navigate, pagination, sort, rol, estado]
-  );
 
-  const {
-    handleChangePage,
-    handleChangeRowsPerPage,
-    sortFunction,
-    handleChangeTab,
-    handleChangeEstado,
-  } = useHandleNavigation<Roles, boolean>({
-    handleEvent,
+  // Función de alto nivel para manejar
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setData({
+      pagination: { ...pagination, page: newPage + 1 },
+      busqueda,
+      sort,
+      estado,
+      rol,
+    });
+  };
+
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setData({
+      pagination: { ...pagination, page: 1, limit: +event.target.value },
+      busqueda,
+      sort,
+      estado,
+      rol,
+    });
+  };
+
+  const sortFunction = (newSort: Sort) => {
+    setData({ pagination, busqueda, sort: newSort, estado, rol });
+  };
+  const searchFunction = (newBuscando: boolean, value: string) => {
+    setBuscando(newBuscando);
+    setData({
+      pagination: paginationDefault,
+      sort,
+      busqueda: value,
+      estado,
+      rol,
+    });
+  };
+  const handleChangeEstado = (newEstado: boolean) => {
+    setData({ pagination, sort, busqueda, estado: newEstado, rol });
+  };
+  const handleChangeTab = (newRol: Roles) => {
+    setData({
+      pagination,
+      sort,
+      busqueda,
+      estado,
+      rol: newRol,
+    });
+  };
+
+  // Función asíncrona para obtener y establecer datos.
+  const setData = async ({
     pagination,
-  });
+    sort,
+    busqueda,
+    estado,
+    rol,
+  }: setDataProps) => {
+    console.log("consultando");
+    setCargando(true);
+    const { error, result } = await getUsuarios({
+      pagination,
+      sort,
+      busqueda,
+      estado,
+      rol,
+    });
 
-  // Función asíncrona para obtener y establecer datos
-  const setData = useCallback(
-    async ({ pagination, sort, busqueda, rol, estado }: setDataProps) => {
-      setCargando(true);
-      const { error, result } = await getUsuarios({
-        pagination,
-        sort,
-        busqueda,
-        rol,
-        estado,
-      });
-      if (error.error) {
-        toast.error(error.msg);
-        return;
-      }
-      const { docs, ...rest } = result;
-      setPagination(rest);
-      setUsuariosData(docs);
-      setSort(sort);
-      setBusqueda(busqueda);
-      setRol(rol);
-      setCargando(false);
-      setEstado(estado);
-    },
-    []
-  );
+    if (error.error) {
+      toast.error(error.msg);
+      return;
+    }
+    const { docs, ...rest } = result;
+    setPagination(rest);
+    setUsuariosData(docs);
+    setSort(sort);
+    setBusqueda(busqueda);
+    setCargando(false);
+    setEstado(estado);
+    setRol(rol);
+  };
 
-  // Efectos secundarios para la sincronización con la URL y sockets
+  // Efectos secundarios para la sincronización con la URL y sockets.
   const {
     q = "",
-    buscando: buscandoQuery = "",
-    pagination: paginationQuery = "",
-    sort: sortQuery = "",
+    buscando: buscandoQuery,
+    pagination: paginationQuery,
+    sort: sortQuery,
+    estado: estadoQuery,
     rol: rolQuery = "CLIENTE",
-    estado: estadoQuery = "true",
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
-    rol: Roles | undefined;
     estado: string;
+    rol: Roles | undefined;
   };
 
   useEffect(() => {
-    const estaBuscando = Boolean(buscandoQuery === "true");
-    setBuscando(estaBuscando);
+    if (!dontChangePath) {
+      let params = new URLSearchParams(window.location.search);
+      params.set("q", busqueda);
+      params.set("buscando", buscando ? "true" : "false");
+      params.set("sort", JSON.stringify(sort));
+      params.set("pagination", JSON.stringify(pagination));
+      params.set("estado", estado ? "true" : "false");
+      params.set("rol", rol);
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [busqueda, buscando, sort, pagination, estado, rol]);
 
-    setData({
-      pagination: paginationQuery
-        ? JSON.parse(paginationQuery)
-        : paginationDefault,
-      sort: sortQuery ? JSON.parse(sortQuery) : sort,
-      busqueda: estaBuscando ? q : "",
-      rol: rolQuery,
-      estado: estadoQuery === "true",
-    });
-  }, [q, paginationQuery, sortQuery, buscandoQuery, rolQuery, estadoQuery]);
+  useEffect(() => {
+    if (dontChangePath) {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination,
+        sort,
+        busqueda,
+        estado,
+        rol,
+      });
+    } else {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination: paginationQuery
+          ? JSON.parse(paginationQuery)
+          : paginationDefault,
+        sort: sortQuery ? JSON.parse(sortQuery) : sort,
+        busqueda: estaBuscando ? q : "",
+        estado: estadoQuery ? estadoQuery === "true" : estado,
+        rol: rolQuery,
+      });
+    }
+  }, []);
 
   useSocketEvents({ setUsuariosData, setPagination });
   const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
@@ -266,8 +302,12 @@ export const Usuario = () => {
             }
           />
         </Routes>
-        <BuscadorPath />
-
+        <Buscador
+          buscando={buscando}
+          cargando={cargando}
+          onSearch={(value) => searchFunction(true, value)}
+          onSearchCancel={() => searchFunction(false, "")}
+        />
         <TableTitle texto={path} Tabs={[...tabsRoles, tabEstado]} />
         <Box
           display={"flex"}

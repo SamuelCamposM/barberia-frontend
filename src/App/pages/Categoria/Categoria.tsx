@@ -1,15 +1,15 @@
-import { Action } from "../../../interfaces/global";
+import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { columns, getCategorias, itemDefault, sortDefault } from "./helpers";
 import { EditableCategoria } from "./components/EditableCategoria";
-import { CategoriaItem, handleEventProps, setDataProps, useSocketEvents } from ".";
+import { CategoriaItem, setDataProps, useSocketEvents } from ".";
 import { PaperContainerPage } from "../../components/style";
 import { RowCategoria } from "./components/RowCategoria";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useCommonStates, useHandleNavigation } from "../../hooks";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useCommonStates } from "../../hooks";
 import { useMenuStore } from "../Menu";
 import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
@@ -27,13 +27,13 @@ import {
 } from "@mui/material";
 import {
   Acciones,
-  BuscadorPath,
+  Buscador,
   Cargando,
   TablaLayout,
   TableTitle,
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 
-export const Categoria = () => {
+export const Categoria = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   const navigate = useNavigate();
 
@@ -58,31 +58,34 @@ export const Categoria = () => {
   const [categoriasData, setCategoriasData] = useState<CategoriaItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
-  const handleEvent = useCallback(
-    ({
-      newPagination = pagination,
-      newSort = sort,
-      newEstadoValue = estado,
-    }: handleEventProps) => {
-      const urlParams = `?q=${busqueda}&pagination=${JSON.stringify(
-        newPagination
-      )}&sort=${JSON.stringify(
-        newSort
-      )}&buscando=${buscando}&estado=${newEstadoValue}`;
-      navigate(urlParams);
-    },
-    [busqueda, pagination, sort, estado]
-  );
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setData({
+      pagination: { ...pagination, page: newPage + 1 },
+      busqueda,
+      sort,
+      estado,
+    });
+  };
 
-  const {
-    handleChangePage,
-    handleChangeRowsPerPage,
-    sortFunction,
-    handleChangeEstado,
-  } = useHandleNavigation<string, boolean>({
-    handleEvent,
-    pagination,
-  });
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setData({
+      pagination: { ...pagination, page: 1, limit: +event.target.value },
+      busqueda,
+      sort,
+      estado,
+    });
+  };
+
+  const sortFunction = (newSort: Sort) => {
+    setData({ pagination, busqueda, sort: newSort, estado });
+  };
+  const searchFunction = (newBuscando: boolean, value: string) => {
+    setBuscando(newBuscando);
+    setData({ pagination: paginationDefault, sort, busqueda: value, estado });
+  };
+  const handleChangeEstado = (newEstado: boolean) => {
+    setData({ pagination, sort, busqueda, estado: newEstado });
+  };
 
   // Función asíncrona para obtener y establecer datos.
   const setData = async ({
@@ -91,6 +94,8 @@ export const Categoria = () => {
     busqueda,
     estado,
   }: setDataProps) => {
+    console.log('consultando');
+    
     setCargando(true);
     const { error, result } = await getCategorias({
       pagination,
@@ -104,21 +109,21 @@ export const Categoria = () => {
       return;
     }
     const { docs, ...rest } = result;
-    setEstado(estado);
     setPagination(rest);
     setCategoriasData(docs);
     setSort(sort);
     setBusqueda(busqueda);
     setCargando(false);
+    setEstado(estado);
   };
 
   // Efectos secundarios para la sincronización con la URL y sockets.
   const {
     q = "",
-    buscando: buscandoQuery = "",
-    pagination: paginationQuery = "",
-    sort: sortQuery = "",
-    estado: estadoQuery = "true",
+    buscando: buscandoQuery,
+    pagination: paginationQuery,
+    sort: sortQuery,
+    estado: estadoQuery,
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
@@ -126,19 +131,42 @@ export const Categoria = () => {
     sort: string;
     estado: string;
   };
-  useEffect(() => {
-    const estaBuscando = Boolean(buscandoQuery === "true");
 
-    setBuscando(estaBuscando);
-    setData({
-      pagination: paginationQuery
-        ? JSON.parse(paginationQuery)
-        : paginationDefault,
-      sort: sortQuery ? JSON.parse(sortQuery) : sort,
-      busqueda: estaBuscando ? q : "",
-      estado: estadoQuery === "true",
-    });
-  }, [q, paginationQuery, sortQuery, buscandoQuery, estadoQuery]);
+  useEffect(() => {
+    if (!dontChangePath) {
+      let params = new URLSearchParams(window.location.search);
+      params.set("q", busqueda);
+      params.set("buscando", buscando ? "true" : "false");
+      params.set("sort", JSON.stringify(sort));
+      params.set("pagination", JSON.stringify(pagination));
+      params.set("estado", estado ? "true" : "false");
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [busqueda, buscando, sort, pagination, estado]);
+
+  useEffect(() => {
+    if (dontChangePath) {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination,
+        sort,
+        busqueda,
+        estado,
+      });
+    } else {
+      const estaBuscando = Boolean(buscandoQuery === "true");
+      setBuscando(estaBuscando);
+      setData({
+        pagination: paginationQuery
+          ? JSON.parse(paginationQuery)
+          : paginationDefault,
+        sort: sortQuery ? JSON.parse(sortQuery) : sort,
+        busqueda: estaBuscando ? q : "",
+        estado: estadoQuery ? estadoQuery === "true" : estado,
+      });
+    }
+  }, []);
 
   useSocketEvents({ setCategoriasData, setPagination });
   // Acciones disponibles en la UI.
@@ -183,7 +211,12 @@ export const Categoria = () => {
         actions[Number(e.key) - 1].onClick(null);
       }}
     >
-      <BuscadorPath />
+      <Buscador
+        buscando={buscando}
+        cargando={cargando}
+        onSearch={(value) => searchFunction(true, value)}
+        onSearchCancel={() => searchFunction(false, "")}
+      />
       <>
         <TableTitle texto={path} Tabs={[tabEstado]} />
         <Box
@@ -229,7 +262,10 @@ export const Categoria = () => {
                 />
               )}
               {categoriasData.length === 0 ? (
-                <TableNoData length={columns.length} title="No hay categorias" />
+                <TableNoData
+                  length={columns.length}
+                  title="No hay categorias"
+                />
               ) : (
                 categoriasData.map((categoria) => {
                   return (
