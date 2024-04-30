@@ -99,6 +99,7 @@ export const StaticProducto = ({
           <Box display={"flex"} justifyContent={"center"}>
             {producto.photos.map((photo) => (
               <Avatar
+                key={photo}
                 src={photo}
                 sx={{
                   cursor: "pointer",

@@ -24,64 +24,6 @@ export const fileUpload = async (file: File | null) => {
     return { url: "", error: true };
   }
 };
-export const procesarFotosArray = (
-  fotos: {
-    [x: string]: {
-      url: string;
-      error: boolean;
-    }[];
-  }[]
-) => {
-  let values: { [key: string]: string[] } = {};
-  let hasError: boolean = false;
-
-  fotos.forEach((grupo) => {
-    // Obtenemos la clave y el valor del objeto
-    let clave = Object.keys(grupo)[0];
-    let valor = grupo[clave];
-
-    let urls = valor.map((item) => item.url);
-    values[clave] = urls;
-
-    // Si alguna foto tiene error, marcamos hasError como true
-    if (valor.some((item) => item.error)) {
-      hasError = true;
-    }
-  });
-
-  return {
-    values: values,
-    error: hasError,
-  };
-};
-
-export const procesarFotos = (fotos: { [key: string]: Photo[] }[]) => {
-  let eliminados: string[] = [];
-  let values: { [key: string]: string[] } = {};
-
-  fotos.forEach((foto) => {
-    // Obtenemos la clave y el valor del objeto
-    let clave = Object.keys(foto)[0];
-    let valor = foto[clave];
-
-    let urlsEliminadas = valor
-      .filter((item) => item.eliminado)
-      .map((item) => item.url);
-    let urlsNoEliminadas = valor
-      .filter((item) => !item.eliminado)
-      .map((item) => item.url);
-
-    if (urlsEliminadas.length > 0) {
-      eliminados.push(...urlsEliminadas);
-    }
-    values[clave] = urlsNoEliminadas;
-  });
-
-  return {
-    eliminados: eliminados,
-    values: values,
-  };
-};
 
 export const procesarDocsValuesUpload = (
   fotos: {
@@ -144,4 +86,75 @@ export const procesarDocsValues = (fotos: { [key: string]: Photo }[]) => {
     eliminados: eliminados,
     values: values,
   };
+};
+
+// MULTIPLES
+
+export interface FileData {
+  name: string;
+  file: File;
+}
+export interface NuevoDoc {
+  name: string;
+  urlTemp: string;
+}
+export interface PhotoData {
+  eliminados: string[];
+  newsToShow: NuevoDoc[];
+  antiguos: string[];
+  newFiles: FileData[];
+}
+export function processObject(obj: { [x: string]: PhotoData }) {
+  let values: { [key: string]: string[] } = {};
+  let eliminados: string[] = [];
+
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      // let antiguosFiltrados = obj[key].antiguos.filter(
+      //   (url) => !obj[key].eliminados.includes(url)
+      // );
+      let antiguos = obj[key].antiguos;
+      let newsToShowNames = obj[key].newsToShow.map((item) => item.name);
+      values[key] = [...antiguos, ...newsToShowNames];
+      eliminados = [...eliminados, ...obj[key].eliminados];
+    }
+  }
+
+  console.log({
+    values: values,
+    eliminados: eliminados,
+  });
+
+  return {
+    values: values,
+    eliminados: eliminados,
+  };
+}
+export const uploadAllFiles = async (obj: { [x: string]: PhotoData }) => {
+  let error = false;
+  const values: { [x: string]: string[] } = {}; // Add an index signature
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const element = obj[key];
+      const newFiles = element.newFiles;
+
+      const urls = [];
+      for (let i = 0; i < newFiles.length; i++) {
+        const fileObj = newFiles[i];
+        const file = fileObj.file;
+
+        const uploadResult = await fileUpload(file);
+        if (uploadResult.error) {
+          error = true;
+        } else {
+          urls.push(uploadResult.url);
+        }
+      }
+
+      values[key] = [...urls, ...obj[key].antiguos];
+    }
+  }
+
+  return { error, values };
 };

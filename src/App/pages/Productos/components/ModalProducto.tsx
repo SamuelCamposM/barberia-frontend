@@ -22,27 +22,24 @@ import {
 import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout } from "../../../components";
 import {
+  PhotoData,
   formatearFecha,
   handleSocket,
   min,
-  procesarFotos,
-  procesarFotosArray,
+  processObject,
   required,
+  uploadAllFiles,
 } from "../../../../helpers";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthStore, useForm, useProvideSocket } from "../../../../hooks";
-import { toast } from "react-toastify";
-import {
-  useDebouncedCallback,
-  useFileUploads,
-  useHttp,
-  useModalConfig,
-} from "../../../hooks";
+import { useDebouncedCallback, useHttp, useModalConfig } from "../../../hooks";
 import { useProductoStore } from "../hooks/useProductoStore";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { SocketEmitProducto, tiposProducto } from "../helpers";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { ProductoItem } from "../interfaces";
+import { Archivo } from "./Archivo";
+import { toast } from "react-toastify";
 
 export const ModalProducto = () => {
   // Hooks
@@ -90,7 +87,7 @@ export const ModalProducto = () => {
     setformValues,
     setCargandoSubmit,
     cargandoSubmit,
-  } = useForm({ ...itemDefault }, config);
+  } = useForm(itemDefault, config);
   const { defaultPropsGenerator, refs } = useFieldProps({
     config,
     errorValues,
@@ -102,14 +99,6 @@ export const ModalProducto = () => {
     },
   });
   // Carga de archivos
-  const { ComponentUpload, getValues, onSubmitUpload } = useFileUploads({
-    label: "Fotos",
-    prevPhotos: formValues.photos,
-    propiedad: "photos",
-    error: errorValues.photos.length > 0,
-    helperText: errorValues.photos.join(" - "),
-    setformValues,
-  });
 
   //Autocompletes
   //Categoria
@@ -140,27 +129,33 @@ export const ModalProducto = () => {
     initialData: [],
   });
   const dSearchMarca = useDebouncedCallback(RFWNBMarca);
-
+  type ItemKeys = keyof ProductoItem;
+  const [images, setImages] = useState<{
+    [K in ItemKeys]?: PhotoData;
+  }>({
+    photos: {
+      antiguos: [],
+      eliminados: [],
+      newFiles: [],
+      newsToShow: [],
+    },
+  });
   // Funciones de manejo
   const handleGuardar = async () => {
-    const onSubmitUploadFunctions = [onSubmitUpload(), onSubmitUpload()];
-    const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { values, error } = procesarFotosArray(docsUrls);
-    // const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
+    const { values, error } = await uploadAllFiles(images);
 
     if (error) {
-      setCargandoSubmit(false);
-      return toast.error(error);
+      toast.error("Hubo un error al subir las imagenes");
+      return setCargandoSubmit(false);
     }
-
     const formAllData: ProductoItem = {
       ...formValues,
-      ...values,
       rUsuario: {
         _id: usuario.uid,
         name: `${usuario.lastname} ${usuario.name}`,
         dui: "",
       },
+      ...values,
     };
 
     socket?.emit(
@@ -176,18 +171,21 @@ export const ModalProducto = () => {
       }
     );
   };
-  const handleEditar = async (eliminados: string[]) => {
-    const onSubmitUploadFunctions = [onSubmitUpload()];
-    const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { values, error } = procesarFotosArray(docsUrls);
+  const handleEditar = async () => {
+    const { eliminados } = processObject(images);
+    const { values, error } = await uploadAllFiles(images);
 
     if (error) {
-      setCargandoSubmit(false);
-      return toast.error(error);
+      toast.error("Hubo un error al subir las imagenes");
+      return setCargandoSubmit(false);
     }
-
-    const formAllData = {
+    const formAllData: ProductoItem = {
       ...formValues,
+      eUsuario: {
+        _id: usuario.uid,
+        name: `${usuario.lastname} ${usuario.name}`,
+        dui: "",
+      },
       ...values,
     };
 
@@ -211,21 +209,26 @@ export const ModalProducto = () => {
     setisSubmited(true);
     if (cargandoSubmit) return;
     setCargandoSubmit(true);
-    const docsValues = [getValues()];
-    const { eliminados, values } = procesarFotos(docsValues);
-    console.log({ docsValues, eliminados, values });
 
-    if (isFormInvalidSubmit({ ...formValues, ...values })) {
+    if (isFormInvalidSubmit({ ...formValues })) {
       setCargandoSubmit(false);
       return;
     }
-    if (editar) handleEditar(eliminados);
+    if (editar) handleEditar();
     else handleGuardar();
   };
 
   // Efectos secundarios
   useEffect(() => {
     onNewForm({ ...itemActive });
+    setImages({
+      photos: {
+        antiguos: itemActive.photos,
+        eliminados: [],
+        newFiles: [],
+        newsToShow: [],
+      },
+    });
   }, [itemActive]);
 
   return (
@@ -280,7 +283,19 @@ export const ModalProducto = () => {
           <form onSubmit={onHandleSubmit}>
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
-                {ComponentUpload}
+                <Archivo<{
+                  [K in ItemKeys]?: PhotoData;
+                }>
+                  label="Fotos"
+                  propiedad="photos"
+                  dataFile={images["photos"]}
+                  setDataFile={setImages}
+                  //FORM
+                  setformValues={setformValues}
+                  handleBlur={handleBlur}
+                  error={errorValues.photos.length > 0}
+                  helperText={errorValues.photos.join(" - ")}
+                />
                 <TextField
                   autoFocus
                   label={"Nombre"}
