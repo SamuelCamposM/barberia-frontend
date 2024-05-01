@@ -10,3 +10,4 @@ export * from "./Tabla/TableNoData";
 export * from "./Botones/TabsSlide";
 export * from "./Search/BuscadorPath";
 export * from "./Search/Buscador";
+export * from "./Files/Archivo";

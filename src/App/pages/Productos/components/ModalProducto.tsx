@@ -8,38 +8,38 @@ import {
   StyledTypographyHeader,
 } from "../../../components/style";
 import {
+  Autocomplete,
   Box,
   IconButton,
-  TextField,
-  Tooltip,
-  Typography,
-  Switch,
-  Autocomplete,
   InputAdornment,
   LinearProgress,
   MenuItem,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout } from "../../../components";
 import {
-  PhotoData,
   formatearFecha,
   handleSocket,
   min,
+  PhotoData,
   processObject,
   required,
   uploadAllFiles,
 } from "../../../../helpers";
-import { useEffect, useMemo, useState } from "react";
-import { useAuthStore, useForm, useProvideSocket } from "../../../../hooks";
-import { useDebouncedCallback, useHttp, useModalConfig } from "../../../hooks";
-import { useProductoStore } from "../hooks/useProductoStore";
+import { Archivo } from "../../../components";
 import { ErrorSocket } from "../../../../interfaces/global";
-import { SocketEmitProducto, tiposProducto } from "../helpers";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { ProductoItem } from "../interfaces";
-import { Archivo } from "./Archivo";
+import { SocketEmitProducto, tiposProducto } from "../helpers";
 import { toast } from "react-toastify";
+import { useAuthStore, useForm, useProvideSocket } from "../../../../hooks";
+import { useDebouncedCallback, useHttp, useModalConfig } from "../../../hooks";
+import { useEffect, useMemo, useState } from "react";
+import { useProductoStore } from "../hooks/useProductoStore";
 
 export const ModalProducto = () => {
   // Hooks
@@ -132,14 +132,7 @@ export const ModalProducto = () => {
   type ItemKeys = keyof ProductoItem;
   const [images, setImages] = useState<{
     [K in ItemKeys]?: PhotoData;
-  }>({
-    photos: {
-      antiguos: [],
-      eliminados: [],
-      newFiles: [],
-      newsToShow: [],
-    },
-  });
+  }>({});
   // Funciones de manejo
   const handleGuardar = async () => {
     const { values, error } = await uploadAllFiles(images);
@@ -226,7 +219,6 @@ export const ModalProducto = () => {
         antiguos: itemActive.photos,
         eliminados: [],
         newFiles: [],
-        newsToShow: [],
       },
     });
   }, [itemActive]);
@@ -283,19 +275,6 @@ export const ModalProducto = () => {
           <form onSubmit={onHandleSubmit}>
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
-                <Archivo<{
-                  [K in ItemKeys]?: PhotoData;
-                }>
-                  label="Fotos"
-                  propiedad="photos"
-                  dataFile={images["photos"]}
-                  setDataFile={setImages}
-                  //FORM
-                  setformValues={setformValues}
-                  handleBlur={handleBlur}
-                  error={errorValues.photos.length > 0}
-                  helperText={errorValues.photos.join(" - ")}
-                />
                 <TextField
                   autoFocus
                   label={"Nombre"}
@@ -420,6 +399,19 @@ export const ModalProducto = () => {
                     </MenuItem>
                   ))}
                 </TextField>
+                <Archivo<{
+                  [K in ItemKeys]?: PhotoData;
+                }>
+                  label="Fotos"
+                  propiedad="photos"
+                  dataFile={images["photos"]}
+                  setDataFile={setImages}
+                  //FORM
+                  setformValues={setformValues}
+                  handleBlur={handleBlur}
+                  error={errorValues.photos.length > 0}
+                  helperText={errorValues.photos.join(" - ")}
+                />
               </StyledGridContainer>
             </StyledContainerForm>
             <StyledModalBoxFooter>

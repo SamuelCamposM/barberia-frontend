@@ -94,13 +94,9 @@ export interface FileData {
   name: string;
   file: File;
 }
-export interface NuevoDoc {
-  name: string;
-  urlTemp: string;
-}
+
 export interface PhotoData {
   eliminados: string[];
-  newsToShow: NuevoDoc[];
   antiguos: string[];
   newFiles: FileData[];
 }
@@ -114,7 +110,7 @@ export function processObject(obj: { [x: string]: PhotoData }) {
       //   (url) => !obj[key].eliminados.includes(url)
       // );
       let antiguos = obj[key].antiguos;
-      let newsToShowNames = obj[key].newsToShow.map((item) => item.name);
+      let newsToShowNames = obj[key].newFiles.map((item) => item.name);
       values[key] = [...antiguos, ...newsToShowNames];
       eliminados = [...eliminados, ...obj[key].eliminados];
     }
