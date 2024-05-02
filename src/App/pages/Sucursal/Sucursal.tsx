@@ -137,13 +137,6 @@ export const Sucursal = ({ dontChangePath }: FromAnotherComponent) => {
         busqueda,
       });
     } else {
-      console.log({
-        q,
-        buscandoQuery,
-        paginationQuery,
-        sortQuery,
-      });
-
       const estaBuscando = Boolean(buscandoQuery === "true");
       setBuscando(estaBuscando);
       setData({

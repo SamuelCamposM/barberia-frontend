@@ -18,25 +18,27 @@ import {
   Switch,
 } from "@mui/material";
 import { Cancel, Save, Visibility, VisibilityOff } from "@mui/icons-material";
-import { ModalLayout } from "../../../components";
+import { Archivo, ModalLayout } from "../../../components";
 import {
+  PhotoData,
   formatearFecha,
   handleSocket,
   minNoRequired,
-  procesarDocsValues,
-  procesarDocsValuesUpload,
+  processSingleObject,
   required,
   roles,
+  uploadSingleFile,
   validarEmail,
 } from "../../../../helpers";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useProvideSocket } from "../../../../hooks";
-import { toast } from "react-toastify";
-import { useFileUpload, useModalConfig } from "../../../hooks";
+import { useModalConfig } from "../../../hooks";
 import { useUsuarioStore } from "../hooks/useUsuarioStore";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { SocketEmitUsuario } from "../helpers";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
+import { UsuarioItem } from "../interfaces";
+import { toast } from "react-toastify";
 
 export const ModalUsuario = () => {
   // Hooks
@@ -56,7 +58,7 @@ export const ModalUsuario = () => {
       name: [required],
       email: [validarEmail],
       tel: [required],
-      photo: [],
+      photo: [required],
       newPassword: editar
         ? [(value: string) => minNoRequired(value, 6)]
         : [required, (value: string) => minNoRequired(value, 6)],
@@ -80,29 +82,28 @@ export const ModalUsuario = () => {
     cargandoSubmit,
   } = useForm({ ...itemDefault, newPassword: "" }, config);
 
-  const { ComponentUpload, onSubmitUpload, getValues } = useFileUpload({
-    label: "Foto de perfil",
-    prevUrl: formValues.photo || "",
-    propiedad: "photo",
-    error: errorValues.photo.length > 0,
-    helperText: errorValues.photo.join(" - "),
-    setformValues,
+  type ItemKeys = keyof UsuarioItem;
+
+  const [images, setImages] = useState<{
+    [K in ItemKeys]?: PhotoData;
+  }>({
+    photo: {
+      antiguo: formValues.photo || "",
+      eliminado: "",
+      newFile: null,
+    },
   });
 
   // Funciones de manejo
   const handleGuardar = async () => {
-    const onSubmitUploadFunctions = [onSubmitUpload()];
-    const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
-
+    const { values, error } = await uploadSingleFile(images);
     if (error) {
-      setCargandoSubmit(false);
-      return toast.error(error);
+      toast.error("Hubo un error al subir las imagenes, INTENTE MAS TARDE");
+      return setCargandoSubmit(false);
     }
-
     const formAllData = {
       ...formValues,
-      ...uploadProperties,
+      ...values,
     };
 
     socket?.emit(
@@ -118,19 +119,17 @@ export const ModalUsuario = () => {
       }
     );
   };
-  const handleEditar = async (eliminados: string[]) => {
-    const onSubmitUploadFunctions = [onSubmitUpload()];
-    const docsUrls = await Promise.all(onSubmitUploadFunctions);
-    const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
+  const handleEditar = async () => {
+    const { eliminados } = processSingleObject(images);
+    const { values, error } = await uploadSingleFile(images);
 
     if (error) {
-      setCargandoSubmit(false);
-      return toast.error(error);
+      toast.error("Hubo un error al subir las imagenes");
+      return setCargandoSubmit(false);
     }
-
     const formAllData = {
       ...formValues,
-      ...uploadProperties,
+      ...values,
     };
 
     socket?.emit(
@@ -151,23 +150,29 @@ export const ModalUsuario = () => {
     e.preventDefault();
 
     setisSubmited(true);
+
     if (cargandoSubmit) return;
     setCargandoSubmit(true);
-    const docsValues = [getValues()];
-    const { eliminados, values } = procesarDocsValues(docsValues);
 
-    if (isFormInvalidSubmit({ ...formValues, ...values })) {
+    if (isFormInvalidSubmit({ ...formValues })) {
       setCargandoSubmit(false);
       return;
     }
 
-    if (editar) handleEditar(eliminados);
+    if (editar) handleEditar();
     else handleGuardar();
   };
 
   // Efectos secundarios
   useEffect(() => {
     onNewForm({ ...itemActive, newPassword: "" });
+    setImages({
+      photo: {
+        antiguo: itemActive.photo || "",
+        eliminado: "",
+        newFile: null,
+      },
+    });
   }, [itemActive]);
 
   const { defaultPropsGenerator, refs } = useFieldProps({
@@ -232,7 +237,19 @@ export const ModalUsuario = () => {
           <form onSubmit={onHandleSubmit}>
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
-                {ComponentUpload}
+                <Archivo<{
+                  [K in ItemKeys]?: PhotoData;
+                }>
+                  label="Fotos"
+                  propiedad="photo"
+                  dataFile={images["photo"]}
+                  setDataFile={setImages}
+                  //FORM
+                  setformValues={setformValues}
+                  handleBlur={handleBlur}
+                  error={errorValues.photo.length > 0}
+                  helperText={errorValues.photo.join(" - ")}
+                />
                 <TextField
                   autoFocus
                   label={"Apellido"}
@@ -261,7 +278,6 @@ export const ModalUsuario = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-
                 <TextField
                   type={showPass ? "text" : "password"}
                   label={"Password"}

@@ -1,7 +1,5 @@
 export * from "./useCommonStates";
 export * from "./useDebounce";
-export * from "./useFileUpload";
-export * from "./useFileUploads";
 export * from "./useHandleNavigation";
 export * from "./useHttp";
 export * from "./useModalDatos";

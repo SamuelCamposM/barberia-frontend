@@ -103,7 +103,6 @@ export const Usuario = ({ dontChangePath }: FromAnotherComponent) => {
     estado,
     rol,
   }: setDataProps) => {
-    console.log("consultando");
     setCargando(true);
     const { error, result } = await getUsuarios({
       pagination,

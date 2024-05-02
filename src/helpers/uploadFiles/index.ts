@@ -1,7 +1,11 @@
 import axios from "axios";
 
 import { getEnvVariables } from "../env/getEnvVariables";
-import { Photo } from "../../interfaces/global";
+
+export interface FileData {
+  name: string;
+  file: File;
+}
 
 export const fileUpload = async (file: File | null) => {
   if (!file) {
@@ -25,75 +29,7 @@ export const fileUpload = async (file: File | null) => {
   }
 };
 
-export const procesarDocsValuesUpload = (
-  fotos: {
-    [x: string]: {
-      image: {
-        url: string;
-        eliminado?: boolean | undefined;
-        antiguo?: string | undefined;
-      };
-      error: string | boolean;
-    };
-  }[]
-) => {
-  let error: string | boolean = false;
-  let uploadProperties: { [key: string]: string } = {};
-
-  fotos.forEach((foto) => {
-    // Obtenemos la clave y el valor del objeto
-    let clave = Object.keys(foto)[0];
-    let valor = foto[clave];
-
-    if (valor.error) {
-      // Si la foto tiene un error, marcamos error como true
-      error = error;
-    }
-    // Agregamos la url de la foto a los valores
-
-    uploadProperties[clave] = valor.image.url;
-  });
-
-  return {
-    error: error,
-    uploadProperties: uploadProperties,
-  };
-};
-
-export const procesarDocsValues = (fotos: { [key: string]: Photo }[]) => {
-  let eliminados: string[] = [];
-  let values: { [key: string]: string } = {};
-
-  fotos.forEach((foto) => {
-    // Obtenemos la clave y el valor del objeto
-    let clave = Object.keys(foto)[0];
-    let valor = foto[clave];
-
-    if (valor.eliminado) {
-      // Si la foto está eliminada, la agregamos a la lista de eliminados
-      console.log(valor.antiguo);
-
-      eliminados.push(valor.antiguo || "");
-      // Si hay un nuevo url, lo asignamos a values
-      values[clave] = valor.url !== valor.antiguo ? valor.url : "";
-    } else {
-      // Si no está eliminada, la agregamos a los valores
-      values[clave] = valor.url;
-    }
-  });
-
-  return {
-    eliminados: eliminados,
-    values: values,
-  };
-};
-
 // MULTIPLES
-export interface FileData {
-  name: string;
-  file: File;
-}
-
 export interface PhotoDataMultiple {
   eliminados: string[];
   antiguos: string[];
@@ -114,11 +50,6 @@ export function processObject(obj: { [x: string]: PhotoDataMultiple }) {
       eliminados = [...eliminados, ...obj[key].eliminados];
     }
   }
-
-  console.log({
-    values: values,
-    eliminados: eliminados,
-  });
 
   return {
     values: values,
@@ -155,8 +86,13 @@ export const uploadAllFiles = async (obj: {
 
   return { error, values };
 };
-
 // SINGULAR
+export interface PhotoData {
+  eliminado: string;
+  antiguo: string;
+  newFile: FileData | null;
+}
+
 export function processSingleObject(obj: { [x: string]: PhotoData }) {
   let values: { [key: string]: string } = {};
   let eliminados: string[] = [];
@@ -202,9 +138,3 @@ export const uploadSingleFile = async (obj: { [x: string]: PhotoData }) => {
 
   return { error, values };
 };
-
-export interface PhotoData {
-  eliminado: string;
-  antiguo: string;
-  newFile: FileData | null;
-}

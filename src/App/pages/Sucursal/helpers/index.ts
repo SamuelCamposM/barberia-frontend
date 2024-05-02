@@ -128,8 +128,6 @@ export const searchDepto = async (
   searchProps: searchDeptoProps
 ): Promise<searchDeptoResponse> => {
   try {
-    console.log(searchProps);
-
     const res: searchDeptoResponse = await clienteAxios.post(
       "/depto/search",
       searchProps

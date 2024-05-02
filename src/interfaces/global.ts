@@ -67,12 +67,7 @@ export interface ErrorBackend {
   error: boolean;
   msg: string;
 }
-export interface Photo {
-  url: string;
-  eliminado?: boolean;
-  antiguo?: string;
-  name?: string;
-}
+
 
 export interface FromAnotherComponent {
   dontChangePath?: boolean;
