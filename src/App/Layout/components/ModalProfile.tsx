@@ -17,18 +17,15 @@ import {
 } from "@mui/material";
 import { Cancel, Save, Visibility, VisibilityOff } from "@mui/icons-material";
 import { ModalLayout } from "../../components";
-import {
-  formatearFecha,
-  minNoRequired,
-  procesarDocsValues,
-  procesarDocsValuesUpload,
-  required,
-} from "../../../helpers";
+import { PhotoData, formatearFecha, minNoRequired, processSingleObject, required, uploadSingleFile } from "../../../helpers";
 import { useMemo, useState } from "react";
 import { useAuthStore, useForm, useUiStore } from "../../../hooks";
 import { clienteAxios } from "../../../api";
 import { toast } from "react-toastify";
-import { useFileUpload, useModalConfig } from "../../hooks";
+import { useModalConfig } from "../../hooks";
+import { Archivo } from "../../components/Files/Archivo";
+import { Usuario } from "../../../store/interfaces";
+
 // import { useNavigate } from "react-router-dom"; // import { usePath } from "../../../hooks";
 
 // interface CampoFormDinamyc {
@@ -187,41 +184,40 @@ export const ModalProfile = () => {
     // getValidations(formularioDinamico)
   );
 
-  const { ComponentUpload, onSubmitUpload, getValues } = useFileUpload({
-    label: "Foto de perfil",
-    prevUrl: formValues.photo || "",
-    propiedad: "photo",
-    error: errorValues.photo.length > 0,
-    helperText: errorValues.photo.join(" - "),
-    setformValues,
-  });
+  type ItemKeys = keyof Usuario;
 
+  const [images, setImages] = useState<{
+    [K in ItemKeys]?: PhotoData;
+  }>({
+    photo: {
+      antiguo: formValues.photo || "",
+      eliminado: "",
+      newFile: null,
+    },
+  });
   const onHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisSubmited(true);
+
     if (cargandoSubmit) return;
     setCargandoSubmit(true);
-    const docsValues = [getValues()];
 
-    const { eliminados, values } = procesarDocsValues(docsValues);
-
-    if (isFormInvalidSubmit({ ...formValues, ...values })) {
+    if (isFormInvalidSubmit({ ...formValues })) {
       setCargandoSubmit(false);
       return;
     }
+
     try {
-      const onSubmitUploadFunctions = [onSubmitUpload()];
-      const docsUrls = await Promise.all(onSubmitUploadFunctions);
-      const { error, uploadProperties } = procesarDocsValuesUpload(docsUrls);
+      const { eliminados } = processSingleObject(images);
+      const { values, error } = await uploadSingleFile(images);
 
       if (error) {
-        setCargandoSubmit(false);
-        return toast.error(error);
+        toast.error("Hubo un error al subir las imagenes");
+        return setCargandoSubmit(false);
       }
-
       const formAllData = {
         ...formValues,
-        ...uploadProperties,
+        ...values,
       };
 
       await clienteAxios.post("/auth/edit", {
@@ -232,6 +228,13 @@ export const ModalProfile = () => {
       onEditUsuario(formAllData);
       toast.success("¡Actualizado con exito!");
       setCargandoSubmit(false);
+      setImages({
+        photo: {
+          antiguo: formAllData.photo || "",
+          eliminado: "",
+          newFile: null,
+        },
+      });
       onNewForm(formAllData);
       setOpenProfileModal(false);
     } catch (error: any) {
@@ -279,7 +282,19 @@ export const ModalProfile = () => {
           <form onSubmit={onHandleSubmit}>
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
-                {ComponentUpload}
+                <Archivo<{
+                  [K in ItemKeys]?: PhotoData;
+                }>
+                  label="Fotos"
+                  propiedad="photo"
+                  dataFile={images["photo"]}
+                  setDataFile={setImages}
+                  //FORM
+                  setformValues={setformValues}
+                  handleBlur={handleBlur}
+                  error={errorValues.photo.length > 0}
+                  helperText={errorValues.photo.join(" - ")}
+                />
                 <TextField
                   label={"Apellido"}
                   value={formValues.lastname}

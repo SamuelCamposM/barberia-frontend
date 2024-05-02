@@ -25,12 +25,12 @@ import {
   formatearFecha,
   handleSocket,
   min,
-  PhotoData,
+  PhotoDataMultiple,
   processObject,
   required,
   uploadAllFiles,
 } from "../../../../helpers";
-import { Archivo } from "../../../components";
+import { ArchivoMultiple } from "../../../components";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { ProductoItem } from "../interfaces";
@@ -131,7 +131,7 @@ export const ModalProducto = () => {
   const dSearchMarca = useDebouncedCallback(RFWNBMarca);
   type ItemKeys = keyof ProductoItem;
   const [images, setImages] = useState<{
-    [K in ItemKeys]?: PhotoData;
+    [K in ItemKeys]?: PhotoDataMultiple;
   }>({});
   // Funciones de manejo
   const handleGuardar = async () => {
@@ -399,8 +399,8 @@ export const ModalProducto = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-                <Archivo<{
-                  [K in ItemKeys]?: PhotoData;
+                <ArchivoMultiple<{
+                  [K in ItemKeys]?: PhotoDataMultiple;
                 }>
                   label="Fotos"
                   propiedad="photos"

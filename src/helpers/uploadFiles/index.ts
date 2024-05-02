@@ -89,18 +89,17 @@ export const procesarDocsValues = (fotos: { [key: string]: Photo }[]) => {
 };
 
 // MULTIPLES
-
 export interface FileData {
   name: string;
   file: File;
 }
 
-export interface PhotoData {
+export interface PhotoDataMultiple {
   eliminados: string[];
   antiguos: string[];
   newFiles: FileData[];
 }
-export function processObject(obj: { [x: string]: PhotoData }) {
+export function processObject(obj: { [x: string]: PhotoDataMultiple }) {
   let values: { [key: string]: string[] } = {};
   let eliminados: string[] = [];
 
@@ -126,7 +125,9 @@ export function processObject(obj: { [x: string]: PhotoData }) {
     eliminados: eliminados,
   };
 }
-export const uploadAllFiles = async (obj: { [x: string]: PhotoData }) => {
+export const uploadAllFiles = async (obj: {
+  [x: string]: PhotoDataMultiple;
+}) => {
   let error = false;
   const values: { [x: string]: string[] } = {}; // Add an index signature
 
@@ -154,3 +155,56 @@ export const uploadAllFiles = async (obj: { [x: string]: PhotoData }) => {
 
   return { error, values };
 };
+
+// SINGULAR
+export function processSingleObject(obj: { [x: string]: PhotoData }) {
+  let values: { [key: string]: string } = {};
+  let eliminados: string[] = [];
+
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      let antiguo = obj[key].antiguo;
+      let newFileName = obj[key].newFile?.name;
+      values[key] = newFileName || antiguo;
+      if (obj[key].eliminado !== "") {
+        eliminados.push(obj[key].eliminado);
+      }
+    }
+  }
+
+  return {
+    values: values,
+    eliminados: eliminados,
+  };
+}
+
+export const uploadSingleFile = async (obj: { [x: string]: PhotoData }) => {
+  let error = false;
+  const values: { [x: string]: string } = {}; // Add an index signature
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const element = obj[key];
+      const newFile = element.newFile;
+
+      if (newFile) {
+        const uploadResult = await fileUpload(newFile.file);
+        if (uploadResult.error) {
+          error = true;
+        } else {
+          values[key] = uploadResult.url;
+        }
+      } else {
+        values[key] = element.antiguo;
+      }
+    }
+  }
+
+  return { error, values };
+};
+
+export interface PhotoData {
+  eliminado: string;
+  antiguo: string;
+  newFile: FileData | null;
+}

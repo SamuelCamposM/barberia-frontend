@@ -1,14 +1,8 @@
-import {
-  Box,
-  IconButton,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
-  Typography,
-} from "@mui/material";
+import { Avatar, Badge, Box, IconButton, Typography } from "@mui/material";
 import { useRef } from "react";
-import { AddAPhoto, Delete, OpenInBrowser } from "@mui/icons-material";
-import { FileData, PhotoData, processObject } from "../../../helpers";
+import { Delete } from "@mui/icons-material";
+import { processSingleObject, PhotoData } from "../../../helpers";
+
 interface PhotoDataIndexSignature {
   [key: string]: PhotoData;
 }
@@ -37,29 +31,26 @@ export const Archivo = <T extends PhotoDataIndexSignature>({
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (event.target?.files?.length === 0) return;
-    const filesArray = Array.from(event.target.files || []);
-    //* files
+    const file = event?.target?.files ? event.target.files[0] : undefined;
 
-    // Now it should print the expected array
-
-    const formatedFilesArray: PhotoData["newFiles"] = filesArray.map(
-      (item) => ({
-        name: item.name,
-        file: item,
-      })
-    );
+    if (!file) {
+      return null;
+    }
 
     setDataFile((prev) => {
       const resPrev = {
         ...prev,
         [propiedad]: {
           ...prev[propiedad],
-          newFiles: [...prev[propiedad].newFiles, ...formatedFilesArray],
+          eliminado: prev[propiedad].antiguo,
+          newFile: {
+            name: file.name,
+            file: file,
+          },
         },
       };
 
-      const { values } = processObject(resPrev);
+      const { values } = processSingleObject(resPrev);
 
       setformValues((prev: any) => ({ ...prev, ...values }));
       handleBlur();
@@ -67,37 +58,36 @@ export const Archivo = <T extends PhotoDataIndexSignature>({
     });
   };
 
-  const handleDeleteImageNew = (fileNuevo: FileData) => {
+  const handleDeleteImageNew = () => {
     setDataFile((prev) => {
       const resPrev = {
         ...prev,
         [propiedad]: {
           ...prev[propiedad],
-          newFiles: prev[propiedad].newFiles.filter(
-            (fileItem) => fileItem.name !== fileNuevo.name
-          ),
+          eliminado: prev[propiedad].antiguo,
+          newFile: undefined,
+          antiguo: "",
         },
       };
-      const { values } = processObject(resPrev);
+      const { values } = processSingleObject(resPrev);
 
       setformValues((prev: any) => ({ ...prev, ...values }));
       handleBlur();
       return resPrev;
     });
   };
-  const handleDeleteImageOld = (oldImage: string) => {
+  const handleDeleteImageOld = () => {
     setDataFile((prev) => {
       const resPrev = {
         ...prev,
         [propiedad]: {
           ...prev[propiedad],
-          antiguos: prev[propiedad].antiguos.filter(
-            (fileItem) => fileItem !== oldImage
-          ),
-          eliminados: [...prev[propiedad].eliminados, oldImage],
+          eliminado: prev[propiedad].antiguo,
+          antiguo: "",
         },
       };
-      const { values } = processObject(resPrev);
+
+      const { values } = processSingleObject(resPrev);
 
       setformValues((prev: any) => ({ ...prev, ...values }));
       handleBlur();
@@ -109,124 +99,61 @@ export const Archivo = <T extends PhotoDataIndexSignature>({
     inputEl.current?.click();
   };
 
-  // useEffect(() => {
-  // const { values } = processObject({ [propiedad]: dataFile });
-
-  // setformValues((prev: any) => ({ ...prev, ...values }));
-  // }, [dataFile]);
-
+  if (!dataFile) {
+    return null;
+  }
   return (
     <>
-      <>
-        <Box display={"flex"} alignItems={"center"}>
-          <Typography
-            variant="body1"
-            color={error ? "error.light" : "secondary"}
-          >
-            {`${label}: ${helperText}`}
-          </Typography>
-          <IconButton
-            color={error ? "error" : "secondary"}
-            aria-label="Subir foto"
-            onClick={handleUploadClick}
-          >
-            <AddAPhoto />
-          </IconButton>
-        </Box>
-        <Box
-          className="fullWidth"
-          display={"flex"}
-          justifyContent={"space-between"}
-          flexWrap={"wrap"}
-          alignItems={"center"}
+      <Box
+        className="fullWidth"
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        mt={1}
+      >
+        <input
+          type="file"
+          style={{ display: "none" }}
+          ref={inputEl}
+          onChange={handleFileUpload}
+        />
+        <Badge
+          badgeContent={
+            <IconButton
+              aria-label=""
+              onClick={() => {
+                dataFile?.newFile?.file
+                  ? handleDeleteImageNew()
+                  : handleDeleteImageOld();
+              }}
+              size="small"
+            >
+              <Delete color="error" fontSize="small" />
+            </IconButton>
+          }
         >
-          <input
-            type="file"
-            style={{ display: "none" }}
-            ref={inputEl}
-            onChange={handleFileUpload}
-            multiple
+          <Avatar
+            onClick={handleUploadClick}
+            alt={label}
+            src={
+              dataFile.newFile?.file
+                ? URL.createObjectURL(dataFile.newFile.file)
+                : dataFile?.antiguo
+            }
+            sx={{
+              width: 125,
+              height: 125,
+              transition: "opacity .3s",
+              ":hover": {
+                opacity: 0.75,
+              },
+            }}
           />
-
-          <ImageList sx={{ width: "100%" }} cols={4} rowHeight={200}>
-            {dataFile ? (
-              [...dataFile.newFiles].map((fileNuevo) => (
-                <ImageListItem key={fileNuevo.name}>
-                  <img
-                    src={URL.createObjectURL(fileNuevo.file)}
-                    alt={fileNuevo.name}
-                    loading="lazy"
-                  />
-                  <ImageListItemBar
-                    sx={{
-                      background: (theme) => theme.palette.success.dark,
-                    }}
-                    title={fileNuevo.name}
-                    actionIcon={
-                      <Box display={"flex"}>
-                        <IconButton
-                          aria-label="Abrir en el navegador"
-                          color="secondary"
-                          onClick={() =>
-                            window.open(URL.createObjectURL(fileNuevo.file))
-                          }
-                          size="small"
-                        >
-                          <OpenInBrowser fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Eliminar"
-                          onClick={() => handleDeleteImageNew(fileNuevo)}
-                          size="small"
-                        >
-                          <Delete color="error" fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    }
-                  />
-                </ImageListItem>
-              ))
-            ) : (
-              <></>
-            )}
-            {dataFile ? (
-              [...dataFile.antiguos].map((fileOld) => (
-                <ImageListItem key={fileOld}>
-                  <img
-                    src={`${fileOld}`}
-                    alt={`Abrir en el navegador`}
-                    loading="lazy"
-                  />
-                  <ImageListItemBar
-                    title={`Ver - Eliminar`}
-                    actionIcon={
-                      <Box display={"flex"}>
-                        <IconButton
-                          aria-label="Abrir en el navegador"
-                          color="secondary"
-                          onClick={() => window.open(fileOld)}
-                          size="small"
-                        >
-                          <OpenInBrowser fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          aria-label="Eliminar"
-                          onClick={() => handleDeleteImageOld(fileOld)}
-                          size="small"
-                        >
-                          <Delete color="error" fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    }
-                  />
-                </ImageListItem>
-              ))
-            ) : (
-              <></>
-            )}
-          </ImageList>
-        </Box>
-      </>
+        </Badge>
+        <Typography variant="overline" color={error ? "error" : "secondary"}>
+          {dataFile?.newFile?.name || label} {error && ` - ${helperText}`}
+        </Typography>
+      </Box>
     </>
   );
 };
