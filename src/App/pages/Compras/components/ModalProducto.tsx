@@ -147,7 +147,7 @@ export const ModalProducto = () => {
       rUsuario: {
         _id: usuario.uid,
         name: `${usuario.lastname} ${usuario.name}`,
-        dui: usuario.dui || "SIN DUI",
+        dui: "",
       },
       ...values,
     };
@@ -178,7 +178,7 @@ export const ModalProducto = () => {
       eUsuario: {
         _id: usuario.uid,
         name: `${usuario.lastname} ${usuario.name}`,
-        dui: usuario.dui || "SIN DUI",
+        dui: "",
       },
       ...values,
     };

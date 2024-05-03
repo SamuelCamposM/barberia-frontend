@@ -9,6 +9,7 @@ export interface Usuario {
   email: string;
   estado: boolean;
   lastname: string;
+  dui?: string;
   name: string;
   online: boolean;
   photo?: string;

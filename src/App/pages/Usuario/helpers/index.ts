@@ -67,6 +67,7 @@ export const itemDefault: UsuarioItem = {
   name: "",
   online: false,
   photo: "",
+  dui: "",
   tel: "",
   rol: "CLIENTE",
   estado: true,

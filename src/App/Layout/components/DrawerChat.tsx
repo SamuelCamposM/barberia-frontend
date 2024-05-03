@@ -59,7 +59,7 @@ export const ChatDrawer = () => {
                     color={usuario.online ? "success" : "error"}
                     variant="dot"
                   >
-                    <Avatar src="https://ptetutorials.com/images/usuario-profile.png" />
+                    <Avatar src={usuario.photo} />
                   </Badge>
                 </ListItemAvatar>
                 <ListItemText primary={usuario.name} />

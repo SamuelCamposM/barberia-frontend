@@ -59,6 +59,17 @@ export const ModalUsuario = () => {
       email: [validarEmail],
       tel: [required],
       photo: [required],
+      dui: [
+        (e: string, allValues: UsuarioItem) => {
+          if (
+            (allValues.rol === "EMPLEADO" || allValues.rol === "GERENTE") &&
+            String(e).trim() === ""
+          ) {
+            return 'EL DUI ES REQUERIDO'
+          }
+          return "";
+        },
+      ],
       newPassword: editar
         ? [(value: string) => minNoRequired(value, 6)]
         : [required, (value: string) => minNoRequired(value, 6)],
@@ -259,6 +270,13 @@ export const ModalUsuario = () => {
                   label={"Nombre"}
                   {...defaultPropsGenerator("name", true, true)}
                 />
+                {(formValues.rol === "GERENTE" ||
+                  formValues.rol === "EMPLEADO") && (
+                  <TextField
+                    label={"DUI"}
+                    {...defaultPropsGenerator("dui", true, true)}
+                  />
+                )}
                 <TextField
                   label={"Correo"}
                   {...defaultPropsGenerator("email", true, true)}

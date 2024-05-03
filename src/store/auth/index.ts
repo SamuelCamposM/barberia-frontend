@@ -8,6 +8,7 @@ const initialState: AuthState = {
     email: "",
     online: false,
     uid: "",
+    dui: "",
     estado: true,
     lastname: "",
     rol: "GERENTE",

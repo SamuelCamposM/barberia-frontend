@@ -32,7 +32,10 @@ export type Components =
   | "Productos"
   | "Sucursal"
   | "Valoraciones"
-  | "Usuario";
+  | "Usuario"
+  | "Proveedor"
+  | "Compras"
+  ;
 
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";
 
@@ -67,7 +70,6 @@ export interface ErrorBackend {
   error: boolean;
   msg: string;
 }
-
 
 export interface FromAnotherComponent {
   dontChangePath?: boolean;
