@@ -4,7 +4,7 @@ import { authSlice } from "./auth";
 import { uiSlice } from "./ui";
 import { menuSlice } from "../App/pages/Menu/store";
 import { usuarioSlice } from "../App/pages/Usuario/store";
-import { productoSlice } from "../App/pages/Productos/store";
+import { productoSlice } from "../App/pages/Producto/store";
 // import { deptoSlice } from "../App/pages/Depto/store";
 
 export const store = configureStore({

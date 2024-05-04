@@ -29,12 +29,12 @@ export type Components =
   | "Marca"
   | "Menu"
   | "Municipio"
-  | "Productos"
+  | "Producto"
   | "Sucursal"
   | "Valoraciones"
   | "Usuario"
   | "Proveedor"
-  | "Compras"
+  | "Compra"
   ;
 
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";

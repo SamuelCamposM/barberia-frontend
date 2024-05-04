@@ -1,14 +1,20 @@
 import { Action, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { DeptoItem, setDataProps, useSocketEvents } from ".";
+import { CompraItem, setDataProps, useSocketEvents } from ".";
 import {
   paginationDefault,
   rowsPerPageOptions,
   validateFunction,
 } from "../../../helpers";
 import { PaperContainerPage } from "../../components/style";
-import { columns, getDeptos, itemDefault, sortDefault } from "./helpers";
+import {
+  columns,
+  estados,
+  getCompras,
+  itemDefault,
+  sortDefault,
+} from "./helpers";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { useNavigate } from "react-router-dom";
 import { useCommonStates } from "../../hooks";
@@ -30,11 +36,11 @@ import {
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
 import { useMenuStore } from "../Menu";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
-import { RowDepto } from "./components/RowDepto";
-import { EditableDepto } from "./components/EditableDepto";
+import { RowCompra } from "./components/RowCompra";
+import { EditableCompra } from "./components/EditableCompra";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 
-export const Depto = ({
+export const Compra = ({
   dontChangePath = false,
 }: {
   dontChangePath?: boolean;
@@ -45,8 +51,9 @@ export const Depto = ({
   // Hooks personalizados para permisos.
   const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
 
-  const { path } = useMemo(() => getPathPage("Depto", false), [dataMenu]);
+  const { path } = useMemo(() => getPathPage("Compra", false), [dataMenu]);
   // Estados locales para el manejo de la UI y datos.
+  const [estado, setEstado] = useState<CompraItem["estado"]>("EN PROCESO");
   const {
     agregando,
     buscando,
@@ -59,7 +66,7 @@ export const Depto = ({
     setSort,
     sort,
   } = useCommonStates(sortDefault);
-  const [deptosData, setDeptosData] = useState<DeptoItem[]>([]);
+  const [comprasData, setComprasData] = useState<CompraItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
 
   const handleChangePage = (_: unknown, newPage: number) => {
@@ -67,6 +74,7 @@ export const Depto = ({
       pagination: { ...pagination, page: newPage + 1 },
       busqueda,
       sort,
+      estado,
     });
   };
 
@@ -75,31 +83,50 @@ export const Depto = ({
       pagination: { ...pagination, page: 1, limit: +event.target.value },
       busqueda,
       sort,
+      estado,
     });
   };
 
   const sortFunction = (newSort: Sort) => {
-    setData({ pagination, busqueda, sort: newSort });
+    setData({ pagination, busqueda, sort: newSort, estado });
   };
   const searchFunction = (newBuscando: boolean, value: string) => {
     setBuscando(newBuscando);
-    setData({ pagination: paginationDefault, sort, busqueda: value });
+    setData({ pagination: paginationDefault, sort, busqueda: value, estado });
+  };
+  const handleChangeTab = (newTipoProducto: CompraItem["estado"]) => {
+    setData({
+      pagination,
+      sort,
+      busqueda,
+      estado: newTipoProducto,
+    });
   };
 
   // Función asíncrona para obtener y establecer datos.
-  const setData = async ({ pagination, sort, busqueda }: setDataProps) => {
+  const setData = async ({
+    pagination,
+    sort,
+    busqueda,
+    estado,
+  }: setDataProps) => {
     setCargando(true);
-    const { error, result } = await getDeptos({ pagination, sort, busqueda });
-
+    const { error, result } = await getCompras({
+      pagination,
+      sort,
+      busqueda,
+      estado,
+    });
     if (error.error) {
       toast.error(error.msg);
       return;
     }
     const { docs, ...rest } = result;
     setPagination(rest);
-    setDeptosData(docs);
+    setComprasData(docs);
     setSort(sort);
     setBusqueda(busqueda);
+    setEstado(estado);
     setCargando(false);
   };
 
@@ -109,11 +136,13 @@ export const Depto = ({
     buscando: buscandoQuery,
     pagination: paginationQuery,
     sort: sortQuery,
+    estado: estadoQuery = "EN PROCESO",
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
+    estado: CompraItem["estado"];
   };
 
   useEffect(() => {
@@ -123,9 +152,10 @@ export const Depto = ({
       params.set("buscando", buscando ? "true" : "false");
       params.set("sort", JSON.stringify(sort));
       params.set("pagination", JSON.stringify(pagination));
+      params.set("estado", estado);
       navigate(`?${params.toString()}`, { replace: true });
     }
-  }, [busqueda, buscando, sort, pagination]);
+  }, [busqueda, buscando, sort, pagination, estado]);
 
   useEffect(() => {
     if (dontChangePath) {
@@ -135,6 +165,7 @@ export const Depto = ({
         pagination,
         sort,
         busqueda,
+        estado,
       });
     } else {
       const estaBuscando = Boolean(buscandoQuery === "true");
@@ -145,18 +176,35 @@ export const Depto = ({
           : paginationDefault,
         sort: sortQuery ? JSON.parse(sortQuery) : sort,
         busqueda: estaBuscando ? q : "",
+        estado: estadoQuery,
       });
     }
   }, []);
 
-  useSocketEvents({ setDeptosData, setPagination });
+  useSocketEvents({ setComprasData, setPagination });
   // Acciones disponibles en la UI.
+  const tabs: Action[] = estados.map((estadoMap) => ({
+    color:
+      estadoMap === "ANULADA"
+        ? "error"
+        : estadoMap === "FINALIZADA"
+        ? "success"
+        : "primary",
+    Icon: Refresh,
+    name: estadoMap,
+    onClick: () => {
+      handleChangeTab(estadoMap);
+    },
+    size: "small",
+    tipo: "tab",
+    active: estadoMap === estado,
+  }));
   const actions: Action[] = [
     {
       color: "primary",
       Icon: Refresh,
       name: "Actualizar",
-      onClick: () => setData({ pagination, sort, busqueda }),
+      onClick: () => setData({ pagination, sort, busqueda, estado }),
       tipo: "icono",
     },
     {
@@ -164,7 +212,7 @@ export const Depto = ({
       Icon: agregando ? Cancel : AddCircle,
       name: "Agregar Departamento",
       onClick: () => {
-        if (noTienePermiso("Depto", "insert")) return;
+        if (noTienePermiso("Compra", "insert")) return;
         setAgregando(!agregando);
       },
       tipo: "icono",
@@ -181,13 +229,14 @@ export const Depto = ({
       }}
     >
       <Buscador
+        label="Buscar por Proveedor y Sucursal"
         buscando={buscando}
         cargando={cargando}
         onSearch={(value) => searchFunction(true, value)}
         onSearchCancel={() => searchFunction(false, "")}
       />
       <>
-        <TableTitle texto={path} />
+        <TableTitle texto={path} Tabs={tabs} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -217,31 +266,28 @@ export const Depto = ({
             <TableBody>
               <TableRow>
                 <TableCell colSpan={columns.length}>
-                  <Cargando titulo="Cargando Deptos..." />
+                  <Cargando titulo="Cargando Compras..." />
                 </TableCell>
               </TableRow>
             </TableBody>
           ) : (
             <TableBody>
               {agregando && (
-                <EditableDepto
+                <EditableCompra
                   esNuevo
                   setEditando={() => {}}
-                  depto={{ ...itemDefault, crud: { nuevo: true } }}
+                  compra={{ ...itemDefault, crud: { nuevo: true } }}
                   setAgregando={setAgregando}
                 />
               )}
-              {deptosData.length === 0 ? (
-                <TableNoData
-                  length={columns.length}
-                  title="No hay departamentos"
-                />
+              {comprasData.length === 0 ? (
+                <TableNoData length={columns.length} title="No hay compras" />
               ) : (
-                deptosData.map((depto) => {
+                comprasData.map((compra) => {
                   return (
-                    <RowDepto
-                      key={depto._id}
-                      depto={depto}
+                    <RowCompra
+                      key={compra._id}
+                      compra={compra}
                       busqueda={busqueda}
                     />
                   );
@@ -255,4 +301,4 @@ export const Depto = ({
   );
 };
 
-export default Depto;
+export default Compra;

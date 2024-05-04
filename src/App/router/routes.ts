@@ -3,7 +3,7 @@ import { lazy } from "react";
 export default {
   Menu: lazy(() => import("../pages/Menu/Menu")),
   Valoraciones: lazy(() => import("../pages/Valoraciones/Valoraciones")),
-  Productos: lazy(() => import("../pages/Productos/Productos")),
+  Producto: lazy(() => import("../pages/Producto/Producto")),
   Categoria: lazy(() => import("../pages/Categoria/Categoria")),
   Cita: lazy(() => import("../pages/Cita/Cita")),
   Depto: lazy(() => import("../pages/Depto/Depto")),
@@ -11,6 +11,6 @@ export default {
   Municipio: lazy(() => import("../pages/Municipio/Municipio")),
   Sucursal: lazy(() => import("../pages/Sucursal/Sucursal")),
   Usuario: lazy(() => import("../pages/Usuario/Usuario")),
-  Compras: lazy(() => import("../pages/Compras/Compras")),
+  Compra: lazy(() => import("../pages/Compra/Compra")),
   Proveedor: lazy(() => import("../pages/Proveedor/Proveedor")),
 };

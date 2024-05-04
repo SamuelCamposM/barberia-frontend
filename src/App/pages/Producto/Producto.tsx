@@ -24,12 +24,12 @@ import {
 } from "../../../helpers";
 import { Acciones, Buscador, TablaLayout, TableTitle } from "../../components";
 
-export const Productos = ({ dontChangePath }: FromAnotherComponent) => {
+export const Producto = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
   const { noTienePermiso, data: dataMenu, getPathPage } = useMenuStore();
-  const { path } = useMemo(() => getPathPage("Productos", false), [dataMenu]);
+  const { path } = useMemo(() => getPathPage("Producto", false), [dataMenu]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useProductoStore();
   const [tipoProducto, setTipoProducto] = useState<TipoProducto>("PRODUCTO");
@@ -47,7 +47,7 @@ export const Productos = ({ dontChangePath }: FromAnotherComponent) => {
   } = useCommonStates(sortDefault);
   const [productosData, setProductosData] = useState<ProductoItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
-  
+
   // Función de alto nivel para manejar
   const handleChangePage = (_: unknown, newPage: number) => {
     setData({
@@ -103,7 +103,6 @@ export const Productos = ({ dontChangePath }: FromAnotherComponent) => {
     estado,
     tipoProducto,
   }: setDataProps) => {
-    console.log("consultando");
     setCargando(true);
     const { error, result } = await getProductos({
       pagination,
@@ -345,7 +344,7 @@ export const Productos = ({ dontChangePath }: FromAnotherComponent) => {
           ) : (
             <TableBody>
               {productosData.length === 0 ? (
-                <TableNoData length={columns.length} title="No hay Productos" />
+                <TableNoData length={columns.length} title="No hay Producto" />
               ) : (
                 productosData.map((producto) => {
                   return (
@@ -367,4 +366,4 @@ export const Productos = ({ dontChangePath }: FromAnotherComponent) => {
   );
 };
 
-export default Productos;
+export default Producto;

@@ -4,7 +4,7 @@ import { ChatState } from "./chat";
 import { MenuState } from "../../App/pages/Menu";
 import { DeptoState } from "../../App/pages/Depto";
 import { UsuarioState } from "../../App/pages/Usuario";
-import { ProductoState } from "../../App/pages/Productos";
+import { ProductoState } from "../../App/pages/Producto";
 export interface RootState {
   auth: AuthState;
   chat: ChatState;

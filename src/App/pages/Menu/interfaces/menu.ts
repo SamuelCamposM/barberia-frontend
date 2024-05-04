@@ -9,7 +9,7 @@ export interface PageItem {
   insert: Roles[];
   ver: Roles[];
 
-  permisoSelect: boolean;
+  // permisoSelect: boolean;
   select: Roles[]; //QUE SOLO PUEDA VER REGISROS CREADOS POR EL
   createdAt: string;
   updatedAt: string;

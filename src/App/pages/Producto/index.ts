@@ -1,4 +1,4 @@
-export * from "./Compras";
+export * from "./Producto";
 export * from "./interfaces";
 export * from "./helpers";
 export * from "./hooks/useSocketEvents";

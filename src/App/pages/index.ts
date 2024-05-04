@@ -2,7 +2,7 @@ export * from "./Chat/ChatPage";
 export * from "./Menu/Menu";
 export * from "./Menu/Menu";
 export * from "./Valoraciones/Valoraciones";
-export * from "./Productos/Productos";
+export * from "./Producto/Producto";
 export * from "./Categoria/Categoria";
 export * from "./Cita/Cita";
 export * from "./Depto/Depto";

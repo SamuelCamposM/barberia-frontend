@@ -424,6 +424,9 @@ export const ModalProducto = () => {
                 />{" "}
               </StyledGridContainer>
             </StyledContainerForm>
+            {cargandoSubmit && (
+              <LinearProgress color="primary" variant="query" />
+            )}
             <StyledModalBoxFooter>
               <Box display={"flex"} alignItems={"center"} gap={1}>
                 <StyledTypographyFooter

@@ -52,7 +52,7 @@ export const useHttp = <T, BodyType>({
         setError({ error: false, msg: "" });
       } catch (error: any) {
         const msgError =
-          error?.response?.data?.msg || "Error al consultar los municipios";
+          error?.response?.data?.msg || "Error al consultar";
         toast.error(msgError);
         setError({
           error: true,
