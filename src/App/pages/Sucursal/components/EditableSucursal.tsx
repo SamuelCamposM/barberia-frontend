@@ -1,6 +1,6 @@
 import { Acciones } from "../../../components";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
-import { DeptoSuc, MunicipioSuc, SucursalItem } from "..";
+import { SucursalItem } from "..";
 import { SocketEmitSucursal } from "../helpers";
 
 import { useForm, useProvideSocket } from "../../../../hooks";
@@ -21,6 +21,8 @@ import { useMenuStore } from "../../Menu";
 import { useDebouncedCallback, useHttp } from "../../../hooks";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { useNavigate } from "react-router-dom";
+import { DeptoForeign } from "../../Depto";
+import { MunicipioForeign } from "../../Depto/components/Municipio/interfaces";
 interface SearchMunicipioProps {
   search: string;
   deptoId: string;
@@ -125,7 +127,7 @@ export const EditableSucursal = ({
   // };
   // const debounceSearchDepto = useDebouncedCallback(handleSearchDepto);
   const { data, loading, refetchWithNewBody } = useHttp<
-    DeptoSuc[],
+    DeptoForeign[],
     { search: string }
   >({
     initialUrl: "/depto/search",
@@ -140,7 +142,7 @@ export const EditableSucursal = ({
     data: dataMunicipios,
     loading: loadingMunicipios,
     refetchWithNewBody: refetchWithNewBodyMunicipios,
-  } = useHttp<MunicipioSuc[], SearchMunicipioProps>({
+  } = useHttp<MunicipioForeign[], SearchMunicipioProps>({
     initialUrl: "/municipio/searchByDepto",
     initialMethod: "post",
     initialBody: bodySearchMunicipio,
@@ -148,7 +150,6 @@ export const EditableSucursal = ({
   });
   const debounceSearchDepto = useDebouncedCallback(refetchWithNewBody);
 
-  
   const debounceSearchMunicipio = useDebouncedCallback(
     refetchWithNewBodyMunicipios
   );
@@ -202,13 +203,9 @@ export const EditableSucursal = ({
       <>
         <StyledTableCell>
           <Autocomplete
-            options={data}
+            options={data.length === 0 ? [formValues.depto] : data}
             disableClearable={false}
-            value={
-              data.some((option) => option._id === formValues.depto._id)
-                ? formValues.depto
-                : null
-            }
+            value={formValues.depto}
             getOptionLabel={(value) => value.name}
             isOptionEqualToValue={(option, value) => option._id === value._id}
             onChange={(_, newValue) => {
@@ -260,15 +257,9 @@ export const EditableSucursal = ({
         </StyledTableCell>
         <StyledTableCell>
           <Autocomplete
-            options={dataMunicipios}
+            options={dataMunicipios.length === 0 ? [formValues.municipio] : dataMunicipios}
             disableClearable={false}
-            value={
-              dataMunicipios.some(
-                (option) => option._id === formValues.municipio._id
-              )
-                ? formValues.municipio
-                : null
-            }
+            value={formValues.municipio}
             getOptionLabel={(value) => value.name}
             isOptionEqualToValue={(option, value) => option._id === value._id}
             onChange={(_, newValue) => {

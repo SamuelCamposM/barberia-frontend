@@ -1,4 +1,9 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+export interface CategoriaForeign {
+  name: string;
+  _id: string;
+}
+
 export interface CategoriaItem {
   name: string;
   estado: boolean;

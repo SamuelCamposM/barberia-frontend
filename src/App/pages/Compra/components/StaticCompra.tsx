@@ -103,7 +103,7 @@ export const StaticCompra = ({
             })
           : compra.sucursal.name}
       </StyledTableCell>
-      <StyledTableCell>compra.rUsuario.name</StyledTableCell>
+      <StyledTableCell>{compra.rUsuario.name}</StyledTableCell>
     </StyledTableRow>
   );
 };

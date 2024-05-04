@@ -1,4 +1,9 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+export interface MarcaForeign {
+  name: string;
+  _id: string;
+}
+
 export interface MarcaItem {
   name: string;
   estado: boolean;

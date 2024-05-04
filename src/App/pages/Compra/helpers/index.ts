@@ -64,9 +64,7 @@ export const itemDefault: CompraItem = {
   gastoTotal: 0,
   proveedor: {
     _id: "",
-    email: "",
     nombreCompleto: "",
-    telefono: "",
   },
   rUsuario: {
     _id: "",

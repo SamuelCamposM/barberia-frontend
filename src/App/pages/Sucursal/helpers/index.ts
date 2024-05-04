@@ -5,13 +5,10 @@ import {
   Pagination,
 } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
-import {
-  DeptoSuc,
-  MunicipioSuc,
-  SucursalItem,
-  setDataProps,
-} from "../interfaces";
+import { SucursalItem, setDataProps } from "../interfaces";
 import { toast } from "react-toastify";
+import { MunicipioForeign } from "../../Depto/components/Municipio/interfaces";
+import { DeptoForeign } from "../../Depto";
 export enum SocketOnSucursal {
   agregar = "cliente:sucursal-agregar",
   editar = "cliente:sucursal-editar",
@@ -117,7 +114,7 @@ export const getSucursals: getSucursalsType = async ({
 
 // Define la estructura de la respuesta
 interface searchDeptoResponse {
-  data: DeptoSuc[];
+  data: DeptoForeign[];
   error: ErrorBackend;
 }
 
@@ -159,7 +156,7 @@ export const searchDepto = async (
 
 // Define la estructura de la respuesta
 interface searchMunicipioResponse {
-  data: MunicipioSuc[];
+  data: MunicipioForeign[];
   error: ErrorBackend;
 }
 

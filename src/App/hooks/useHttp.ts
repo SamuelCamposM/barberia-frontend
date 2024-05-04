@@ -47,12 +47,12 @@ export const useHttp = <T, BodyType>({
           default:
             throw new Error("Invalid method");
         }
+        console.log(res.data);
 
         setData(res.data);
         setError({ error: false, msg: "" });
       } catch (error: any) {
-        const msgError =
-          error?.response?.data?.msg || "Error al consultar";
+        const msgError = error?.response?.data?.msg || "Error al consultar";
         toast.error(msgError);
         setError({
           error: true,

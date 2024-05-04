@@ -1,6 +1,12 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
 import { Roles } from "../../../../store/interfaces";
 
+export interface UsuarioForeign {
+  _id: string;
+  dui: string;
+  name: string;
+}
+
 export interface UsuarioItem {
   _id?: string | undefined;
   crud?: Crud | undefined;

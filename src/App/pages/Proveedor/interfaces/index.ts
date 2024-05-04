@@ -1,4 +1,8 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+export interface ProveedorForeign {
+  nombreCompleto: string;
+  _id: string;
+}
 export interface ProveedorItem {
   nombreCompleto: string;
   telefono: string;

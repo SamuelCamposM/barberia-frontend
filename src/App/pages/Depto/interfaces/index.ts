@@ -1,4 +1,8 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+export interface DeptoForeign {
+  name: string;
+  _id: string;
+}
 export interface DeptoItem {
   name: string;
   totalMunicipios?: number;

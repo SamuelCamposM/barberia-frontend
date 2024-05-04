@@ -79,12 +79,13 @@ export const itemDefault: ProductoItem = {
     _id: "",
     name: "",
   },
-  rUsuario: { _id: "", dui: "", name: "" },
-  description: "",
   marca: {
     _id: "",
     name: "",
   },
+  rUsuario: { _id: "", dui: "", name: "" },
+  description: "",
+
   estado: true,
   name: "",
   photos: [],

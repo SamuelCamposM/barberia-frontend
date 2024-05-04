@@ -1,19 +1,18 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+import { DeptoForeign } from "../../Depto";
+import { MunicipioForeign } from "../../Depto/components/Municipio/interfaces";
 
-export interface MunicipioSuc {
-  _id: string;
+export interface SucursalForeign {
   name: string;
-}
-export interface DeptoSuc {
+  tel: string;
   _id: string;
-  name: string;
 }
 
 export interface SucursalItem {
   direccion: string;
   estado: boolean;
-  municipio: MunicipioSuc;
-  depto: DeptoSuc;
+  municipio: MunicipioForeign;
+  depto: DeptoForeign;
   name: string;
   tel: string;
   _id?: string | undefined;

@@ -1,32 +1,21 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
+import { CategoriaForeign } from "../../Categoria";
+import { MarcaForeign } from "../../Marca";
+import { UsuarioForeign } from "../../Usuario";
 
 export type TipoProducto = "PRODUCTO" | "SERVICIO";
-interface ProductoMarca {
-  _id: string;
-  name: string;
-}
 
-interface ProductoCategoria {
-  _id: string;
-  name: string;
-}
-
-interface ProductoUsuario {
-  _id: string;
-  name: string;
-  dui: string;
-}
-
+ 
 export interface ProductoItem {
   photos: string[];
   name: string;
   description?: string;
   price: number;
-  marca: ProductoMarca;
-  categoria: ProductoCategoria;
+  marca: MarcaForeign;
+  categoria: CategoriaForeign;
   tipoProducto: TipoProducto;
-  rUsuario: ProductoUsuario;
-  eUsuario?: ProductoUsuario;
+  rUsuario: UsuarioForeign;
+  eUsuario?: UsuarioForeign;
   estado: boolean;
   createdAt: string;
   updatedAt: string;

@@ -35,7 +35,7 @@ export const StaticMunicipio = ({
   const handleEliminar = useCallback(() => {
     if (noTienePermiso("Compra", "delete")) return;
     Swal.fire({
-      title: `Desea eliminar el Municipio`,
+      title: `¿Desea eliminar el producto de la compra?`,
       text: municipio.name,
       icon: "warning",
       confirmButtonText: "Confirmar",
