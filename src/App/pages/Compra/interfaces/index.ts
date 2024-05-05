@@ -3,13 +3,14 @@ import { ProveedorForeign } from "../../Proveedor";
 import { SucursalForeign } from "../../Sucursal";
 import { UsuarioForeign } from "../../Usuario";
 export interface CompraItem {
-  proveedor: ProveedorForeign;
-  sucursal: SucursalForeign;
-  gastoTotal: number;
-  totalMunicipios?: number;
-  rUsuario: UsuarioForeign;
-  eUsuario?: UsuarioForeign;
   estado: "EN PROCESO" | "FINALIZADA" | "ANULADA";
+  eUsuario?: UsuarioForeign;
+  gastoTotal: number;
+  proveedor: ProveedorForeign;
+  rUsuario: UsuarioForeign;
+  sucursal: SucursalForeign;
+  totalProductos: number;
+  createdAt: string;
   _id?: string;
   crud?: Crud;
 }

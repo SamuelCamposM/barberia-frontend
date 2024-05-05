@@ -94,8 +94,6 @@ export const Categoria = ({ dontChangePath }: FromAnotherComponent) => {
     busqueda,
     estado,
   }: setDataProps) => {
-    console.log('consultando');
-    
     setCargando(true);
     const { error, result } = await getCategorias({
       pagination,

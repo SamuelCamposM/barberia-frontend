@@ -49,9 +49,30 @@ export const columns: Column[] = [
   },
 
   {
+    campo: "totalProductos",
+    label: "N. Productos",
+    required: false,
+    minWidth: 40,
+    sortable: true,
+  },
+  {
+    campo: "gastoTotal",
+    label: "$",
+    required: false,
+    minWidth: 40,
+    sortable: true,
+  },
+  {
     campo: "rUsuario.name",
     label: "R. Usuario",
     required: true,
+    minWidth: 40,
+    sortable: true,
+  },
+  {
+    campo: "createdAt",
+    label: "Fec. Reg.",
+    required: false,
     minWidth: 40,
     sortable: true,
   },
@@ -62,6 +83,8 @@ export const sortDefault = { asc: true, campo: "name" };
 export const itemDefault: CompraItem = {
   estado: "EN PROCESO",
   gastoTotal: 0,
+  totalProductos: 0,
+  createdAt: "",
   proveedor: {
     _id: "",
     nombreCompleto: "",

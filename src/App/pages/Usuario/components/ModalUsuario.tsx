@@ -65,7 +65,7 @@ export const ModalUsuario = () => {
             (allValues.rol === "EMPLEADO" || allValues.rol === "GERENTE") &&
             String(e).trim() === ""
           ) {
-            return 'EL DUI ES REQUERIDO'
+            return "EL DUI ES REQUERIDO";
           }
           return "";
         },
@@ -117,8 +117,6 @@ export const ModalUsuario = () => {
       ...values,
     };
 
-    console.log(formAllData);
-    
     socket?.emit(
       SocketEmitUsuario.agregar,
       formAllData,
@@ -144,8 +142,7 @@ export const ModalUsuario = () => {
       ...formValues,
       ...values,
     };
-    console.log(formAllData);
-    
+
     socket?.emit(
       SocketEmitUsuario.editar,
       { data: formAllData, eliminados },

@@ -94,8 +94,6 @@ export const Proveedor = ({ dontChangePath }: FromAnotherComponent) => {
     busqueda,
     estado,
   }: setDataProps) => {
-    console.log('consultando');
-    
     setCargando(true);
     const { error, result } = await getProveedors({
       pagination,

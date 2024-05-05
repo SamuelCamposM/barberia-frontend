@@ -7,7 +7,11 @@ import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
 
 import { Action, ErrorSocket } from "../../../../interfaces/global";
-import { handleSocket } from "../../../../helpers";
+import {
+  agregarTransparencia,
+  formatearFecha,
+  handleSocket,
+} from "../../../../helpers";
 import { Acciones } from "../../../components";
 import { Create, DeleteForever } from "@mui/icons-material";
 
@@ -16,11 +20,13 @@ export const StaticCompra = ({
   busqueda,
   setEditando,
   actionsJoins = [],
+  finalizada,
 }: {
   compra: CompraItem;
   busqueda: string;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
   actionsJoins: Action[];
+  finalizada: boolean;
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
@@ -55,7 +61,7 @@ export const StaticCompra = ({
       key={compra._id}
       crud={compra.crud}
       onDoubleClick={() => {
-        setEditando(true);
+        if (!finalizada) setEditando(true);
       }}
     >
       <StyledTableCell padding="checkbox">
@@ -63,7 +69,7 @@ export const StaticCompra = ({
           actions={[
             {
               color: "primary",
-              disabled: false,
+              disabled: finalizada,
               Icon: Create,
               name: `Editar`,
               onClick: onClickEditar,
@@ -73,6 +79,7 @@ export const StaticCompra = ({
 
             {
               color: "error",
+              disabled: finalizada,
               Icon: DeleteForever,
               name: `Eliminar`,
               onClick: () => {
@@ -86,7 +93,21 @@ export const StaticCompra = ({
         />
       </StyledTableCell>
 
-      <StyledTableCell>{compra.estado}</StyledTableCell>
+      <StyledTableCell
+        sx={{
+          background: (theme) =>
+            agregarTransparencia(
+              compra.estado === "ANULADA"
+                ? theme.palette.error.light
+                : compra.estado === "FINALIZADA"
+                ? theme.palette.success.light
+                : theme.palette.primary.dark,
+              0.5
+            ),
+        }}
+      >
+        {compra.estado}
+      </StyledTableCell>
       <StyledTableCell>
         {busqueda
           ? useResaltarTexto({
@@ -103,7 +124,10 @@ export const StaticCompra = ({
             })
           : compra.sucursal.name}
       </StyledTableCell>
+      <StyledTableCell>{compra.totalProductos}</StyledTableCell>
+      <StyledTableCell>{compra.gastoTotal}</StyledTableCell>
       <StyledTableCell>{compra.rUsuario.name}</StyledTableCell>
+      <StyledTableCell>{formatearFecha(compra.createdAt)}</StyledTableCell>
     </StyledTableRow>
   );
 };

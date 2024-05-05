@@ -20,8 +20,9 @@ import {
 } from "@mui/material";
 
 import { useMenuStore } from "../../Menu";
-import { useDebouncedCallback, useHttp } from "../../../hooks";
+import { useDebouncedCallback, useHttp, useThemeSwal } from "../../../hooks";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
+import Swal from "sweetalert2";
 
 export const EditableCompra = ({
   compra,
@@ -39,6 +40,7 @@ export const EditableCompra = ({
   const { noTienePermiso } = useMenuStore();
   const { usuario } = useAuthStore();
   const { socket } = useProvideSocket();
+  const themeSwal = useThemeSwal();
   const config = useMemo(
     () => ({
       "proveedor.nombreCompleto": [required],
@@ -85,7 +87,7 @@ export const EditableCompra = ({
         setCargandoSubmit(false);
         if (error) return;
         onNewForm(compra);
-        // setSliceAgregando(false);
+        setAgregando!(false);
       }
     );
   };
@@ -118,7 +120,21 @@ export const EditableCompra = ({
     if (esNuevo) {
       handleGuardar();
     } else {
-      handleEditar();
+      if (formValues.estado === "FINALIZADA") {
+        Swal.fire({
+          title: "¿Estás listo para finalizar la compra?",
+          text: `Estás a punto de finalizar una compra de ${formValues.proveedor.nombreCompleto} destinada a ${formValues.sucursal.name}. Una vez que se finalice la compra, no podrás realizar más cambios. ¿Estás seguro de que deseas continuar?`,
+          icon: "warning",
+          confirmButtonText: "Sí, finalizar compra",
+          ...themeSwal,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleEditar();
+          } else {
+            setCargandoSubmit(false);
+          }
+        });
+      } else handleEditar();
     }
   };
   const { defaultPropsGenerator, refs } = useFieldProps({

@@ -5,7 +5,11 @@ import { UsuarioForeign } from "../../Usuario";
 
 export type TipoProducto = "PRODUCTO" | "SERVICIO";
 
- 
+export interface ProductoForeign {
+  _id: string;
+  name: string;
+}
+
 export interface ProductoItem {
   photos: string[];
   name: string;

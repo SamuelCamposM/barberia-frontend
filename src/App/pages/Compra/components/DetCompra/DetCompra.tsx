@@ -1,14 +1,14 @@
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
 import { ChangeEvent, useEffect, useState } from "react";
-import { getMunicipios, columns, itemDefault } from "./helpers";
-import { MunicipioItem, setDataProps } from "./interfaces";
+import { getDetCompras, columns, itemDefault } from "./helpers";
+import { DetCompraItem, setDataProps } from "./interfaces";
 import { paginationDefault, rowsPerPageOptions } from "../../../../../helpers";
-import { RowMunicipio } from "./components/RowMunicipio";
+import { RowDetCompra } from "./components/RowDetCompra";
 import { Sort } from "../../../../../interfaces/global";
 import { TableHeader } from "../../../../components/Tabla/TableHeader";
 import { toast } from "react-toastify";
 import { useMenuStore } from "../../../Menu";
-import { useMunicipioSocketEvents } from "./hooks/useSocketEvents";
+import { useDetCompraSocketEvents } from "./hooks/useSocketEvents";
 import {
   Box,
   TableBody,
@@ -18,30 +18,36 @@ import {
 } from "@mui/material";
 import {
   Acciones,
-  Buscador,
+  // Buscador,
   Cargando,
   TablaLayout,
   TableTitle,
 } from "../../../../components";
 import { useCommonStates } from "../../../../hooks";
-import { EditableMunicipio } from "./components/EditableMunicipio";
+import { EditableDetCompra } from "./components/EditableDetCompra";
 import { TableNoData } from "../../../../components/Tabla/TableNoData";
-export const TablaMunicipio = ({ compra }: { compra: string }) => {
+export const DetCompra = ({
+  compra,
+  finalizada,
+}: {
+  compra: string;
+  finalizada: boolean;
+}) => {
   const { noTienePermiso } = useMenuStore();
   const {
     agregando,
-    buscando,
+    // buscando,
     busqueda,
     cargando,
     setAgregando,
-    setBuscando,
+    // setBuscando,
     setBusqueda,
     setCargando,
     setSort,
     sort,
   } = useCommonStates({ asc: true, campo: "name" });
 
-  const [municipiosData, setMunicipiosData] = useState<MunicipioItem[]>([]);
+  const [detComprasData, setDetComprasData] = useState<DetCompraItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
   const handleChangePage = (_: unknown, newPage: number) => {
     setData({
@@ -71,7 +77,7 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
     busqueda,
   }: Omit<setDataProps, "compra">) => {
     setCargando(true);
-    const { error, result } = await getMunicipios({
+    const { error, result } = await getDetCompras({
       pagination,
       sort,
       compra,
@@ -82,7 +88,7 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
     }
     const { docs, ...rest } = result;
     setPagination(rest);
-    setMunicipiosData(docs);
+    setDetComprasData(docs);
     setSort(sort);
     setBusqueda(busqueda);
     setCargando(false);
@@ -92,15 +98,15 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
     setData({ pagination, sort, busqueda });
   }, []);
 
-  useMunicipioSocketEvents({
+  useDetCompraSocketEvents({
     compra,
     setPagination,
-    setMunicipiosData,
+    setDetComprasData,
   });
 
   return (
     <>
-      <Buscador
+      {/* <Buscador
         cargando={cargando}
         buscando={buscando}
         onSearch={(value) => {
@@ -111,8 +117,8 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
           setBuscando(false);
           setData({ pagination: paginationDefault, sort, busqueda: "" });
         }}
-      />
-      <TableTitle texto={"Municipios"} align="left" />
+      /> */}
+      <TableTitle texto={"DetCompras"} align="left" />
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -127,6 +133,7 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
               onClick() {
                 setData({ pagination, sort, busqueda });
               },
+              ocultar: finalizada,
               tipo: "icono",
             },
             {
@@ -137,6 +144,7 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
                 if (noTienePermiso("Compra", "insert")) return;
                 setAgregando(!agregando);
               },
+              ocultar: finalizada,
               tipo: "icono",
             },
           ]}
@@ -168,29 +176,30 @@ export const TablaMunicipio = ({ compra }: { compra: string }) => {
                   columns.length + 1
                 }
               >
-                <Cargando titulo="Cargando Municipios..." />
+                <Cargando titulo="Cargando DetCompras..." />
               </TableCell>
             </TableRow>
           </TableBody>
         ) : (
           <TableBody>
             {agregando && (
-              <EditableMunicipio
+              <EditableDetCompra
                 setEditando={() => {}}
-                municipio={{ ...itemDefault, crud: { nuevo: true } }}
+                detCompra={{ ...itemDefault, crud: { nuevo: true } }}
                 compra={compra}
                 setAgregando={setAgregando}
               />
             )}
-            {municipiosData.length === 0 ? (
-              <TableNoData length={columns.length} title="No hay municipios" />
+            {detComprasData.length === 0 ? (
+              <TableNoData length={columns.length} title="No hay detCompras" />
             ) : (
-              municipiosData.map((municipio) => {
+              detComprasData.map((detCompra) => {
                 return (
-                  <RowMunicipio
+                  <RowDetCompra
+                    finalizada={finalizada}
                     busqueda={busqueda}
-                    key={municipio._id}
-                    municipio={municipio}
+                    key={detCompra._id}
+                    detCompra={detCompra}
                     compra={compra}
                   />
                 );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StaticCompra } from "./StaticCompra";
 import { EditableCompra } from "./EditableCompra";
 import { CompraItem } from "../interfaces";
@@ -8,9 +8,10 @@ import {
 } from "../../../components/style";
 import { Collapse, TableRow } from "@mui/material";
 // import { TablaMunicipio } from "./Municipio/Municipio";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore, PictureAsPdf } from "@mui/icons-material";
 import { Action } from "../../../../interfaces/global";
 import { columns } from "../helpers";
+import { DetCompra } from "./DetCompra/DetCompra";
 
 export const RowCompra = ({
   busqueda,
@@ -21,12 +22,26 @@ export const RowCompra = ({
   busqueda?: string;
 }) => {
   const [editando, setEditando] = useState(!Boolean(compra._id));
+  const finalizada = useMemo(
+    () => compra.estado === "FINALIZADA",
+    [compra.estado]
+  );
   const [open, setopen] = useState(false);
   const actionsJoins: Action[] = [
     {
       color: "secondary",
       Icon: open ? ExpandLess : ExpandMore,
-      name: `Ver municipios`,
+      name: `Ver detCompras`,
+      onClick: () => {
+        setopen(!open);
+      },
+      tipo: "icono",
+      size: "small",
+    },
+    {
+      color: "error",
+      Icon: PictureAsPdf,
+      name: `REPORTE PDF`,
       onClick: () => {
         setopen(!open);
       },
@@ -47,6 +62,7 @@ export const RowCompra = ({
           actionsJoins={actionsJoins}
           busqueda={busqueda || ""}
           compra={compra}
+          finalizada={finalizada}
           setEditando={setEditando}
         />
       )}
@@ -55,7 +71,7 @@ export const RowCompra = ({
           <Collapse in={open} timeout="auto" unmountOnExit>
             <StyledContainerSubTable>
               {/* <Cargando/> */}
-              {/* <TablaMunicipio compra={compra._id || ""} /> */}
+              <DetCompra compra={compra._id || ""} finalizada={finalizada} />
             </StyledContainerSubTable>
           </Collapse>
         </StyledTableCell>
