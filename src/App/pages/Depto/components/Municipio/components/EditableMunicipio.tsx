@@ -69,10 +69,9 @@ export const EditableMunicipio = ({
     );
   };
   const handleEditar = () => {
-    const itemToEdit: MunicipioItem = { ...municipio, ...formValues };
     socket?.emit(
       SocketEmitMunicipio.editar,
-      itemToEdit,
+      formValues,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);

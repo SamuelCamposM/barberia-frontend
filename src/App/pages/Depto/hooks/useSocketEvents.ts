@@ -50,7 +50,6 @@ export const useSocketEvents = ({
           : item
       )
     );
-    setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs - 1 }));
   };
   const { socket } = useProvideSocket();
   useEffect(() => {

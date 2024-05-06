@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { SocketOnCompra } from "../helpers";
 import { useProvideSocket } from "../../../../hooks";
 import { CompraItem } from "../interfaces";
-import { Pagination, socketChildListener } from "../../../../interfaces/global";
+import { Pagination } from "../../../../interfaces/global";
 
 // Tipos para las funciones de manejo de eventos
 type HandleAgregar = (data: CompraItem) => void;
@@ -10,7 +10,10 @@ type HandleEditar = (data: CompraItem) => void;
 type HandleEliminar = (data: { _id: string }) => void;
 type HandleMunicipioChange = (data: {
   _id: string;
-  tipo: socketChildListener;
+  dataCompraRes: {
+    gastoTotal: number;
+    totalProductos: number;
+  };
 }) => void;
 
 export const useSocketEvents = ({
@@ -35,17 +38,17 @@ export const useSocketEvents = ({
     );
   const handleEliminar: HandleEliminar = ({ _id }) =>
     setComprasData((prev) => prev.filter((item) => item._id !== _id));
-  const handleMunicipioChange: HandleMunicipioChange = ({ _id, tipo }) => {
+  const handleChangeDetCompra: HandleMunicipioChange = ({
+    _id,
+    dataCompraRes,
+  }) => {
     setComprasData((prev) =>
       prev.map((item) =>
         item._id === _id
           ? {
               ...item,
               crud: { editado: true },
-              totalMunicipios:
-                tipo === "remove"
-                  ? (item.totalMunicipios || 0) - 1
-                  : (item.totalMunicipios || 0) + 1,
+              ...dataCompraRes,
             }
           : item
       )
@@ -57,13 +60,13 @@ export const useSocketEvents = ({
     socket?.on(SocketOnCompra.agregar, handleAgregar);
     socket?.on(SocketOnCompra.editar, handleEditar);
     socket?.on(SocketOnCompra.eliminar, handleEliminar);
-    socket?.on(SocketOnCompra.municipioListener, handleMunicipioChange);
+    socket?.on(SocketOnCompra.detCompraListener, handleChangeDetCompra);
 
     return () => {
       socket?.off(SocketOnCompra.agregar, handleAgregar);
       socket?.off(SocketOnCompra.editar, handleEditar);
       socket?.off(SocketOnCompra.eliminar, handleEliminar);
-      socket?.off(SocketOnCompra.municipioListener, handleMunicipioChange);
+      socket?.off(SocketOnCompra.detCompraListener, handleChangeDetCompra);
     };
   }, [socket, setComprasData]);
 };

@@ -28,6 +28,7 @@ export const StaticDetCompra = ({
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
+  const { dataCompra } = useContext(CompraContext);
   const onClickEditar = () => {
     if (noTienePermiso("Compra", "update")) return;
     setEditando((prev) => !prev);
@@ -44,7 +45,15 @@ export const StaticDetCompra = ({
       if (result.isConfirmed) {
         socket?.emit(
           SocketEmitDetCompra.eliminar,
-          { _id: detCompra._id, compra: id },
+          {
+            _id: detCompra._id,
+            compra: id,
+            dataCompra,
+            dataDetCompraOld: {
+              cantidad: detCompra.cantidad,
+              total: detCompra.total,
+            },
+          },
           ({ error, msg }: ErrorSocket) => {
             handleSocket({ error, msg });
             if (error) return;

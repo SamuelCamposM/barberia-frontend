@@ -34,7 +34,7 @@ export const EditableDetCompra = ({
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { id } = useContext(CompraContext);
+  const { id, dataCompra } = useContext(CompraContext);
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
   const esNuevo = useMemo(() => !Boolean(detCompra._id), []);
@@ -71,7 +71,7 @@ export const EditableDetCompra = ({
   const handleGuardar = () => {
     socket?.emit(
       SocketEmitDetCompra.agregar,
-      { ...formValues, compra: id },
+      { data: { ...formValues, compra: id }, dataCompra },
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);
@@ -82,10 +82,16 @@ export const EditableDetCompra = ({
     );
   };
   const handleEditar = () => {
-    const itemToEdit: DetCompraItem = { ...detCompra, ...formValues };
     socket?.emit(
       SocketEmitDetCompra.editar,
-      itemToEdit,
+      {
+        data: { ...formValues, compra: id },
+        dataCompra,
+        dataDetCompraOld: {
+          cantidad: detCompra.cantidad,
+          total: detCompra.total,
+        },
+      },
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);

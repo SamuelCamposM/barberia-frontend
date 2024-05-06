@@ -125,7 +125,7 @@ export const StaticCompra = ({
           : compra.sucursal.name}
       </StyledTableCell>
       <StyledTableCell>{compra.totalProductos}</StyledTableCell>
-      <StyledTableCell>{compra.gastoTotal}</StyledTableCell>
+      <StyledTableCell>$ {compra.gastoTotal}</StyledTableCell>
       <StyledTableCell>{compra.rUsuario.name}</StyledTableCell>
       <StyledTableCell>{formatearFecha(compra.createdAt)}</StyledTableCell>
     </StyledTableRow>

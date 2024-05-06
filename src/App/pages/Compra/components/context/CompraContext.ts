@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 interface CompraState {
   id: string;
-  data: {
+  dataCompra: {
     totalProductos: number;
     gastoTotal: number;
   };
@@ -12,7 +12,7 @@ interface CompraState {
 // Proporciona un valor por defecto
 const defaultValue: CompraState = {
   id: "",
-  data: {
+  dataCompra: {
     totalProductos: 0,
     gastoTotal: 0,
   },

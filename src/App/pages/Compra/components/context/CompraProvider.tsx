@@ -12,13 +12,13 @@ export const CompraProvider = ({
   const value = useMemo(
     () => ({
       id: compra._id || "",
-      data: {
+      dataCompra: {
         totalProductos: compra.totalProductos,
         gastoTotal: compra.gastoTotal,
       },
       finalizada: compra.estado === "FINALIZADA",
     }),
-    [compra]
+    [compra.gastoTotal, compra.totalProductos]
   );
 
   return (
