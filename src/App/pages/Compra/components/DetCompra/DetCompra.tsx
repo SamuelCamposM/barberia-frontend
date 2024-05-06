@@ -1,5 +1,5 @@
 import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { getDetCompras, columns, itemDefault } from "./helpers";
 import { DetCompraItem, setDataProps } from "./interfaces";
 import { paginationDefault, rowsPerPageOptions } from "../../../../../helpers";
@@ -26,13 +26,8 @@ import {
 import { useCommonStates } from "../../../../hooks";
 import { EditableDetCompra } from "./components/EditableDetCompra";
 import { TableNoData } from "../../../../components/Tabla/TableNoData";
-export const DetCompra = ({
-  compra,
-  finalizada,
-}: {
-  compra: string;
-  finalizada: boolean;
-}) => {
+import { CompraContext } from "../context/CompraContext";
+export const DetCompra = () => {
   const { noTienePermiso } = useMenuStore();
   const {
     agregando,
@@ -46,6 +41,8 @@ export const DetCompra = ({
     setSort,
     sort,
   } = useCommonStates({ asc: true, campo: "name" });
+  //el _id de la compra se le asgina el nombre de compra
+  const { id, finalizada } = useContext(CompraContext);
 
   const [detComprasData, setDetComprasData] = useState<DetCompraItem[]>([]);
   const [pagination, setPagination] = useState(paginationDefault);
@@ -80,7 +77,7 @@ export const DetCompra = ({
     const { error, result } = await getDetCompras({
       pagination,
       sort,
-      compra,
+      compra: id,
       busqueda,
     });
     if (error.error) {
@@ -99,7 +96,7 @@ export const DetCompra = ({
   }, []);
 
   useDetCompraSocketEvents({
-    compra,
+    compra: id,
     setPagination,
     setDetComprasData,
   });
@@ -107,17 +104,17 @@ export const DetCompra = ({
   return (
     <>
       {/* <Buscador
-        cargando={cargando}
-        buscando={buscando}
-        onSearch={(value) => {
-          setBuscando(true);
-          setData({ pagination: paginationDefault, sort, busqueda: value });
-        }}
-        onSearchCancel={() => {
-          setBuscando(false);
-          setData({ pagination: paginationDefault, sort, busqueda: "" });
-        }}
-      /> */}
+cargando={cargando}
+buscando={buscando}
+onSearch={(value) => {
+setBuscando(true);
+setData({ pagination: paginationDefault, sort, busqueda: value });
+}}
+onSearchCancel={() => {
+setBuscando(false);
+setData({ pagination: paginationDefault, sort, busqueda: "" });
+}}
+/> */}
       <TableTitle texto={"DetCompras"} align="left" />
       <Box
         display={"flex"}
@@ -186,7 +183,6 @@ export const DetCompra = ({
               <EditableDetCompra
                 setEditando={() => {}}
                 detCompra={{ ...itemDefault, crud: { nuevo: true } }}
-                compra={compra}
                 setAgregando={setAgregando}
               />
             )}
@@ -196,11 +192,9 @@ export const DetCompra = ({
               detComprasData.map((detCompra) => {
                 return (
                   <RowDetCompra
-                    finalizada={finalizada}
                     busqueda={busqueda}
                     key={detCompra._id}
                     detCompra={detCompra}
-                    compra={compra}
                   />
                 );
               })

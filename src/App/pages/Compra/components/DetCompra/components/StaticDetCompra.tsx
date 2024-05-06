@@ -1,4 +1,4 @@
-import { Dispatch, useCallback } from "react";
+import { Dispatch, useCallback, useContext } from "react";
 import {
   StyledTableCell,
   StyledTableRow,
@@ -13,20 +13,18 @@ import { ErrorSocket } from "../../../../../../interfaces/global";
 import { handleSocket } from "../../../../../../helpers";
 import { Acciones } from "../../../../../components";
 import { Create, DeleteForever } from "@mui/icons-material";
+import { CompraContext } from "../../context/CompraContext";
 
 export const StaticDetCompra = ({
   detCompra,
   busqueda,
   setEditando,
-  compra,
-  finalizada,
 }: {
   detCompra: DetCompraItem;
   busqueda: string;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
-  compra: string;
-  finalizada: boolean;
 }) => {
+  const { id, finalizada } = useContext(CompraContext);
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
@@ -46,7 +44,7 @@ export const StaticDetCompra = ({
       if (result.isConfirmed) {
         socket?.emit(
           SocketEmitDetCompra.eliminar,
-          { _id: detCompra._id, compra },
+          { _id: detCompra._id, compra: id },
           ({ error, msg }: ErrorSocket) => {
             handleSocket({ error, msg });
             if (error) return;

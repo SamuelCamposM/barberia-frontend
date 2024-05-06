@@ -9,18 +9,16 @@ export const RowDetCompra = ({
   ...rest
 }: {
   detCompra: DetCompraItem;
-  compra: string;
   busqueda?: string;
-  finalizada: boolean;
 }) => {
   const [editando, setEditando] = useState(!Boolean(rest.detCompra._id));
   return editando ? (
-    <EditableDetCompra {...rest} setEditando={setEditando} />
+    <EditableDetCompra setEditando={setEditando} {...rest} />
   ) : (
-    <StaticDetCompra 
+    <StaticDetCompra
       setEditando={setEditando}
-      {...rest}
       busqueda={busqueda || ""}
+      {...rest}
     />
   );
 };

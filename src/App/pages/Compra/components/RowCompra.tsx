@@ -12,6 +12,7 @@ import { ExpandLess, ExpandMore, PictureAsPdf } from "@mui/icons-material";
 import { Action } from "../../../../interfaces/global";
 import { columns } from "../helpers";
 import { DetCompra } from "./DetCompra/DetCompra";
+import { CompraProvider } from "./context/CompraProvider";
 
 export const RowCompra = ({
   busqueda,
@@ -68,10 +69,11 @@ export const RowCompra = ({
       )}
       <TableRow sx={{ padding: 0 }}>
         <StyledTableCell colSpan={columns.length}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout="auto">
             <StyledContainerSubTable>
-              {/* <Cargando/> */}
-              <DetCompra compra={compra._id || ""} finalizada={finalizada} />
+              <CompraProvider compra={compra}>
+                <DetCompra />
+              </CompraProvider>
             </StyledContainerSubTable>
           </Collapse>
         </StyledTableCell>

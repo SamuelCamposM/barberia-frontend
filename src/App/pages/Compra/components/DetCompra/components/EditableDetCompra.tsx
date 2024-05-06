@@ -4,7 +4,7 @@ import {
   StyledTableRow,
 } from "../../../../../components/style";
 import { AttachMoney, CancelOutlined, Check } from "@mui/icons-material";
-import { Dispatch, useMemo } from "react";
+import { Dispatch, useContext, useMemo } from "react";
 import { ErrorSocket } from "../../../../../../interfaces/global";
 import { handleSocket, required, min } from "../../../../../../helpers";
 import { DetCompraItem } from "../interfaces";
@@ -23,18 +23,18 @@ import { useForm, useProvideSocket } from "../../../../../../hooks";
 import { useMenuStore } from "../../../../Menu";
 import { useFieldProps } from "../../../../../hooks/useFieldProps";
 import { useDebouncedCallback, useHttp } from "../../../../../hooks";
+import { CompraContext } from "../../context/CompraContext";
 
 export const EditableDetCompra = ({
   detCompra,
-  compra,
   setAgregando,
   setEditando,
 }: {
   detCompra: DetCompraItem;
-  compra: string;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { id } = useContext(CompraContext);
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
   const esNuevo = useMemo(() => !Boolean(detCompra._id), []);
@@ -71,7 +71,7 @@ export const EditableDetCompra = ({
   const handleGuardar = () => {
     socket?.emit(
       SocketEmitDetCompra.agregar,
-      { ...formValues, compra },
+      { ...formValues, compra: id },
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);
