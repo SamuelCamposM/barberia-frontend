@@ -1,43 +1,65 @@
-import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
-import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
-import { Box, TableBody, TablePagination } from "@mui/material";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { columns, estados, getCompras, sortDefault } from "./helpers";
-import { ModalRoute } from "./components/ModalRoute";
-import { PaperContainerPage } from "../../components/style"; 
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { StaticCompra, CompraItem, setDataProps, useSocketEvents } from ".";
-import { TableCargando } from "../../components/Tabla/TableCargando";
-import { TableHeader } from "../../components/Tabla/TableHeader";
-import { TableNoData } from "../../components/Tabla/TableNoData";
-import { toast } from "react-toastify";
-import { useCommonStates } from "../../hooks";
-import { useMenuStore } from "../Menu";
-import { useCompraStore } from "./hooks/useCompraStore";
-import queryString from "query-string";
+import { Action, Sort } from "../../../interfaces/global";
+import { AddCircle, Cancel, Refresh } from "@mui/icons-material";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { CompraItem, setDataProps, useSocketEvents } from ".";
 import {
-  getSubPath,
   paginationDefault,
   rowsPerPageOptions,
   validateFunction,
 } from "../../../helpers";
-import { Acciones, Buscador, TablaLayout, TableTitle } from "../../components";
+import { PaperContainerPage } from "../../components/style";
+import {
+  columns,
+  estados,
+  getCompras,
+  itemDefault,
+  sortDefault,
+} from "./helpers";
+import { TableHeader } from "../../components/Tabla/TableHeader";
+import { useNavigate } from "react-router-dom";
+import { useCommonStates } from "../../hooks";
+import queryString from "query-string";
 
-export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
+import {
+  Box,
+  TableBody,
+  TableCell,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
+import {
+  Acciones,
+  Buscador,
+  Cargando,
+  TablaLayout,
+  TableTitle,
+} from "../../components"; // Importaciones de hooks de menú y notificaciones.
+import { useMenuStore } from "../Menu";
+import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
+import { RowCompra } from "./components/RowCompra";
+import { EditableCompra } from "./components/EditableCompra";
+import { TableNoData } from "../../components/Tabla/TableNoData";
+
+export const Compra = ({
+  dontChangePath = false,
+}: {
+  dontChangePath?: boolean;
+}) => {
   // Hooks de navegación y rutas.
-  // Importaciones y definiciones de estado
   const navigate = useNavigate();
-  const { noTienePermiso, data: dataMenu, getPathPage } = useMenuStore();
+
+  // Hooks personalizados para permisos.
+  const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
+
   const { path } = useMemo(() => getPathPage("Compra", false), [dataMenu]);
-  const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
-    useCompraStore();
+  // Estados locales para el manejo de la UI y datos.
   const [estado, setEstado] = useState<CompraItem["estado"]>("EN PROCESO");
   const {
-    // agregando,
+    agregando,
     buscando,
     busqueda,
     cargando,
-    // setAgregando,
+    setAgregando,
     setBuscando,
     setBusqueda,
     setCargando,
@@ -160,8 +182,7 @@ export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
   }, []);
 
   useSocketEvents({ setComprasData, setPagination });
-  const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
-
+  // Acciones disponibles en la UI.
   const tabs: Action[] = estados.map((estadoMap) => ({
     color:
       estadoMap === "ANULADA"
@@ -178,115 +199,44 @@ export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
     tipo: "tab",
     active: estadoMap === estado,
   }));
-
   const actions: Action[] = [
     {
       color: "primary",
       Icon: Refresh,
       name: "Actualizar",
-      onClick: () =>
-        setData({
-          pagination,
-          sort,
-          busqueda: q,
-          estado,
-        }),
+      onClick: () => setData({ pagination, sort, busqueda, estado }),
       tipo: "icono",
     },
     {
-      color: "success",
-      Icon: AddCircle,
-      name: "Nuevo",
-      tipo: "icono",
-      disabled: nuevoActive,
-      onClick: async () => {
-        const canActive = await setItemActive({
-          ...itemDefault,
-          crud: { agregando: true },
-        });
-        if (canActive) {
-          let params = new URLSearchParams(window.location.search);
-
-          navigate(`nuevo?${params.toString()}`);
-          setOpenModal(true);
-        }
-      },
-    },
-    {
-      color: nuevoActive ? "success" : "secondary",
-      tipo: "icono",
-      badge: "index",
-      disabled: false,
-      Icon: Create,
-      name: `Continuar ${nuevoActive ? "Creando" : "Editando"}`,
-      ocultar: !Boolean(itemActive._id) && !nuevoActive,
+      color: agregando ? "error" : "success",
+      Icon: agregando ? Cancel : AddCircle,
+      name: "Agregar Departamento",
       onClick: () => {
-        if (!Boolean(itemActive._id) && !nuevoActive) return;
-        setOpenModal(!openModal);
+        if (noTienePermiso("Compra", "insert")) return;
+        setAgregando(!agregando);
       },
-    },
-    {
-      color: "error",
       tipo: "icono",
-      badge: "index",
-      disabled: false,
-      Icon: Cancel,
-      name: `Cancelar ${nuevoActive ? "Creando" : "Edición"}`,
-      ocultar: !Boolean(itemActive._id) && !nuevoActive,
-      onClick: async () => {
-        navigate(getSubPath());
-        setItemActive(itemDefault, true);
-      },
     },
   ];
 
-  const handleEditar = useCallback(
-    async (itemEditing: CompraItem) => {
-      if (noTienePermiso("Menu", "update")) {
-        return;
-      }
-
-      const canActive = await setItemActive(itemEditing);
-      if (canActive) {
-        let params = new URLSearchParams(window.location.search);
-        navigate(`${itemEditing._id || ""}?${params.toString()}`);
-        setOpenModal(!openModal);
-      }
-    },
-    [dataMenu, itemActive]
-  );
-
   return (
-    <>
-      <PaperContainerPage
-        tabIndex={-1}
-        onKeyDown={(e) => {
-          if (validateFunction(e)) return;
+    <PaperContainerPage
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (validateFunction(e)) return;
 
-          actions[Number(e.key) - 1].onClick(null);
-        }}
-      >
-        <Routes>
-          <Route
-            path="/:_id"
-            element={
-              <ModalRoute
-                comprasData={comprasData}
-                cargando={cargando}
-                prevPath={path}
-              />
-            }
-          />
-        </Routes>
-        <Buscador
-          label="Buscar por Proveedor y Sucursal"
-          buscando={buscando}
-          cargando={cargando}
-          onSearch={(value) => searchFunction(true, value)}
-          onSearchCancel={() => searchFunction(false, "")}
-        />
-
-        <TableTitle texto={path} Tabs={[...tabs]} />
+        actions[Number(e.key) - 1].onClick(null);
+      }}
+    >
+      <Buscador
+        label="Buscar por Proveedor y Sucursal"
+        buscando={buscando}
+        cargando={cargando}
+        onSearch={(value) => searchFunction(true, value)}
+        onSearchCancel={() => searchFunction(false, "")}
+      />
+      <>
+        <TableTitle texto={path} Tabs={tabs} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}
@@ -304,27 +254,41 @@ export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
+
         <TablaLayout>
           <TableHeader
             columns={columns}
             sort={sort}
             sortFunction={sortFunction}
           />
+
           {cargando ? (
-            <TableCargando columnsLength={columns.length} />
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <Cargando titulo="Cargando Compras..." />
+                </TableCell>
+              </TableRow>
+            </TableBody>
           ) : (
             <TableBody>
+              {agregando && (
+                <EditableCompra
+                  esNuevo
+                  setEditando={() => {}}
+                  compra={{ ...itemDefault, crud: { nuevo: true } }}
+                  setAgregando={setAgregando}
+                />
+              )}
               {comprasData.length === 0 ? (
-                <TableNoData length={columns.length} title="No hay Compra" />
+                <TableNoData length={columns.length} title="No hay compras" />
               ) : (
                 comprasData.map((compra) => {
                   return (
-                    <StaticCompra
+                    <RowCompra
                       key={compra._id}
                       compra={compra}
                       busqueda={busqueda}
-                      handleEditar={handleEditar}
-                      itemActive={itemActive}
                     />
                   );
                 })
@@ -332,8 +296,8 @@ export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
             </TableBody>
           )}
         </TablaLayout>
-      </PaperContainerPage>
-    </>
+      </>
+    </PaperContainerPage>
   );
 };
 

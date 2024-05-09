@@ -1,45 +1,45 @@
-import { Dispatch, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
 import { useMenuStore } from "../../Menu";
 import { CompraItem, SocketEmitCompra } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
-
 import { Action, ErrorSocket } from "../../../../interfaces/global";
-import {
-  agregarTransparencia,
-  formatearFecha,
-  handleSocket,
-} from "../../../../helpers";
+import { formatearFecha, handleSocket } from "../../../../helpers";
 import { Acciones } from "../../../components";
-import { Create, DeleteForever } from "@mui/icons-material";
+import {
+  Create,
+  DeleteForever,
+  Restore,
+  Visibility,
+} from "@mui/icons-material";
 
 export const StaticCompra = ({
   compra,
-  busqueda,
-  setEditando,
   actionsJoins = [],
-  finalizada,
+  handleEditar,
+  itemActive,
+  busqueda,
 }: {
   compra: CompraItem;
   busqueda: string;
-  setEditando: Dispatch<React.SetStateAction<boolean>>;
-  actionsJoins: Action[];
-  finalizada: boolean;
+  actionsJoins?: Action[];
+  handleEditar: (itemEditing: CompraItem) => void;
+  itemActive: CompraItem;
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
-  const onClickEditar = () => {
-    if (noTienePermiso("Compra", "update")) return;
-    setEditando((prev) => !prev);
-  };
+  const finalizada = useMemo(() => compra.estado === "FINALIZADA", []);
+  const anulada = useMemo(() => compra.estado === "ANULADA", []);
   const handleEliminar = useCallback(() => {
-    if (noTienePermiso("Compra", "delete")) return;
+    if (noTienePermiso("Depto", "delete")) return;
     Swal.fire({
-      title: `Desea eliminar la compra de`,
-      text: compra.proveedor.nombreCompleto,
+      title: `¿Desea ${
+        compra.estado === "ANULADA" ? "poner EN PROCESO" : "ANULAR"
+      } la compra de ${compra.proveedor.nombreCompleto}?`,
+      text: `Para: ${compra.sucursal.name}`,
       icon: "warning",
       confirmButtonText: "Confirmar",
       ...themeSwal,
@@ -47,7 +47,7 @@ export const StaticCompra = ({
       if (result.isConfirmed) {
         socket?.emit(
           SocketEmitCompra.eliminar,
-          { _id: compra._id },
+          { _id: compra._id, estado: compra.estado },
           ({ error, msg }: ErrorSocket) => {
             handleSocket({ error, msg });
             if (error) return;
@@ -61,26 +61,26 @@ export const StaticCompra = ({
       key={compra._id}
       crud={compra.crud}
       onDoubleClick={() => {
-        if (!finalizada) setEditando(true);
+        handleEditar(compra);
       }}
     >
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[
             {
-              color: "primary",
-              disabled: finalizada,
-              Icon: Create,
+              color: itemActive?._id === compra._id ? "secondary" : "primary",
+              Icon: finalizada ? Visibility : Create,
               name: `Editar`,
-              onClick: onClickEditar,
+              onClick: () => {
+                handleEditar(compra);
+              },
               tipo: "icono",
               size: "small",
             },
-
             {
-              color: "error",
-              disabled: finalizada,
-              Icon: DeleteForever,
+              ocultar: finalizada,
+              color: anulada ? "success" : "error",
+              Icon: anulada ? Restore : DeleteForever,
               name: `Eliminar`,
               onClick: () => {
                 handleEliminar();
@@ -90,44 +90,44 @@ export const StaticCompra = ({
             },
             ...actionsJoins,
           ]}
-        />
+        ></Acciones>
       </StyledTableCell>
-
-      <StyledTableCell
-        sx={{
-          background: (theme) =>
-            agregarTransparencia(
+      <>
+        <StyledTableCell
+          sx={{
+            color: (theme) =>
               compra.estado === "ANULADA"
                 ? theme.palette.error.light
                 : compra.estado === "FINALIZADA"
                 ? theme.palette.success.light
                 : theme.palette.primary.dark,
-              0.5
-            ),
-        }}
-      >
-        {compra.estado}
-      </StyledTableCell>
-      <StyledTableCell>
-        {busqueda
-          ? useResaltarTexto({
-              busqueda: busqueda,
-              texto: compra.proveedor.nombreCompleto,
-            })
-          : compra.proveedor.nombreCompleto}
-      </StyledTableCell>
-      <StyledTableCell>
-        {busqueda
-          ? useResaltarTexto({
-              busqueda: busqueda,
-              texto: compra.sucursal.name,
-            })
-          : compra.sucursal.name}
-      </StyledTableCell>
-      <StyledTableCell>{compra.totalProductos}</StyledTableCell>
-      <StyledTableCell>$ {compra.gastoTotal}</StyledTableCell>
-      <StyledTableCell>{compra.rUsuario.name}</StyledTableCell>
-      <StyledTableCell>{formatearFecha(compra.createdAt)}</StyledTableCell>
+          }}
+        >
+          {compra.estado}
+        </StyledTableCell>
+        <StyledTableCell>
+          {busqueda
+            ? useResaltarTexto({
+                busqueda: busqueda,
+                texto: compra.proveedor.nombreCompleto,
+              })
+            : compra.proveedor.nombreCompleto}
+        </StyledTableCell>
+        <StyledTableCell>
+          {busqueda
+            ? useResaltarTexto({
+                busqueda: busqueda,
+                texto: compra.sucursal.name,
+              })
+            : compra.sucursal.name}
+        </StyledTableCell>
+        <StyledTableCell align="center">
+          {compra.totalProductos}
+        </StyledTableCell>
+        <StyledTableCell align="center">$ {compra.gastoTotal}</StyledTableCell>
+        <StyledTableCell>{compra.rUsuario.name}</StyledTableCell>
+        <StyledTableCell>{formatearFecha(compra.createdAt)}</StyledTableCell>
+      </>
     </StyledTableRow>
   );
 };

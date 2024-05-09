@@ -1,8 +1,10 @@
-import { Crud, Sort } from "../../../../../../interfaces/global";
+import { Crud, Pagination, Sort } from "../../../../../../interfaces/global";
 import { ProductoForeign } from "../../../../Producto";
 
 export interface setDataProps {
+  busqueda: string;
   compra: string;
+  pagination: Pagination;
   sort: Sort;
 }
 

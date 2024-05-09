@@ -207,6 +207,7 @@ export const EditableCompra = ({
       </StyledTableCell>
       <StyledTableCell>
         <TextField
+          disabled={compra.totalProductos === 0}
           {...defaultPropsGenerator("estado", true, true)}
           autoFocus
           select
@@ -318,7 +319,10 @@ export const EditableCompra = ({
           )}
         </Box>
       </StyledTableCell>
+      <StyledTableCell> {compra.totalProductos}</StyledTableCell>
+      <StyledTableCell> {compra.gastoTotal}</StyledTableCell>
       <StyledTableCell> {usuario.name}</StyledTableCell>
+      <StyledTableCell> - </StyledTableCell>
     </StyledTableRow>
   );
 };

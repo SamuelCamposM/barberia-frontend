@@ -1,18 +1,24 @@
-import { Dispatch, useState } from "react";
+import { useState } from "react";
 import { StaticDetCompra } from "./StaticDetCompra";
 import { EditableDetCompra } from "./EditableDetCompra";
 import { DetCompraItem } from "../interfaces";
-import { CompraItem } from "../../../interfaces";
 
-export const RowDetCompra = (rest: {
+export const RowDetCompra = ({
+  busqueda,
+  //separo busqueda por que es el unico que no pasare el editable
+  ...rest
+}: {
   detCompra: DetCompraItem;
-  setformValues: Dispatch<React.SetStateAction<CompraItem>>;
-  finalizada: boolean;
+  busqueda?: string;
 }) => {
   const [editando, setEditando] = useState(!Boolean(rest.detCompra._id));
   return editando ? (
     <EditableDetCompra setEditando={setEditando} {...rest} />
   ) : (
-    <StaticDetCompra setEditando={setEditando} {...rest} />
+    <StaticDetCompra
+      setEditando={setEditando}
+      busqueda={busqueda || ""}
+      {...rest}
+    />
   );
 };

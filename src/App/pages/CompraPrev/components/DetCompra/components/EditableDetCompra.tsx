@@ -4,9 +4,11 @@ import {
   StyledTableRow,
 } from "../../../../../components/style";
 import { AttachMoney, CancelOutlined, Check } from "@mui/icons-material";
-import { Dispatch, useMemo } from "react";
-import { required, min } from "../../../../../../helpers";
+import { Dispatch, useContext, useMemo } from "react";
+import { ErrorSocket } from "../../../../../../interfaces/global";
+import { handleSocket, required, min } from "../../../../../../helpers";
 import { DetCompraItem } from "../interfaces";
+import { SocketEmitDetCompra } from "../helpers";
 import {
   Autocomplete,
   Box,
@@ -16,32 +18,25 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { useForm } from "../../../../../../hooks";
+import { useForm, useProvideSocket } from "../../../../../../hooks";
 
 import { useMenuStore } from "../../../../Menu";
-import {
-  handleNavigation,
-  useFieldProps,
-} from "../../../../../hooks/useFieldProps";
+import { useFieldProps } from "../../../../../hooks/useFieldProps";
 import { useDebouncedCallback, useHttp } from "../../../../../hooks";
-import { v4 } from "uuid";
-import { toast } from "react-toastify";
-import { CompraItem } from "../../../interfaces";
+import { CompraContext } from "../../context/CompraContext";
 
 export const EditableDetCompra = ({
   detCompra,
   setAgregando,
   setEditando,
-  setformValues: setCompraValues,
-  finalizada,
 }: {
   detCompra: DetCompraItem;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
-  setformValues: Dispatch<React.SetStateAction<CompraItem>>;
-  finalizada: boolean;
 }) => {
+  const { id, dataCompra } = useContext(CompraContext);
   const { noTienePermiso } = useMenuStore();
+  const { socket } = useProvideSocket();
   const esNuevo = useMemo(() => !Boolean(detCompra._id), []);
   const config = useMemo(
     () => ({
@@ -74,74 +69,38 @@ export const EditableDetCompra = ({
   };
 
   const handleGuardar = () => {
-    const itemToSave: DetCompraItem = {
-      ...formValues,
-      _id: `nuevo-${v4()}`,
-      crud: { nuevo: true },
-    };
-    setCompraValues((prev) => {
-      const existeProducto = prev.detComprasData.some(
-        (detCompraItem) =>
-          detCompraItem.producto._id === itemToSave.producto._id
-      );
-      if (existeProducto) {
-        toast.error("Este producto ya se encuentra en la compra");
-
-        setTimeout(() => {
-          refs["producto.name"].current?.focus();
-          setCargandoSubmit(false);
-        }, 0);
-        return prev;
-      } else {
-        setTimeout(() => {
-          onNewForm(detCompra);
-          refs["producto.name"].current?.focus();
-          setAgregando!(false);
-          setCargandoSubmit(false);
-        }, 0);
-        return {
-          ...prev,
-          detComprasData: [itemToSave, ...prev.detComprasData],
-        };
+    socket?.emit(
+      SocketEmitDetCompra.agregar,
+      { data: { ...formValues, compra: id }, dataCompra },
+      ({ error, msg }: ErrorSocket) => {
+        handleSocket({ error, msg });
+        setCargandoSubmit(false);
+        if (error) return;
+        onNewForm(detCompra);
+        // setSliceAgregando(false);
       }
-    });
+    );
   };
   const handleEditar = () => {
-    setCompraValues((prev) => {
-      const existeProducto = prev.detComprasData.some(
-        (detCompraItem) =>
-          detCompraItem.producto._id === formValues.producto._id &&
-          detCompraItem._id !== formValues._id
-      );
-      if (existeProducto) {
-        toast.error("Este producto ya se encuentra en la compra");
+    socket?.emit(
+      SocketEmitDetCompra.editar,
+      {
+        data: { ...formValues, compra: id },
+        dataCompra,
+        dataDetCompraOld: {
+          cantidad: detCompra.cantidad,
+          total: detCompra.total,
+        },
+      },
+      ({ error, msg }: ErrorSocket) => {
+        handleSocket({ error, msg });
+        setCargandoSubmit(false);
+        if (error) return;
 
-        setTimeout(() => {
-          setCargandoSubmit(false);
-        }, 0);
-        return prev;
-      } else {
-        setTimeout(() => {
-          setEditando(false);
-          setCargandoSubmit(false);
-        }, 0);
-        return {
-          ...prev,
-          detComprasData: prev.detComprasData.map((item) =>
-            item._id === formValues._id
-              ? {
-                  ...formValues,
-                  crud: formValues.crud?.nuevo
-                    ? { nuevo: true }
-                    : { editado: true },
-                }
-              : item
-          ),
-        };
+        setEditando(false);
       }
-    });
+    );
   };
-
   const onSubmit = () => {
     setisSubmited(true);
     if (isFormInvalidSubmit(formValues)) {
@@ -155,15 +114,13 @@ export const EditableDetCompra = ({
     }
   };
 
-  const { defaultPropsGenerator, refs } = useFieldProps({
+  const { defaultPropsGenerator } = useFieldProps({
     config,
     errorValues,
     formValues,
     handleBlur,
     handleChange,
     handleKeyDown: (e) => {
-      handleNavigation(e, config, refs);
-
       if (e.shiftKey && e.key === "Enter") {
         onSubmit();
       }
@@ -196,7 +153,7 @@ export const EditableDetCompra = ({
           actions={[
             {
               color: "error",
-              disabled: cargandoSubmit || finalizada,
+              disabled: cargandoSubmit,
               Icon: CancelOutlined,
               name: `Editar`,
               onClick: onClickEditar,
@@ -205,7 +162,7 @@ export const EditableDetCompra = ({
             },
             {
               color: "success",
-              disabled: cargandoSubmit || finalizada,
+              disabled: cargandoSubmit,
               Icon: Check,
               name: `Guardar cambios`,
               onClick: () => {

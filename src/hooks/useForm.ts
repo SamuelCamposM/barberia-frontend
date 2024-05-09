@@ -58,13 +58,21 @@ export const useForm = <
   const isFormInvalidSubmit = useCallback(
     (formValues: ValueTypes) => {
       const entries = Object.entries(ObjectValidations);
+      console.log({ entries });
+
       const res = entries.some(([name]) => {
         return ObjectValidations[name].some((validation) => {
-          const result = validation(formValues[name], formValues);
+          const properties = name.split(".");
+          const value = getNestedProperty(formValues, [...properties]);
+
+          const result = validation(value, formValues);
+
+          console.log({ result, formValues });
 
           return result !== "";
         });
       });
+      console.log({ res });
 
       return res;
     },

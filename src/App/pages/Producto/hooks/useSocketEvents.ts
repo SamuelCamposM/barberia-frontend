@@ -18,10 +18,7 @@ export const useSocketEvents = ({
 }) => {
   const handleAgregar: HandleAgregar = (data) => {
     setPagination((prev) => ({ ...prev, totalDocs: prev.totalDocs + 1 }));
-    setProductosData((prev) => [
-      { ...data, crud: { nuevo: true }, totalMunicipios: 0 },
-      ...prev,
-    ]);
+    setProductosData((prev) => [{ ...data, crud: { nuevo: true } }, ...prev]);
   };
   const handleEditar: HandleEditar = (data) =>
     setProductosData((prev) =>

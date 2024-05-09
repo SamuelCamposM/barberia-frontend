@@ -11,7 +11,8 @@ export const TableHeader = ({
   columns: Column[];
   sort: Sort;
   sortFunction?: (sort: Sort) => void;
-}) => {
+}) => { 
+  
   return (
     <TableHead>
       <StyledTableRow>

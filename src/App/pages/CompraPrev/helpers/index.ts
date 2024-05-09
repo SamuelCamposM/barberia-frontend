@@ -49,19 +49,17 @@ export const columns: Column[] = [
   },
 
   {
-    align: "center",
     campo: "totalProductos",
-    label: "N. Prods",
-    minWidth: 100,
+    label: "N. Productos",
     required: false,
+    minWidth: 150,
     sortable: true,
   },
   {
-    align: "center",
     campo: "gastoTotal",
     label: "$",
     required: false,
-    minWidth: 75,
+    minWidth: 60,
     sortable: true,
   },
   {
@@ -87,8 +85,6 @@ export const itemDefault: CompraItem = {
   gastoTotal: 0,
   totalProductos: 0,
   createdAt: "",
-  updatedAt: "",
-  detComprasData: [],
   proveedor: {
     _id: "",
     nombreCompleto: "",
@@ -109,21 +105,6 @@ export const itemDefault: CompraItem = {
     tel: "",
   },
 };
-export const calcularTotales = (
-  detComprasData: CompraItem["detComprasData"]
-) => {
-  const gastoTotal = detComprasData.reduce(
-    (suma, item) => suma + item.total,
-    0
-  );
-  const totalProductos = detComprasData.reduce(
-    (suma, item) => suma + item.cantidad,
-    0
-  );
-
-  return { gastoTotal, totalProductos };
-};
-
 interface Result extends Pagination {
   docs: CompraItem[];
 }

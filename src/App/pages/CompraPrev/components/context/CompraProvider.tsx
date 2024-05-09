@@ -9,6 +9,8 @@ export const CompraProvider = ({
   children: JSX.Element;
   compra: CompraItem;
 }) => {
+  console.log({ compra });
+
   const value = useMemo(
     () => ({
       id: compra._id || "",
@@ -20,6 +22,7 @@ export const CompraProvider = ({
     }),
     [compra.gastoTotal, compra.totalProductos]
   );
+  console.log({ value });
 
   return (
     <CompraContext.Provider value={value}>{children}</CompraContext.Provider>

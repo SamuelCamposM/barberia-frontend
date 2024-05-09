@@ -1,5 +1,10 @@
 import { clienteAxios } from "../../../../../../api";
-import { Column, ErrorBackend } from "../../../../../../interfaces/global";
+import {
+  Column,
+  ErrorBackend,
+  Pagination,
+} from "../../../../../../interfaces/global";
+import { paginationDefault } from "../../../../../../helpers";
 import { DetCompraItem, setDataProps } from "../interfaces";
 export enum SocketOnDetCompra {
   agregar = "cliente:detCompra-agregar",
@@ -21,21 +26,21 @@ export const columns: Column[] = [
     label: "Producto",
     required: true,
     minWidth: 50,
-    sortable: false,
+    sortable: true,
   },
   {
     campo: "cantidad",
     label: "cantidad",
     required: true,
     minWidth: 50,
-    sortable: false,
+    sortable: true,
   },
   {
     campo: "Precio",
     label: "Precio",
     required: true,
     minWidth: 50,
-    sortable: false,
+    sortable: true,
   },
   {
     campo: "total",
@@ -56,18 +61,22 @@ export const itemDefault: DetCompraItem = {
   },
 };
 
+interface Result extends Pagination {
+  docs: DetCompraItem[];
+}
+
 interface MyResponse {
-  data: { result: DetCompraItem[] };
+  data: { result: Result };
 }
 
 type getDetComprasType = (arg: setDataProps) => Promise<{
   error: ErrorBackend;
-  result: DetCompraItem[];
+  result: Result;
 }>;
 
 export const getDetCompras: getDetComprasType = async (args: setDataProps) => {
   try {
-    const data: MyResponse = await clienteAxios.post("/compra/detCompra", args);
+    const data: MyResponse = await clienteAxios.post("/detCompra", args);
 
     return {
       error: {
@@ -78,11 +87,9 @@ export const getDetCompras: getDetComprasType = async (args: setDataProps) => {
     };
   } catch (error: any) {
     const errorResult = {
-      msg:
-        error?.response?.data?.msg ||
-        "Error al consultar los detalles de compras",
+      msg: error?.response?.data?.msg || "Error al consultar los detalles de compras",
       error: true,
     };
-    return { error: errorResult, result: [] };
+    return { error: errorResult, result: { docs: [], ...paginationDefault } };
   }
 };

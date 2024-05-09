@@ -69,7 +69,7 @@ export const RowCompra = ({
       )}
       <TableRow sx={{ padding: 0 }}>
         <StyledTableCell colSpan={columns.length}>
-          <Collapse in={open} timeout="auto">
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <StyledContainerSubTable>
               <CompraProvider compra={compra}>
                 <DetCompra />

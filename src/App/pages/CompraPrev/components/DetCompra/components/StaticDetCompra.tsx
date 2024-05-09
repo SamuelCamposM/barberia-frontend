@@ -1,58 +1,37 @@
-import { Dispatch, useCallback } from "react";
+import { Dispatch, useCallback, useContext } from "react";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../../../../components/style";
-import { useThemeSwal } from "../../../../../hooks";
+import { useResaltarTexto, useThemeSwal } from "../../../../../hooks";
 import { useMenuStore } from "../../../../Menu";
 import { DetCompraItem } from "../interfaces";
 import Swal from "sweetalert2";
+import { useProvideSocket } from "../../../../../../hooks";
+import { SocketEmitDetCompra } from "../helpers";
+import { ErrorSocket } from "../../../../../../interfaces/global";
+import { handleSocket } from "../../../../../../helpers";
 import { Acciones } from "../../../../../components";
 import { Create, DeleteForever } from "@mui/icons-material";
-import { CompraItem } from "../../../interfaces";
+import { CompraContext } from "../../context/CompraContext";
+
 export const StaticDetCompra = ({
   detCompra,
+  busqueda,
   setEditando,
-  setformValues: setCompraValues,
-  finalizada,
 }: {
   detCompra: DetCompraItem;
+  busqueda: string;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
-  setformValues: Dispatch<React.SetStateAction<CompraItem>>;
-  finalizada: boolean;
 }) => {
+  const { id, finalizada } = useContext(CompraContext);
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
+  const { socket } = useProvideSocket();
+  const { dataCompra } = useContext(CompraContext);
   const onClickEditar = () => {
     if (noTienePermiso("Compra", "update")) return;
     setEditando((prev) => !prev);
-  };
-
-  const handleEditar = () => {
-    setCompraValues((prev) => {
-      if (detCompra.crud?.nuevo) {
-        return {
-          ...prev,
-          detComprasData: prev.detComprasData.filter(
-            (item) => item._id !== detCompra._id
-          ),
-        };
-      }
-
-      return {
-        ...prev,
-        detComprasData: prev.detComprasData.map((item) =>
-          item._id === detCompra._id
-            ? {
-                ...detCompra,
-                crud: {
-                  eliminado: !item.crud?.eliminado,
-                },
-              }
-            : item
-        ),
-      };
-    });
   };
   const handleEliminar = useCallback(() => {
     if (noTienePermiso("Compra", "delete")) return;
@@ -64,11 +43,25 @@ export const StaticDetCompra = ({
       ...themeSwal,
     }).then((result) => {
       if (result.isConfirmed) {
-        handleEditar();
+        socket?.emit(
+          SocketEmitDetCompra.eliminar,
+          {
+            _id: detCompra._id,
+            compra: id,
+            dataCompra,
+            dataDetCompraOld: {
+              cantidad: detCompra.cantidad,
+              total: detCompra.total,
+            },
+          },
+          ({ error, msg }: ErrorSocket) => {
+            handleSocket({ error, msg });
+            if (error) return;
+          }
+        );
       }
     });
   }, []);
-
   return (
     <StyledTableRow
       key={detCompra._id}
@@ -88,7 +81,6 @@ export const StaticDetCompra = ({
               onClick: onClickEditar,
               tipo: "icono",
               size: "small",
-              ocultar: detCompra.crud?.eliminado,
             },
 
             {
@@ -97,8 +89,6 @@ export const StaticDetCompra = ({
               Icon: DeleteForever,
               name: `Eliminar`,
               onClick: () => {
-                console.log(detCompra.crud?.eliminado);
-
                 handleEliminar();
               },
               tipo: "icono",
@@ -107,7 +97,14 @@ export const StaticDetCompra = ({
           ]}
         />
       </StyledTableCell>
-      <StyledTableCell>{detCompra.producto.name}</StyledTableCell>
+      <StyledTableCell>
+        {busqueda
+          ? useResaltarTexto({
+              busqueda: busqueda,
+              texto: detCompra.producto.name,
+            })
+          : detCompra.producto.name}
+      </StyledTableCell>
       <StyledTableCell> {detCompra.cantidad}</StyledTableCell>
       <StyledTableCell>$ {detCompra.precioUnidad}</StyledTableCell>
       <StyledTableCell>$ {detCompra.total}</StyledTableCell>

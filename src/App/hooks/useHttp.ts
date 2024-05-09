@@ -47,7 +47,6 @@ export const useHttp = <T, BodyType>({
           default:
             throw new Error("Invalid method");
         }
-        console.log(res.data);
 
         setData(res.data);
         setError({ error: false, msg: "" });

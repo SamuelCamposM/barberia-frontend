@@ -73,11 +73,9 @@ export const StyledTableHeaderCell = styled(TableCell)<{
     transform: sorteable ? "scale(1.05)" : "none",
   },
 }));
-export const StyledContainerSubTable = styled(Box)(({ theme }) => ({
-  paddingLeft: theme.spacing(2),
-  paddingTop: theme.spacing(1),
+export const StyledContainerSubTable = styled(Box)(({ theme }) => ({ 
   background: `linear-gradient(0deg, ${agregarTransparencia(
-    theme.palette.primary.dark,
-    0.075
-  )} 20%, ${agregarTransparencia(theme.palette.primary.dark, 0.15)} 100%)`,
+    theme.palette.secondary.light,
+    0.30
+  )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.1)} 100%)`,
 }));
