@@ -204,8 +204,7 @@ export const Depto = ({
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-        </Box>
-
+        </Box> 
         <TablaLayout>
           <TableHeader
             columns={columns}

@@ -43,6 +43,13 @@ export const columns: Column[] = [
     sortable: true,
   },
   {
+    campo: "stockTotal",
+    label: "Stock",
+    align: "center",
+    minWidth: 100,
+    sortable: true,
+  },
+  {
     campo: "tipoProducto",
     label: "T. Producto",
     align: "center",
@@ -90,8 +97,9 @@ export const itemDefault: ProductoItem = {
   name: "",
   photos: [],
   price: 0,
+  stockTotal: 0,
   tipoProducto: "PRODUCTO",
-  createdAt: new Date().toISOString(),
+  createdAt: "",
   updatedAt: "",
 };
 
@@ -115,7 +123,7 @@ export const getProductos: getProductosType = async (params) => {
         result: { docs, limit, page, totalDocs, totalPages },
       },
     } = await clienteAxios.post<MyResponse>("/producto", params);
-
+    console.log({ docs });
     return {
       error: {
         error: false,

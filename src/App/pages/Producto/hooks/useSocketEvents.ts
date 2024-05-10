@@ -36,6 +36,7 @@ export const useSocketEvents = ({
     socket?.on(SocketOnProducto.eliminar, handleEliminar);
 
     return () => {
+      //DEJAR DE ESCUCHAR
       socket?.off(SocketOnProducto.agregar, handleAgregar);
       socket?.off(SocketOnProducto.editar, handleEditar);
       socket?.off(SocketOnProducto.eliminar, handleEliminar);

@@ -81,7 +81,7 @@ export const ModalCompra = () => {
     isFormInvalid,
     handleBlur,
     isFormInvalidSubmit,
-    // onNewForm,
+    onNewForm,
     setformValues,
     setCargandoSubmit,
     cargandoSubmit,
@@ -107,6 +107,8 @@ export const ModalCompra = () => {
         name: usuario.name,
         dui: usuario.dui || "SIN DUI",
       },
+      gastoTotal: valuesCompra.dataCompra.gastoTotal,
+      totalProductos: valuesCompra.dataCompra.totalProductos,
     };
 
     socket?.emit(
@@ -130,7 +132,10 @@ export const ModalCompra = () => {
         name: usuario.name,
         dui: usuario.dui || "SIN DUI",
       },
+      gastoTotal: valuesCompra.dataCompra.gastoTotal,
+      totalProductos: valuesCompra.dataCompra.totalProductos,
     };
+    console.log({ formAllData });
 
     socket?.emit(
       SocketEmitCompra.editar,
@@ -218,58 +223,34 @@ export const ModalCompra = () => {
 
   const setData = async ({ sort, compra }: setDataProps) => {
     setCargando(true);
-    const { error, result } = await getDetCompras({
-      sort,
-      compra,
-    });
+    const { error, result } = await getDetCompras({ sort, compra });
     if (error.error) {
-      return toast.error(error.msg);
+      toast.error(error.msg);
+    } else {
+      setformValues({ ...itemActive, detComprasData: result });
     }
-    setformValues(() => {
-      return { ...itemActive, detComprasData: result };
-    });
     setCargando(false);
   };
-  const valuesCompra = useMemo(
-    () => ({
+
+  const valuesCompra = useMemo(() => {
+    const { gastoTotal, totalProductos } = calcularTotales(
+      formValues.detComprasData
+    );
+    return {
       id: itemActive._id || "",
-      dataCompra: {
-        totalProductos: itemActive.totalProductos,
-        gastoTotal: itemActive.gastoTotal,
-      },
+      dataCompra: { gastoTotal, totalProductos },
       finalizada: itemActive.estado === "FINALIZADA",
-    }),
-    [
-      itemActive.gastoTotal,
-      itemActive.totalProductos,
-      itemActive.estado,
-      itemActive._id,
-    ]
-  );
+    };
+  }, [itemActive.estado, itemActive._id, formValues.detComprasData]);
 
   useEffect(() => {
     if (itemActive._id) {
       setData({ sort, compra: itemActive._id });
     } else {
-      setformValues(() => {
-        return { ...itemActive, detComprasData: [] };
-      });
+      onNewForm({ ...itemActive });
       setCargando(false);
     }
   }, [itemActive]);
-
-  useEffect(() => {
-    const { gastoTotal, totalProductos } = calcularTotales(
-      formValues.detComprasData
-    );
-
-    setformValues({
-      ...formValues,
-      gastoTotal,
-      totalProductos,
-    });
-  }, [formValues.detComprasData]);
-
   return (
     <>
       <ModalLayout
@@ -457,7 +438,7 @@ export const ModalCompra = () => {
                   />
                 </Box>
               </StyledGridContainer>
-            </StyledContainerForm>
+            </StyledContainerForm> 
             {(cargando || cargandoSubmit) && (
               <LinearProgress color="primary" variant="query" />
             )}

@@ -23,6 +23,7 @@ export interface ProductoItem {
   estado: boolean;
   createdAt: string;
   updatedAt: string;
+  stockTotal: number;
   _id?: string | undefined;
   crud?: Crud | undefined;
 }
