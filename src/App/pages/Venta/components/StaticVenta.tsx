@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
 import { useMenuStore } from "../../Menu";
-import { CompraItem, SocketEmitCompra } from "..";
+import { VentaItem, SocketEmitVenta } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
 import { Action, ErrorSocket } from "../../../../interfaces/global";
@@ -15,39 +15,39 @@ import {
   Visibility,
 } from "@mui/icons-material";
 
-export const StaticCompra = ({
-  compra,
+export const StaticVenta = ({
+  venta,
   actionsJoins = [],
   handleEditar,
   itemActive,
   busqueda,
 }: {
-  compra: CompraItem;
+  venta: VentaItem;
   busqueda: string;
   actionsJoins?: Action[];
-  handleEditar: (itemEditing: CompraItem) => void;
-  itemActive: CompraItem;
+  handleEditar: (itemEditing: VentaItem) => void;
+  itemActive: VentaItem;
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
   const { socket } = useProvideSocket();
-  const finalizada = useMemo(() => compra.estado === "FINALIZADA", []);
-  const anulada = useMemo(() => compra.estado === "ANULADA", []);
+  const finalizada = useMemo(() => venta.estado === "FINALIZADA", []);
+  const anulada = useMemo(() => venta.estado === "ANULADA", []);
   const handleEliminar = useCallback(() => {
     if (noTienePermiso("Depto", "delete")) return;
     Swal.fire({
       title: `¿Desea ${
-        compra.estado === "ANULADA" ? "poner EN PROCESO" : "ANULAR"
-      } la compra de ${compra.proveedor.nombreCompleto}?`,
-      text: `Para: ${compra.sucursal.name}`,
+        venta.estado === "ANULADA" ? "poner EN PROCESO" : "ANULAR"
+      } la venta de ${venta.proveedor.nombreCompleto}?`,
+      text: `Para: ${venta.sucursal.name}`,
       icon: "warning",
       confirmButtonText: "Confirmar",
       ...themeSwal,
     }).then((result) => {
       if (result.isConfirmed) {
         socket?.emit(
-          SocketEmitCompra.eliminar,
-          { _id: compra._id, estado: compra.estado },
+          SocketEmitVenta.eliminar,
+          { _id: venta._id, estado: venta.estado },
           ({ error, msg }: ErrorSocket) => {
             handleSocket({ error, msg });
             if (error) return;
@@ -58,21 +58,21 @@ export const StaticCompra = ({
   }, []);
   return (
     <StyledTableRow
-      key={compra._id}
-      crud={compra.crud}
+      key={venta._id}
+      crud={venta.crud}
       onDoubleClick={() => {
-        handleEditar(compra);
+        handleEditar(venta);
       }}
     >
       <StyledTableCell padding="checkbox">
         <Acciones
           actions={[
             {
-              color: itemActive?._id === compra._id ? "secondary" : "primary",
+              color: itemActive?._id === venta._id ? "secondary" : "primary",
               Icon: finalizada ? Visibility : Create,
               name: `Editar`,
               onClick: () => {
-                handleEditar(compra);
+                handleEditar(venta);
               },
               tipo: "icono",
               size: "small",
@@ -96,37 +96,37 @@ export const StaticCompra = ({
         <StyledTableCell
           sx={{
             color: (theme) =>
-              compra.estado === "ANULADA"
+              venta.estado === "ANULADA"
                 ? theme.palette.error.light
-                : compra.estado === "FINALIZADA"
+                : venta.estado === "FINALIZADA"
                 ? theme.palette.success.light
                 : theme.palette.primary.dark,
           }}
         >
-          {compra.estado}
+          {venta.estado}
         </StyledTableCell>
         <StyledTableCell>
           {busqueda
             ? useResaltarTexto({
                 busqueda: busqueda,
-                texto: compra.proveedor.nombreCompleto,
+                texto: venta.proveedor.nombreCompleto,
               })
-            : compra.proveedor.nombreCompleto}
+            : venta.proveedor.nombreCompleto}
         </StyledTableCell>
         <StyledTableCell>
           {busqueda
             ? useResaltarTexto({
                 busqueda: busqueda,
-                texto: compra.sucursal.name,
+                texto: venta.sucursal.name,
               })
-            : compra.sucursal.name}
+            : venta.sucursal.name}
         </StyledTableCell>
         <StyledTableCell align="center">
-          {compra.totalProductos}
+          {venta.totalProductos}
         </StyledTableCell>
-        <StyledTableCell align="center">$ {compra.gastoTotal}</StyledTableCell>
-        <StyledTableCell>{`${compra.rUsuario.lastname} ${compra.rUsuario.name}`}</StyledTableCell> 
-        <StyledTableCell>{formatearFecha(compra.createdAt)}</StyledTableCell>
+        <StyledTableCell align="center">$ {venta.gastoTotal}</StyledTableCell>
+        <StyledTableCell>{venta.rUsuario.name}</StyledTableCell>
+        <StyledTableCell>{formatearFecha(venta.createdAt)}</StyledTableCell>
       </>
     </StyledTableRow>
   );

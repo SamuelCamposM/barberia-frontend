@@ -23,6 +23,7 @@ import { Cancel, Save } from "@mui/icons-material";
 import { ModalLayout } from "../../../components";
 import {
   formatearFecha,
+  formatUsuarioForeign,
   handleSocket,
   min,
   PhotoDataMultiple,
@@ -144,11 +145,7 @@ export const ModalProducto = () => {
     }
     const formAllData: ProductoItem = {
       ...formValues,
-      rUsuario: {
-        _id: usuario.uid,
-        name: `${usuario.lastname} ${usuario.name}`,
-        dui: usuario.dui || "SIN DUI",
-      },
+      rUsuario: formatUsuarioForeign(usuario),
       ...values,
     };
 
@@ -175,11 +172,7 @@ export const ModalProducto = () => {
     }
     const formAllData: ProductoItem = {
       ...formValues,
-      eUsuario: {
-        _id: usuario.uid,
-        name: `${usuario.lastname} ${usuario.name}`,
-        dui: usuario.dui || "SIN DUI",
-      },
+      eUsuario: formatUsuarioForeign(usuario),
       ...values,
     };
 

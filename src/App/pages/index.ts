@@ -7,6 +7,6 @@ export * from "./Categoria/Categoria";
 export * from "./Cita/Cita";
 export * from "./Depto/Depto";
 export * from "./Marca/Marca";
-export * from "./Municipio/Municipio";
+export * from "./Ventas/Ventas";
 export * from "./Sucursal/Sucursal";
 export * from "./Usuario/Usuario";

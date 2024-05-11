@@ -5,6 +5,7 @@ export interface UsuarioForeign {
   _id: string;
   dui: string;
   name: string;
+  lastname: string;
 }
 
 export interface UsuarioItem {

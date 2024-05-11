@@ -28,7 +28,7 @@ export type Components =
   | "Depto"
   | "Marca"
   | "Menu"
-  | "Municipio"
+  | "Venta"
   | "Producto"
   | "Sucursal"
   | "Valoraciones"

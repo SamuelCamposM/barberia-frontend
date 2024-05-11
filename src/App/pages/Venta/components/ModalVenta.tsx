@@ -5,7 +5,7 @@ import {
   IconButton,
   InputAdornment,
   LinearProgress,
-  MenuItem,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -37,22 +37,21 @@ import {
   useThemeSwal,
 } from "../../../hooks";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
-import { SocketEmitCompra, calcularTotales, estados } from "../helpers";
-import { useCompraStore } from "../hooks/useCompraStore";
-import { CompraItem } from "../interfaces";
+import { SocketEmitVenta, calcularTotales } from "../helpers";
+import { useVentaStore } from "../hooks/useVentaStore";
+import { VentaItem } from "../interfaces";
 
 import { toast } from "react-toastify";
-import { DetCompra } from "./DetCompra/DetCompra";
-import { getDetCompras } from "./DetCompra/helpers";
-import { DetCompraItem, setDataProps } from "./DetCompra/interfaces";
+import { DetVenta } from "./DetVenta/DetVenta";
+import { getDetVentas } from "./DetVenta/helpers";
+import { DetVentaItem, setDataProps } from "./DetVenta/interfaces";
 import Swal from "sweetalert2";
 
-export const ModalCompra = () => {
+export const ModalVenta = () => {
   // Hooks
   const { itemActive, itemDefault, openModal, setItemActive, setOpenModal } =
-    useCompraStore();
-  const { columns, idModal, vhContainer, width } =
-    useModalConfig("modalCompra");
+    useVentaStore();
+  const { columns, idModal, vhContainer, width } = useModalConfig("modalVenta");
   const { usuario } = useAuthStore();
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
@@ -65,11 +64,11 @@ export const ModalCompra = () => {
       "proveedor.nombreCompleto": [required],
       estado: [required],
       "sucursal.name": [required],
-      detComprasData: [
-        (e: DetCompraItem[]) => {
-          return e.filter((detCompraItem) => !detCompraItem.crud?.eliminado)
+      detVentasData: [
+        (e: DetVentaItem[]) => {
+          return e.filter((detVentaItem) => !detVentaItem.crud?.eliminado)
             .length === 0
-            ? "Ingrese al menos un detalle de compra"
+            ? "Ingrese al menos un detalle de venta"
             : "";
         },
       ],
@@ -105,15 +104,15 @@ export const ModalCompra = () => {
 
   // Funciones de manejo
   const handleGuardar = async () => {
-    const formAllData: CompraItem = {
+    const formAllData: VentaItem = {
       ...formValues,
       rUsuario: formatUsuarioForeign(usuario),
-      gastoTotal: valuesCompra.dataCompra.gastoTotal,
-      totalProductos: valuesCompra.dataCompra.totalProductos,
+      gastoTotal: valuesVenta.dataVenta.gastoTotal,
+      totalProductos: valuesVenta.dataVenta.totalProductos,
     };
 
     socket?.emit(
-      SocketEmitCompra.agregar,
+      SocketEmitVenta.agregar,
       formAllData,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
@@ -126,16 +125,16 @@ export const ModalCompra = () => {
     );
   };
   const handleEditar = async () => {
-    const formAllData: CompraItem = {
+    const formAllData: VentaItem = {
       ...formValues,
       eUsuario: formatUsuarioForeign(usuario),
-      gastoTotal: valuesCompra.dataCompra.gastoTotal,
-      totalProductos: valuesCompra.dataCompra.totalProductos,
+      gastoTotal: valuesVenta.dataVenta.gastoTotal,
+      totalProductos: valuesVenta.dataVenta.totalProductos,
     };
     console.log({ formAllData });
 
     socket?.emit(
-      SocketEmitCompra.editar,
+      SocketEmitVenta.editar,
       formAllData,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
@@ -163,10 +162,10 @@ export const ModalCompra = () => {
     if (editar) {
       if (formValues.estado === "FINALIZADA") {
         Swal.fire({
-          title: "¿Estás listo para finalizar la compra?",
-          text: `Estás a punto de finalizar una compra de ${formValues.proveedor.nombreCompleto} destinada a ${formValues.sucursal.name}. Una vez que se finalice la compra, no podrás realizar más cambios. ¿Estás seguro de que deseas continuar?`,
+          title: "¿Estás listo para finalizar la venta?",
+          text: `Estás a punto de finalizar una venta de ${formValues.proveedor.nombreCompleto} destinada a ${formValues.sucursal.name}. Una vez que se finalice la venta, no podrás realizar más cambios. ¿Estás seguro de que deseas continuar?`,
           icon: "warning",
-          confirmButtonText: "Sí, finalizar compra",
+          confirmButtonText: "Sí, finalizar venta",
           ...themeSwal,
         }).then((result) => {
           if (result.isConfirmed) {
@@ -184,7 +183,7 @@ export const ModalCompra = () => {
     data: dataProveedor,
     loading: loadingProveedor,
     refetchWithNewBody: RFWNBProveedor,
-  } = useHttp<CompraItem["proveedor"][], { search: string }>({
+  } = useHttp<VentaItem["proveedor"][], { search: string }>({
     initialUrl: "/proveedor/search",
     initialMethod: "post",
     initialBody: {
@@ -198,7 +197,7 @@ export const ModalCompra = () => {
     data: dataSucursal,
     loading: loadingSucursal,
     refetchWithNewBody: RFWNBSucursal,
-  } = useHttp<CompraItem["sucursal"][], { search: string }>({
+  } = useHttp<VentaItem["sucursal"][], { search: string }>({
     initialUrl: "/sucursal/search",
     initialMethod: "post",
     initialBody: {
@@ -218,31 +217,31 @@ export const ModalCompra = () => {
     sort,
   } = useCommonStates({ asc: true, campo: "_id" });
 
-  const setData = async ({ sort, compra }: setDataProps) => {
+  const setData = async ({ sort, venta }: setDataProps) => {
     setCargando(true);
-    const { error, result } = await getDetCompras({ sort, compra });
+    const { error, result } = await getDetVentas({ sort, venta });
     if (error.error) {
       toast.error(error.msg);
     } else {
-      setformValues({ ...itemActive, detComprasData: result });
+      setformValues({ ...itemActive, detVentasData: result });
     }
     setCargando(false);
   };
 
-  const valuesCompra = useMemo(() => {
+  const valuesVenta = useMemo(() => {
     const { gastoTotal, totalProductos } = calcularTotales(
-      formValues.detComprasData
+      formValues.detVentasData
     );
     return {
       id: itemActive._id || "",
-      dataCompra: { gastoTotal, totalProductos },
+      dataVenta: { gastoTotal, totalProductos },
       finalizada: itemActive.estado === "FINALIZADA",
     };
-  }, [itemActive.estado, itemActive._id, formValues.detComprasData]);
+  }, [itemActive.estado, itemActive._id, formValues.detVentasData]);
 
   useEffect(() => {
     if (itemActive._id) {
-      setData({ sort, compra: itemActive._id });
+      setData({ sort, venta: itemActive._id });
     } else {
       onNewForm({ ...itemActive });
       setCargando(false);
@@ -268,7 +267,7 @@ export const ModalCompra = () => {
               >
                 {editar ? "editando" : "creando"}{" "}
               </StyledTypographyHeader>
-              {/* {editar && (
+              {editar && (
                 <Tooltip title="Estado">
                   <Switch
                     checked={formValues.estado}
@@ -282,7 +281,7 @@ export const ModalCompra = () => {
                     color="success"
                   />
                 </Tooltip>
-              )} */}
+              )}
             </Box>
             <Tooltip title="Cancelar">
               <IconButton
@@ -300,10 +299,10 @@ export const ModalCompra = () => {
           <form onSubmit={onHandleSubmit}>
             <StyledContainerForm {...vhContainer}>
               <StyledGridContainer {...columns}>
-                {editar && (
+                {/* {editar && (
                   <TextField
                     label="Estado"
-                    disabled={valuesCompra.finalizada}
+                    disabled={valuesVenta.finalizada}
                     {...defaultPropsGenerator("estado", true, true)}
                     autoFocus
                     select
@@ -314,7 +313,7 @@ export const ModalCompra = () => {
                       </MenuItem>
                     ))}
                   </TextField>
-                )}
+                )} */}
                 <Box>
                   <Autocomplete
                     options={
@@ -328,7 +327,7 @@ export const ModalCompra = () => {
                     isOptionEqualToValue={(option, value) =>
                       option._id === value._id
                     }
-                    disabled={valuesCompra.finalizada}
+                    disabled={valuesVenta.finalizada}
                     onChange={(_, newValue) => {
                       if (!newValue) return;
                       setformValues({ ...formValues, proveedor: newValue });
@@ -383,7 +382,7 @@ export const ModalCompra = () => {
                     isOptionEqualToValue={(option, value) =>
                       option._id === value._id
                     }
-                    disabled={valuesCompra.finalizada}
+                    disabled={valuesVenta.finalizada}
                     onChange={(_, newValue) => {
                       if (!newValue) return;
                       setformValues({ ...formValues, sucursal: newValue });
@@ -424,11 +423,11 @@ export const ModalCompra = () => {
 
                 <Box className="fullWidth" sx={{ overflow: "auto" }}>
                   <Typography variant="overline" color="error">
-                    {errorValues.detComprasData}
+                    {errorValues.detVentasData}
                   </Typography>
-                  <DetCompra
-                    valuesCompra={valuesCompra}
-                    detComprasData={formValues.detComprasData}
+                  <DetVenta
+                    valuesVenta={valuesVenta}
+                    detVentasData={formValues.detVentasData}
                     setformValues={setformValues}
                     setSort={setSort}
                     sort={sort}
@@ -467,7 +466,7 @@ export const ModalCompra = () => {
                 <IconButton
                   aria-label="Submit"
                   // type="submit"
-                  disabled={cargandoSubmit || valuesCompra.finalizada}
+                  disabled={cargandoSubmit || valuesVenta.finalizada}
                   onClick={onHandleSubmit}
                 >
                   <Save />

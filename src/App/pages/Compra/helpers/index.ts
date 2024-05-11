@@ -6,6 +6,7 @@ import {
 } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import { CompraItem, setDataProps } from "../interfaces";
+import { formatUsuarioForeign } from "../../../../helpers";
 
 export enum SocketOnCompra {
   agregar = "cliente:compra-agregar",
@@ -65,7 +66,7 @@ export const columns: Column[] = [
     sortable: true,
   },
   {
-    campo: "rUsuario.name",
+    campo: "rUsuario.lastname",
     label: "R. Usuario",
     required: true,
     minWidth: 150,
@@ -93,16 +94,8 @@ export const itemDefault: CompraItem = {
     _id: "",
     nombreCompleto: "",
   },
-  rUsuario: {
-    _id: "",
-    dui: "",
-    name: "",
-  },
-  eUsuario: {
-    _id: "",
-    dui: "",
-    name: "",
-  },
+  rUsuario: formatUsuarioForeign(),
+  eUsuario: formatUsuarioForeign(),
   sucursal: {
     _id: "",
     name: "",

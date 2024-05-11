@@ -5,7 +5,11 @@ import { SocketEmitCompra, estados } from "../helpers";
 
 import { useAuthStore, useForm, useProvideSocket } from "../../../../hooks";
 import { Dispatch, useMemo } from "react";
-import { handleSocket, required } from "../../../../helpers";
+import {
+  formatUsuarioForeign,
+  handleSocket,
+  required,
+} from "../../../../helpers";
 import { Action, ErrorSocket } from "../../../../interfaces/global";
 import { CancelOutlined, Check } from "@mui/icons-material";
 import {
@@ -72,16 +76,13 @@ export const EditableCompra = ({
   };
 
   const handleGuardar = () => {
+    const formAllData: CompraItem = {
+      ...formValues,
+      rUsuario: formatUsuarioForeign(usuario),
+    };
     socket?.emit(
       SocketEmitCompra.agregar,
-      {
-        ...formValues,
-        rUsuario: {
-          _id: usuario.uid,
-          dui: usuario.dui,
-          name: usuario.name,
-        },
-      },
+      formAllData,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);
@@ -92,16 +93,13 @@ export const EditableCompra = ({
     );
   };
   const handleEditar = () => {
+    const formAllData: CompraItem = {
+      ...formValues,
+      eUsuario: formatUsuarioForeign(usuario),
+    };
     socket?.emit(
       SocketEmitCompra.editar,
-      {
-        ...formValues,
-        eUsuario: {
-          _id: usuario.uid,
-          dui: usuario.dui,
-          name: usuario.name,
-        },
-      },
+      formAllData,
       ({ error, msg }: ErrorSocket) => {
         handleSocket({ error, msg });
         setCargandoSubmit(false);

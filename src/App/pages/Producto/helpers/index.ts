@@ -6,6 +6,7 @@ import {
 } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import { TipoProducto, ProductoItem, setDataProps } from "../interfaces";
+import { formatUsuarioForeign } from "../../../../helpers";
 
 export enum SocketOnProducto {
   agregar = "cliente:producto-agregar",
@@ -71,10 +72,17 @@ export const columns: Column[] = [
     sortable: true,
   },
   {
+    campo: "rUsuario.lastname",
+    label: "R. Usuario",
+    required: true,
+    minWidth: 150,
+    sortable: true,
+  },
+  {
     campo: "createdAt",
-    label: "F. Reg",
-    align: "left",
-    minWidth: 100,
+    label: "Fec. Reg.",
+    required: false,
+    minWidth: 150,
     sortable: true,
   },
 ];
@@ -90,8 +98,9 @@ export const itemDefault: ProductoItem = {
     _id: "",
     name: "",
   },
-  rUsuario: { _id: "", dui: "", name: "" },
+  rUsuario: formatUsuarioForeign(),
   description: "",
+  eUsuario: formatUsuarioForeign(),
 
   estado: true,
   name: "",

@@ -7,7 +7,6 @@ import {
   StyledTableCell,
 } from "../../../components/style";
 import { Collapse, TableRow } from "@mui/material";
-// import { TablaMunicipio } from "./Municipio/Municipio";
 import { ExpandLess, ExpandMore, PictureAsPdf } from "@mui/icons-material";
 import { Action } from "../../../../interfaces/global";
 import { columns } from "../helpers";

@@ -8,3 +8,4 @@ export * from "./ui/agregarTransparencia";
 export * from "./validaciones";
 export * from "./stringToComponents";
 export * from "./uploadFiles";
+export * from "./format";

@@ -1,0 +1,154 @@
+import { AddCircle, Cancel } from "@mui/icons-material";
+import { Dispatch, useState } from "react";
+import { columns, itemDefault } from "./helpers";
+import { DetVentaItem } from "./interfaces";
+import { RowDetVenta } from "./components/RowDetVenta";
+import { TableHeader } from "../../../../components/Tabla/TableHeader";
+import {
+  Box,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableRow,
+} from "@mui/material";
+import {
+  Acciones,
+  // Buscador,
+  Cargando,
+  TablaLayout,
+  TableTitle,
+} from "../../../../components";
+import { EditableDetVenta } from "./components/EditableDetVenta";
+import { TableNoData } from "../../../../components/Tabla/TableNoData";
+import { Sort } from "../../../../../interfaces/global";
+import { VentaItem } from "../../interfaces";
+import {
+  StyledTableHeaderCell,
+  StyledTableRow,
+} from "../../../../components/style";
+
+export const DetVenta = ({
+  detVentasData,
+  valuesVenta: { finalizada, dataVenta },
+  sort,
+  setformValues,
+}: {
+  detVentasData: DetVentaItem[];
+  valuesVenta: {
+    id: string;
+    dataVenta: {
+      totalProductos: number;
+      gastoTotal: number;
+    };
+    finalizada: boolean;
+  };
+  setSort: Dispatch<React.SetStateAction<Sort>>;
+  setformValues: Dispatch<React.SetStateAction<VentaItem>>;
+  sort: Sort;
+}) => {
+  const [agregando, setAgregando] = useState(false);
+  return (
+    <>
+      {/* <Buscador
+        cargando={cargando}
+        buscando={false}
+        onSearch={(value) => {
+          // setBuscando(true);
+          // setData({ pagination: paginationDefault, sort, busqueda: value });
+        }}
+        onSearchCancel={() => {
+          // setBuscando(false);
+          // setData({ pagination: paginationDefault, sort, busqueda: "" });
+        }}
+      /> */}
+      <TableTitle texto={"Productos"} align="left" />
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Acciones
+          actions={[
+            {
+              color: agregando ? "error" : "success",
+              Icon: agregando ? Cancel : AddCircle,
+              name: "Agregar",
+              onClick() {
+                setAgregando(!agregando);
+              },
+              ocultar: finalizada,
+              tipo: "icono",
+            },
+          ]}
+        />
+
+        {/* <TablePagination
+          className="tablePagination"
+          rowsPerPageOptions={rowsPerPageOptions}
+          component="div"
+          count={pagination.totalDocs}
+          rowsPerPage={pagination.limit}
+          page={pagination.page - 1}
+          onPageChange={() => {}}
+          onRowsPerPageChange={() => {}}
+        /> */}
+      </Box>
+      <TablaLayout maxHeight="30vh">
+        <TableHeader
+          columns={columns}
+          sort={sort}
+          //  sortFunction={(a) => {}}
+        />
+        {false ? (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={columns.length + 1}>
+                <Cargando titulo="Cargando DetVentas..." />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        ) : (
+          <TableBody>
+            {agregando && (
+              <EditableDetVenta
+                finalizada={finalizada}
+                setformValues={setformValues}
+                setEditando={() => {}}
+                detVenta={{ ...itemDefault, crud: { nuevo: true } }}
+                setAgregando={setAgregando}
+              />
+            )}
+            {detVentasData.length === 0 ? (
+              <TableNoData length={columns.length} title="No hay detVentas" />
+            ) : (
+              detVentasData.map((detVenta) => {
+                return (
+                  <RowDetVenta
+                    finalizada={finalizada}
+                    setformValues={setformValues}
+                    key={detVenta._id}
+                    detVenta={detVenta}
+                  />
+                );
+              })
+            )}
+          </TableBody>
+        )}
+        <TableFooter>
+          <StyledTableRow>
+            <StyledTableHeaderCell></StyledTableHeaderCell>
+            <StyledTableHeaderCell></StyledTableHeaderCell>
+            <StyledTableHeaderCell>
+              {" "}
+              {dataVenta.totalProductos}
+            </StyledTableHeaderCell>
+            <StyledTableHeaderCell></StyledTableHeaderCell>
+            <StyledTableHeaderCell>
+              $ {dataVenta.gastoTotal}
+            </StyledTableHeaderCell>
+          </StyledTableRow>
+        </TableFooter>
+      </TablaLayout>
+    </>
+  );
+};

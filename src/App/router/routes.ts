@@ -8,7 +8,7 @@ export default {
   Cita: lazy(() => import("../pages/Cita/Cita")),
   Depto: lazy(() => import("../pages/Depto/Depto")),
   Marca: lazy(() => import("../pages/Marca/Marca")),
-  Municipio: lazy(() => import("../pages/Municipio/Municipio")),
+  Ventas: lazy(() => import("../pages/Venta/Venta")),
   Sucursal: lazy(() => import("../pages/Sucursal/Sucursal")),
   Usuario: lazy(() => import("../pages/Usuario/Usuario")),
   Compra: lazy(() => import("../pages/Compra/Compra")),

@@ -121,7 +121,10 @@ export const StaticProducto = ({
           })}
         </StyledTableCell>
         <StyledTableCell align="center"> {producto.price} </StyledTableCell>
-        <StyledTableCell align="center"> {producto.stockTotal} </StyledTableCell>
+        <StyledTableCell align="center">
+          {" "}
+          {producto.stockTotal}{" "}
+        </StyledTableCell>
         <StyledTableCell align="center">
           {producto.tipoProducto}
         </StyledTableCell>
@@ -137,6 +140,7 @@ export const StaticProducto = ({
             busqueda,
           })}
         </StyledTableCell>
+        <StyledTableCell>{`${producto.rUsuario.lastname} ${producto.rUsuario.name}`}</StyledTableCell>
         <StyledTableCell>{formatearFecha(producto.createdAt)}</StyledTableCell>
       </>
     </StyledTableRow>
