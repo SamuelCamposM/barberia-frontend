@@ -50,7 +50,7 @@ export const useHttp = <T, BodyType>({
 
         setData(res.data);
         setError({ error: false, msg: "" });
-        console.log(res.data);
+        console.log({ data: res.data });
       } catch (error: any) {
         const msgError = error?.response?.data?.msg || "Error al consultar";
         toast.error(msgError);

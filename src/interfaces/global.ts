@@ -45,7 +45,7 @@ export interface Column {
   required?: boolean;
   label: string;
   minWidth?: number;
-  sortable: boolean;
+  sortable?: boolean;
 }
 
 export interface Pagination {

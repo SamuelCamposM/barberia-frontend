@@ -9,10 +9,9 @@ export const TableHeader = ({
   sortFunction,
 }: {
   columns: Column[];
-  sort: Sort;
+  sort?: Sort;
   sortFunction?: (sort: Sort) => void;
-}) => { 
-  
+}) => {
   return (
     <TableHead>
       <StyledTableRow>
@@ -24,13 +23,13 @@ export const TableHeader = ({
               textAlign: column.align,
             }}
             sorteable={column.sortable ? 1 : 0}
-            active={column.campo === sort.campo ? 1 : 0}
+            active={column.campo && column.campo === sort?.campo ? 1 : 0}
             onClick={() => {
               if (!sortFunction) return;
               if (!column.sortable) return;
               sortFunction({
                 campo: column.campo || "",
-                asc: column.campo === sort.campo ? !sort.asc : true,
+                asc: column.campo === sort?.campo ? !sort?.asc : true,
               });
             }}
           >
@@ -59,8 +58,9 @@ export const TableHeader = ({
                 </Tooltip>
               )}
 
-              {sort.campo === column.campo &&
-                (sort.asc ? (
+              {sort &&
+                sort?.campo === column.campo &&
+                (sort?.asc ? (
                   <ArrowDownward fontSize="small" />
                 ) : (
                   <ArrowUpward fontSize="small" />

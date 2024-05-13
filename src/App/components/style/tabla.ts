@@ -16,14 +16,13 @@ export const StyledTableContainer = styled(TableContainer)({
 
 export const StyledTableCell = styled(TableCell)(
   ({ theme }: { theme: Theme }) => ({
-    padding: theme.spacing(0, 0.5),
+    padding: theme.spacing(0, 0.5), 
     ":first-of-type": {
       borderInline: `1px solid ${agregarTransparencia(
         theme.palette.secondary.light,
         0.25
       )}`,
     },
-
     "&.active": {
       background: theme.palette.secondary.dark,
     },
@@ -73,9 +72,9 @@ export const StyledTableHeaderCell = styled(TableCell)<{
     transform: sorteable ? "scale(1.05)" : "none",
   },
 }));
-export const StyledContainerSubTable = styled(Box)(({ theme }) => ({ 
+export const StyledContainerSubTable = styled(Box)(({ theme }) => ({
   background: `linear-gradient(0deg, ${agregarTransparencia(
     theme.palette.secondary.light,
-    0.30
+    0.3
   )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.1)} 100%)`,
 }));

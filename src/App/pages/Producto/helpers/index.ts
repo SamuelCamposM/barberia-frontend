@@ -112,6 +112,11 @@ export const itemDefault: ProductoItem = {
   updatedAt: "",
 };
 
+export const columnsStocks: Column[] = [
+  { label: "Sucursal", minWidth: 50 },
+  { label: "Cantidad", minWidth: 200 },
+];
+
 interface Result extends Pagination {
   docs: ProductoItem[];
 }
