@@ -14,12 +14,12 @@ export const StaticDetVenta = ({
   detVenta,
   setEditando,
   setformValues: setVentaValues,
-  finalizada,
+  deshabilitar,
 }: {
   detVenta: DetVentaItem;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
   setformValues: Dispatch<React.SetStateAction<VentaItem>>;
-  finalizada: boolean;
+  deshabilitar: boolean;
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
@@ -74,7 +74,7 @@ export const StaticDetVenta = ({
       key={detVenta._id}
       crud={detVenta.crud}
       onDoubleClick={() => {
-        if (!finalizada) setEditando(true);
+        if (!deshabilitar) setEditando(true);
       }}
     >
       <StyledTableCell padding="checkbox">
@@ -82,7 +82,7 @@ export const StaticDetVenta = ({
           actions={[
             {
               color: "primary",
-              disabled: finalizada,
+              disabled: deshabilitar,
               Icon: Create,
               name: `Editar`,
               onClick: onClickEditar,
@@ -93,11 +93,10 @@ export const StaticDetVenta = ({
 
             {
               color: "error",
-              disabled: finalizada,
+              disabled: deshabilitar,
               Icon: DeleteForever,
               name: `Eliminar`,
-              onClick: () => {
-                console.log(detVenta.crud?.eliminado);
+              onClick: () => { 
 
                 handleEliminar();
               },
@@ -109,6 +108,7 @@ export const StaticDetVenta = ({
       </StyledTableCell>
       <StyledTableCell>{detVenta.producto.name}</StyledTableCell>
       <StyledTableCell> {detVenta.cantidad}</StyledTableCell>
+      <StyledTableCell>  {detVenta.stock}</StyledTableCell>
       <StyledTableCell>$ {detVenta.precioUnidad}</StyledTableCell>
       <StyledTableCell>$ {detVenta.total}</StyledTableCell>
     </StyledTableRow>

@@ -31,9 +31,16 @@ export const columns: Column[] = [
     sortable: false,
   },
   {
+    campo: "Stock",
+    label: "Limite",
+    required: false,
+    minWidth: 50,
+    sortable: false,
+  },
+  {
     campo: "Precio",
     label: "Precio",
-    required: true,
+    required: false,
     minWidth: 50,
     sortable: false,
   },
@@ -50,9 +57,12 @@ export const itemDefault: DetVentaItem = {
   cantidad: 0,
   precioUnidad: 0,
   total: 0,
+  stock: 0,
   producto: {
     _id: "",
     name: "",
+    stocks: [],
+    price: 0,
   },
 };
 

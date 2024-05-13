@@ -101,7 +101,7 @@ export const itemDefault: ProductoItem = {
   rUsuario: formatUsuarioForeign(),
   description: "",
   eUsuario: formatUsuarioForeign(),
-
+  stocks: [],
   estado: true,
   name: "",
   photos: [],

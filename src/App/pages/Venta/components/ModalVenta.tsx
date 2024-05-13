@@ -56,12 +56,12 @@ export const ModalVenta = () => {
   const { socket } = useProvideSocket();
   const themeSwal = useThemeSwal();
 
-  const editar = useMemo(() => itemActive._id, [itemActive]);
+  const editar = useMemo(() => Boolean(itemActive._id), [itemActive]);
 
   // Configuración de validación
   const config = useMemo(
     () => ({
-      "proveedor.nombreCompleto": [required],
+      "cliente.name": [required],
       estado: [required],
       "sucursal.name": [required],
       detVentasData: [
@@ -107,8 +107,8 @@ export const ModalVenta = () => {
     const formAllData: VentaItem = {
       ...formValues,
       rUsuario: formatUsuarioForeign(usuario),
-      gastoTotal: valuesVenta.dataVenta.gastoTotal,
-      totalProductos: valuesVenta.dataVenta.totalProductos,
+      gastoTotal: valuesVenta.gastoTotal,
+      totalProductos: valuesVenta.totalProductos,
     };
 
     socket?.emit(
@@ -128,10 +128,9 @@ export const ModalVenta = () => {
     const formAllData: VentaItem = {
       ...formValues,
       eUsuario: formatUsuarioForeign(usuario),
-      gastoTotal: valuesVenta.dataVenta.gastoTotal,
-      totalProductos: valuesVenta.dataVenta.totalProductos,
+      gastoTotal: valuesVenta.gastoTotal,
+      totalProductos: valuesVenta.totalProductos,
     };
-    console.log({ formAllData });
 
     socket?.emit(
       SocketEmitVenta.editar,
@@ -160,10 +159,10 @@ export const ModalVenta = () => {
     }
 
     if (editar) {
-      if (formValues.estado === "FINALIZADA") {
+      if (formValues.estado) {
         Swal.fire({
           title: "¿Estás listo para finalizar la venta?",
-          text: `Estás a punto de finalizar una venta de ${formValues.proveedor.nombreCompleto} destinada a ${formValues.sucursal.name}. Una vez que se finalice la venta, no podrás realizar más cambios. ¿Estás seguro de que deseas continuar?`,
+          text: `Estás a punto de finalizar una venta de ${formValues.cliente.lastname} ${formValues.cliente.name} em ${formValues.sucursal.name}. Una vez que se finalice la venta, no podrás realizar más cambios. ¿Estás seguro de que deseas continuar?`,
           icon: "warning",
           confirmButtonText: "Sí, finalizar venta",
           ...themeSwal,
@@ -178,20 +177,20 @@ export const ModalVenta = () => {
     } else handleGuardar();
   };
 
-  //Proveedor
+  //Cliente
   const {
-    data: dataProveedor,
-    loading: loadingProveedor,
-    refetchWithNewBody: RFWNBProveedor,
-  } = useHttp<VentaItem["proveedor"][], { search: string }>({
-    initialUrl: "/proveedor/search",
+    data: dataCliente,
+    loading: loadingCliente,
+    refetchWithNewBody: RFWNBCliente,
+  } = useHttp<VentaItem["cliente"][], { search: string }>({
+    initialUrl: "/usuario/searchCliente",
     initialMethod: "post",
     initialBody: {
       search: "",
     },
-    initialData: [],
+    initialData: [formValues.cliente],
   });
-  const dSearchProveedor = useDebouncedCallback(RFWNBProveedor);
+  const dSearchCliente = useDebouncedCallback(RFWNBCliente);
   //Sucursal
   const {
     data: dataSucursal,
@@ -203,7 +202,7 @@ export const ModalVenta = () => {
     initialBody: {
       search: "",
     },
-    initialData: [],
+    initialData: [formValues.sucursal],
   });
   const dSearchSucursal = useDebouncedCallback(RFWNBSucursal);
 
@@ -232,12 +231,13 @@ export const ModalVenta = () => {
     const { gastoTotal, totalProductos } = calcularTotales(
       formValues.detVentasData
     );
-    return {
-      id: itemActive._id || "",
-      dataVenta: { gastoTotal, totalProductos },
-      finalizada: itemActive.estado === "FINALIZADA",
-    };
-  }, [itemActive.estado, itemActive._id, formValues.detVentasData]);
+    return { gastoTotal, totalProductos };
+  }, [formValues.detVentasData]);
+
+  const deshabilitar = useMemo(
+    () => itemActive.estado && editar,
+    [itemActive.estado, editar]
+  );
 
   useEffect(() => {
     if (itemActive._id) {
@@ -270,6 +270,7 @@ export const ModalVenta = () => {
               {editar && (
                 <Tooltip title="Estado">
                   <Switch
+                    disabled={!itemActive.estado}
                     checked={formValues.estado}
                     onChange={(e) => {
                       setformValues({
@@ -302,7 +303,7 @@ export const ModalVenta = () => {
                 {/* {editar && (
                   <TextField
                     label="Estado"
-                    disabled={valuesVenta.finalizada}
+                    disabled={deshabilitar}
                     {...defaultPropsGenerator("estado", true, true)}
                     autoFocus
                     select
@@ -317,32 +318,29 @@ export const ModalVenta = () => {
                 <Box>
                   <Autocomplete
                     options={
-                      dataProveedor.length === 0
-                        ? [formValues.proveedor]
-                        : dataProveedor
+                      dataCliente.length === 0
+                        ? [formValues.cliente]
+                        : dataCliente
                     }
                     disableClearable={false}
-                    value={formValues.proveedor}
-                    getOptionLabel={(value) => value.nombreCompleto}
+                    value={formValues.cliente}
+                    getOptionLabel={(value) => value.name}
                     isOptionEqualToValue={(option, value) =>
                       option._id === value._id
                     }
-                    disabled={valuesVenta.finalizada}
+                    disabled={deshabilitar}
                     onChange={(_, newValue) => {
                       if (!newValue) return;
-                      setformValues({ ...formValues, proveedor: newValue });
+                      setformValues({ ...formValues, cliente: newValue });
                     }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        {...defaultPropsGenerator(
-                          "proveedor.nombreCompleto",
-                          true,
-                          false
-                        )}
-                        label="Proveedor"
+                        {...defaultPropsGenerator("cliente.name", true, false)}
+                        label="Cliente"
+                        autoFocus
                         onChange={({ target }) => {
-                          dSearchProveedor({ search: target.value });
+                          dSearchCliente({ search: target.value });
                         }}
                         InputProps={{
                           ...params.InputProps,
@@ -365,7 +363,7 @@ export const ModalVenta = () => {
                       />
                     )}
                   />
-                  {loadingProveedor && (
+                  {loadingCliente && (
                     <LinearProgress color="primary" variant="query" />
                   )}
                 </Box>
@@ -382,10 +380,40 @@ export const ModalVenta = () => {
                     isOptionEqualToValue={(option, value) =>
                       option._id === value._id
                     }
-                    disabled={valuesVenta.finalizada}
+                    disabled={deshabilitar}
                     onChange={(_, newValue) => {
                       if (!newValue) return;
-                      setformValues({ ...formValues, sucursal: newValue });
+                      if (formValues.detVentasData.length === 0) {
+                        return setformValues({
+                          ...formValues,
+                          sucursal: newValue,
+                        });
+                      }
+                      Swal.fire({
+                        title: "¿Estás seguro de cambiar de sucursal?",
+                        text: `La cantidad de los productos se colocará en 0 y se eliminaran los que no tengan registro de stock`,
+                        icon: "warning",
+                        confirmButtonText: "Sí, cambiar sucursal",
+                        ...themeSwal,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          setformValues({
+                            ...formValues,
+                            sucursal: newValue,
+                            detVentasData: formValues.detVentasData
+                              .filter((detVentaItem) => {
+                                return detVentaItem.producto.stocks.some(
+                                  (item) => item.sucursal === newValue._id
+                                );
+                              })
+                              .map((detVentaItem) => ({
+                                ...detVentaItem,
+                                cantidad: 0,
+                              })),
+                          });
+                        } else {
+                        }
+                      });
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -426,6 +454,8 @@ export const ModalVenta = () => {
                     {errorValues.detVentasData}
                   </Typography>
                   <DetVenta
+                    deshabilitar={deshabilitar}
+                    sucursal_id={formValues.sucursal._id}
                     valuesVenta={valuesVenta}
                     detVentasData={formValues.detVentasData}
                     setformValues={setformValues}
@@ -463,14 +493,29 @@ export const ModalVenta = () => {
                 >
                   GUARDAR:
                 </StyledTypographyFooterSpan>
-                <IconButton
-                  aria-label="Submit"
-                  // type="submit"
-                  disabled={cargandoSubmit || valuesVenta.finalizada}
-                  onClick={onHandleSubmit}
-                >
-                  <Save />
-                </IconButton>
+                {editar ? (
+                  <IconButton
+                    aria-label="Submit"
+                    // type="submit"
+                    disabled={
+                      cargandoSubmit ||
+                      !itemActive.estado ||
+                      !(editar && !formValues.estado)
+                    }
+                    onClick={onHandleSubmit}
+                  >
+                    <Save />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    aria-label="Submit"
+                    // type="submit"
+                    disabled={cargandoSubmit}
+                    onClick={onHandleSubmit}
+                  >
+                    <Save />
+                  </IconButton>
+                )}
               </Box>
             </StyledModalBoxFooter>
           </form>

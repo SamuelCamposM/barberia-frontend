@@ -1,13 +1,12 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
-import { ProveedorForeign } from "../../Proveedor";
 import { SucursalForeign } from "../../Sucursal";
-import { UsuarioForeign } from "../../Usuario";
+import { ClienteForeign, UsuarioForeign } from "../../Usuario";
 import { DetVentaItem } from "../components/DetVenta/interfaces";
 export interface VentaItem {
   estado: boolean;
   eUsuario?: UsuarioForeign;
   gastoTotal: number;
-  proveedor: ProveedorForeign;
+  cliente: ClienteForeign;
   rUsuario: UsuarioForeign;
   sucursal: SucursalForeign;
   totalProductos: number;

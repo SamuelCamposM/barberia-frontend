@@ -1,5 +1,5 @@
 import { AddCircle, Cancel } from "@mui/icons-material";
-import { Dispatch, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import { columns, itemDefault } from "./helpers";
 import { DetVentaItem } from "./interfaces";
 import { RowDetVenta } from "./components/RowDetVenta";
@@ -29,24 +29,28 @@ import {
 
 export const DetVenta = ({
   detVentasData,
-  valuesVenta: { finalizada, dataVenta },
+  sucursal_id,
+  valuesVenta: { gastoTotal, totalProductos },
   sort,
   setformValues,
+  deshabilitar,
 }: {
   detVentasData: DetVentaItem[];
+  sucursal_id: string;
   valuesVenta: {
-    id: string;
-    dataVenta: {
-      totalProductos: number;
-      gastoTotal: number;
-    };
-    finalizada: boolean;
+    gastoTotal: number;
+    totalProductos: number;
   };
   setSort: Dispatch<React.SetStateAction<Sort>>;
   setformValues: Dispatch<React.SetStateAction<VentaItem>>;
   sort: Sort;
+  deshabilitar: boolean;
 }) => {
   const [agregando, setAgregando] = useState(false);
+  useEffect(() => {
+    setAgregando(false);
+  }, [sucursal_id]);
+
   return (
     <>
       {/* <Buscador
@@ -76,7 +80,7 @@ export const DetVenta = ({
               onClick() {
                 setAgregando(!agregando);
               },
-              ocultar: finalizada,
+              ocultar: deshabilitar,
               tipo: "icono",
             },
           ]}
@@ -111,11 +115,12 @@ export const DetVenta = ({
           <TableBody>
             {agregando && (
               <EditableDetVenta
-                finalizada={finalizada}
-                setformValues={setformValues}
-                setEditando={() => {}}
                 detVenta={{ ...itemDefault, crud: { nuevo: true } }}
+                deshabilitar={deshabilitar}
                 setAgregando={setAgregando}
+                setEditando={() => {}}
+                setformValues={setformValues}
+                sucursal_id={sucursal_id}
               />
             )}
             {detVentasData.length === 0 ? (
@@ -124,10 +129,11 @@ export const DetVenta = ({
               detVentasData.map((detVenta) => {
                 return (
                   <RowDetVenta
-                    finalizada={finalizada}
+                    deshabilitar={deshabilitar}
                     setformValues={setformValues}
                     key={detVenta._id}
                     detVenta={detVenta}
+                    sucursal_id={sucursal_id}
                   />
                 );
               })
@@ -138,14 +144,10 @@ export const DetVenta = ({
           <StyledTableRow>
             <StyledTableHeaderCell></StyledTableHeaderCell>
             <StyledTableHeaderCell></StyledTableHeaderCell>
-            <StyledTableHeaderCell>
-              {" "}
-              {dataVenta.totalProductos}
-            </StyledTableHeaderCell>
+            <StyledTableHeaderCell> {totalProductos}</StyledTableHeaderCell>
             <StyledTableHeaderCell></StyledTableHeaderCell>
-            <StyledTableHeaderCell>
-              $ {dataVenta.gastoTotal}
-            </StyledTableHeaderCell>
+            <StyledTableHeaderCell></StyledTableHeaderCell>
+            <StyledTableHeaderCell>$ {gastoTotal}</StyledTableHeaderCell>
           </StyledTableRow>
         </TableFooter>
       </TablaLayout>

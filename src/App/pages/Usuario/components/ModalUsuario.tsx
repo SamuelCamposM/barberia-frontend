@@ -58,7 +58,7 @@ export const ModalUsuario = () => {
       name: [required],
       email: [validarEmail],
       tel: [required],
-      photo: [required],
+      photo: [],
       dui: [
         (e: string, allValues: UsuarioItem) => {
           if (

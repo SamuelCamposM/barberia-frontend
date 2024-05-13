@@ -3,7 +3,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../../../../components/style";
-import { AttachMoney, CancelOutlined, Check } from "@mui/icons-material";
+import { CancelOutlined, Check } from "@mui/icons-material";
 import { Dispatch, useMemo } from "react";
 import { required, min } from "../../../../../../helpers";
 import { DetVentaItem } from "../interfaces";
@@ -29,17 +29,19 @@ import { toast } from "react-toastify";
 import { VentaItem } from "../../../interfaces";
 
 export const EditableDetVenta = ({
+  sucursal_id,
   detVenta,
   setAgregando,
   setEditando,
   setformValues: setVentaValues,
-  finalizada,
+  deshabilitar,
 }: {
   detVenta: DetVentaItem;
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
   setformValues: Dispatch<React.SetStateAction<VentaItem>>;
-  finalizada: boolean;
+  deshabilitar: boolean;
+  sucursal_id: string;
 }) => {
   const { noTienePermiso } = useMenuStore();
   const esNuevo = useMemo(() => !Boolean(detVenta._id), []);
@@ -47,7 +49,7 @@ export const EditableDetVenta = ({
     () => ({
       "producto.name": [required],
       cantidad: [(e: number) => min(e, 1)],
-      precioUnidad: [(e: number) => min(e, 1)],
+      precioUnidad: [],
     }),
     []
   );
@@ -81,8 +83,7 @@ export const EditableDetVenta = ({
     };
     setVentaValues((prev) => {
       const existeProducto = prev.detVentasData.some(
-        (detVentaItem) =>
-          detVentaItem.producto._id === itemToSave.producto._id
+        (detVentaItem) => detVentaItem.producto._id === itemToSave.producto._id
       );
       if (existeProducto) {
         toast.error("Este producto ya se encuentra en la venta");
@@ -180,7 +181,7 @@ export const EditableDetVenta = ({
     loading: loadingProducto,
     refetchWithNewBody: RFWNBProducto,
   } = useHttp<DetVentaItem["producto"][], { search: string }>({
-    initialUrl: "/producto/search",
+    initialUrl: "/producto/searchForVenta",
     initialMethod: "post",
     initialBody: {
       search: "",
@@ -196,7 +197,7 @@ export const EditableDetVenta = ({
           actions={[
             {
               color: "error",
-              disabled: cargandoSubmit || finalizada,
+              disabled: cargandoSubmit || deshabilitar,
               Icon: CancelOutlined,
               name: `Editar`,
               onClick: onClickEditar,
@@ -205,7 +206,7 @@ export const EditableDetVenta = ({
             },
             {
               color: "success",
-              disabled: cargandoSubmit || finalizada,
+              disabled: cargandoSubmit || deshabilitar,
               Icon: Check,
               name: `Guardar cambios`,
               onClick: () => {
@@ -229,7 +230,23 @@ export const EditableDetVenta = ({
             isOptionEqualToValue={(option, value) => option._id === value._id}
             onChange={(_, newValue) => {
               if (!newValue) return;
-              setformValues({ ...formValues, producto: newValue });
+
+              const sucursalStock = newValue.stocks.find(
+                (item) => item.sucursal === sucursal_id
+              ); 
+
+              if (!sucursalStock) {
+                return toast.error(
+                  `No hay stock de ${newValue.name} esta sucursal`
+                );
+              }
+              setformValues({
+                ...formValues,
+                producto: newValue,
+                stock: sucursalStock.cantidad,
+                precioUnidad: newValue.price,
+                total: newValue.price * formValues.cantidad,
+              });
             }}
             renderInput={(params) => (
               <TextField
@@ -270,7 +287,10 @@ export const EditableDetVenta = ({
           type="number"
           {...defaultPropsGenerator("cantidad", true, true)}
           onChange={(e) => {
-            const value = Math.max(0, Number(e.target.value));
+            const value = Math.min(
+              Math.max(0, Number(e.target.value)),
+              formValues.stock
+            );
             setformValues({
               ...formValues,
               cantidad: value,
@@ -279,30 +299,8 @@ export const EditableDetVenta = ({
           }}
         />
       </StyledTableCell>
-      <StyledTableCell>
-        <TextField
-          type="number"
-          {...defaultPropsGenerator("precioUnidad", true, true)}
-          onChange={(e) => {
-            const value = Math.max(0, Number(e.target.value));
-            setformValues({
-              ...formValues,
-              precioUnidad: value,
-              total: value * formValues.cantidad,
-            });
-          }}
-          InputProps={{
-            sx: { paddingRight: "0px !important" },
-            startAdornment: (
-              <InputAdornment position="start">
-                <Tooltip title={`agregar ${"path"}`}>
-                  <AttachMoney />
-                </Tooltip>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </StyledTableCell>
+      <StyledTableCell> {formValues.stock}</StyledTableCell>
+      <StyledTableCell>$ {formValues.precioUnidad}</StyledTableCell>
       <StyledTableCell>$ {formValues.total}</StyledTableCell>
     </StyledTableRow>
   );

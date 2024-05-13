@@ -5,13 +5,23 @@ import { UsuarioForeign } from "../../Usuario";
 
 export type TipoProducto = "PRODUCTO" | "SERVICIO";
 
+export interface ProductoForeignWithStock extends ProductoForeign {
+  stocks: StockItem[];
+  price: number;
+}
 export interface ProductoForeign {
   _id: string;
   name: string;
 }
+export interface StockItem {
+  _id: string;
+  sucursal: string;
+  cantidad: number;
+}
 
 export interface ProductoItem {
   photos: string[];
+  stocks: StockItem[];
   name: string;
   description?: string;
   price: number;

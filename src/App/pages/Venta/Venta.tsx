@@ -268,7 +268,7 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
           />
         </Routes>
         <Buscador
-          label="Buscar por Proveedor y Sucursal"
+          label="Buscar por Cliente y Sucursal"
           buscando={buscando}
           cargando={cargando}
           onSearch={(value) => searchFunction(true, value)}

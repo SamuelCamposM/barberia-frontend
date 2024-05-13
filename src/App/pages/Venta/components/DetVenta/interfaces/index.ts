@@ -1,5 +1,5 @@
 import { Crud, Sort } from "../../../../../../interfaces/global";
-import { ProductoForeign } from "../../../../Producto";
+import { ProductoForeignWithStock } from "../../../../Producto";
 
 export interface setDataProps {
   venta: string;
@@ -8,9 +8,10 @@ export interface setDataProps {
 
 export interface DetVentaItem {
   venta: string;
-  producto: ProductoForeign;
+  producto: ProductoForeignWithStock;
   cantidad: number;
   precioUnidad: number;
+  stock: number;
   total: number;
   _id?: string;
   crud?: Crud;

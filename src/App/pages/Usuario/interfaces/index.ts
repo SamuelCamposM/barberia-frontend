@@ -1,6 +1,7 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
 import { Roles } from "../../../../store/interfaces";
 
+export type ClienteForeign = Omit<UsuarioForeign, "dui">;
 export interface UsuarioForeign {
   _id: string;
   dui: string;

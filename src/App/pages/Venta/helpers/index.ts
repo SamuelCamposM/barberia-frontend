@@ -24,15 +24,8 @@ export const columns: Column[] = [
   { campo: "", label: "", minWidth: 50, align: "center", sortable: false },
 
   {
-    campo: "estado",
-    label: "Estado",
-    required: true,
-    minWidth: 150,
-    sortable: true,
-  },
-  {
     campo: "proveedor.nombreCompleto",
-    label: "Proveedor",
+    label: "Cliente",
     required: true,
     minWidth: 150,
     sortable: true,
@@ -86,9 +79,10 @@ export const itemDefault: VentaItem = {
   createdAt: "",
   updatedAt: "",
   detVentasData: [],
-  proveedor: {
+  cliente: {
     _id: "",
-    nombreCompleto: "",
+    lastname: "",
+    name: "",
   },
   rUsuario: formatUsuarioForeign(),
   eUsuario: formatUsuarioForeign(),

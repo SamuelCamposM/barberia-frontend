@@ -44,6 +44,8 @@ export const useMenuStore = () => {
   };
   const noTienePermiso = useCallback(
     (component: Components, tipoPermiso: tipoPermiso) => {
+      console.log(data);
+
       const pageFind = data.find((page) => page.componente === component);
       if (!pageFind) {
         toast.error(`Error al validar permiso`);

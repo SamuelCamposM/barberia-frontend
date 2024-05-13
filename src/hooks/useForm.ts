@@ -57,8 +57,7 @@ export const useForm = <
 
   const isFormInvalidSubmit = useCallback(
     (formValues: ValueTypes) => {
-      const entries = Object.entries(ObjectValidations);
-      console.log({ entries });
+      const entries = Object.entries(ObjectValidations); 
 
       const res = entries.some(([name]) => {
         return ObjectValidations[name].some((validation) => {

@@ -7,7 +7,8 @@ import { VentaItem } from "../../../interfaces";
 export const RowDetVenta = (rest: {
   detVenta: DetVentaItem;
   setformValues: Dispatch<React.SetStateAction<VentaItem>>;
-  finalizada: boolean;
+  deshabilitar: boolean;
+  sucursal_id: string;
 }) => {
   const [editando, setEditando] = useState(!Boolean(rest.detVenta._id));
   return editando ? (

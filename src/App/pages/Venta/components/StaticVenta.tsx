@@ -14,6 +14,7 @@ import {
   Restore,
   Visibility,
 } from "@mui/icons-material";
+import { Checkbox, Tooltip } from "@mui/material";
 
 export const StaticVenta = ({
   venta,
@@ -30,15 +31,14 @@ export const StaticVenta = ({
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
-  const { socket } = useProvideSocket();
-  const finalizada = useMemo(() => venta.estado === "FINALIZADA", []);
-  const anulada = useMemo(() => venta.estado === "ANULADA", []);
+  const { socket } = useProvideSocket(); 
+  const deshabilitar = useMemo(() => !venta.estado, []);
   const handleEliminar = useCallback(() => {
     if (noTienePermiso("Depto", "delete")) return;
     Swal.fire({
-      title: `¿Desea ${
-        venta.estado === "ANULADA" ? "poner EN PROCESO" : "ANULAR"
-      } la venta de ${venta.proveedor.nombreCompleto}?`,
+      title: `¿
+   
+      ?`,
       text: `Para: ${venta.sucursal.name}`,
       icon: "warning",
       confirmButtonText: "Confirmar",
@@ -69,7 +69,7 @@ export const StaticVenta = ({
           actions={[
             {
               color: itemActive?._id === venta._id ? "secondary" : "primary",
-              Icon: finalizada ? Visibility : Create,
+              Icon: deshabilitar ? Visibility : Create,
               name: `Editar`,
               onClick: () => {
                 handleEditar(venta);
@@ -78,9 +78,9 @@ export const StaticVenta = ({
               size: "small",
             },
             {
-              ocultar: finalizada,
-              color: anulada ? "success" : "error",
-              Icon: anulada ? Restore : DeleteForever,
+              ocultar: deshabilitar,
+              color: deshabilitar ? "success" : "error",
+              Icon: deshabilitar ? Restore : DeleteForever,
               name: `Eliminar`,
               onClick: () => {
                 handleEliminar();
@@ -90,28 +90,26 @@ export const StaticVenta = ({
             },
             ...actionsJoins,
           ]}
-        ></Acciones>
+        >
+          <Tooltip title="Estado">
+            <Checkbox
+              sx={{ p: 0.5, m: 0 }}
+              size="small"
+              disabled
+              checked={venta.estado}
+              color="primary"
+            />
+          </Tooltip>
+        </Acciones>
       </StyledTableCell>
       <>
-        <StyledTableCell
-          sx={{
-            color: (theme) =>
-              venta.estado === "ANULADA"
-                ? theme.palette.error.light
-                : venta.estado === "FINALIZADA"
-                ? theme.palette.success.light
-                : theme.palette.primary.dark,
-          }}
-        >
-          {venta.estado}
-        </StyledTableCell>
         <StyledTableCell>
           {busqueda
             ? useResaltarTexto({
                 busqueda: busqueda,
-                texto: venta.proveedor.nombreCompleto,
+                texto: venta.cliente.lastname,
               })
-            : venta.proveedor.nombreCompleto}
+            : venta.cliente.lastname}
         </StyledTableCell>
         <StyledTableCell>
           {busqueda
@@ -121,9 +119,7 @@ export const StaticVenta = ({
               })
             : venta.sucursal.name}
         </StyledTableCell>
-        <StyledTableCell align="center">
-          {venta.totalProductos}
-        </StyledTableCell>
+        <StyledTableCell align="center">{venta.totalProductos}</StyledTableCell>
         <StyledTableCell align="center">$ {venta.gastoTotal}</StyledTableCell>
         <StyledTableCell>{venta.rUsuario.name}</StyledTableCell>
         <StyledTableCell>{formatearFecha(venta.createdAt)}</StyledTableCell>
