@@ -10,7 +10,7 @@ export interface Crud {
 
 export interface Action {
   badge?: string;
-  color: "primary" | "secondary" | "error" | "success"| 'warning';
+  color: "primary" | "secondary" | "error" | "success" | "warning";
   active?: boolean;
   disabled?: boolean;
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
@@ -35,7 +35,7 @@ export type Components =
   | "Usuario"
   | "Proveedor"
   | "Compra"
-  ;
+  | "CierreCaja";
 
 export type tipoPermiso = "delete" | "update" | "insert" | "select" | "ver";
 

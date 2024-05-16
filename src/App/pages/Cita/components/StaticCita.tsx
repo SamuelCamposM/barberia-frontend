@@ -107,7 +107,7 @@ export const StaticCita = ({
             })}
           </StyledTableCell>
 
-          <StyledTableCell>{formatearFecha(cita.fecha)}</StyledTableCell>
+          <StyledTableCell>{formatearFecha(cita.fecha)}</StyledTableCell> 
 
           <StyledTableCell>{cita.titulo}</StyledTableCell>
 

@@ -6,7 +6,7 @@ export type EstadoCita = "PENDIENTE" | "FINALIZADA" | "ANULADA" | "AUSENCIA";
 
 export interface CitaItem {
   titulo: string;
-  fecha: string;
+  fecha: string; 
   description: string;
   sucursal: SucursalForeign;
   estadoCita: EstadoCita;

@@ -11,10 +11,13 @@ import { Acciones } from "../../../components";
 import {
   Create,
   DeleteForever,
+  PictureAsPdf,
   Restore,
   Visibility,
 } from "@mui/icons-material";
 import { Checkbox, Tooltip } from "@mui/material";
+import { clienteAxios } from "../../../../api";
+import { saveAs } from "file-saver";
 
 export const StaticVenta = ({
   venta,
@@ -31,7 +34,7 @@ export const StaticVenta = ({
 }) => {
   const themeSwal = useThemeSwal();
   const { noTienePermiso } = useMenuStore();
-  const { socket } = useProvideSocket(); 
+  const { socket } = useProvideSocket();
   const deshabilitar = useMemo(() => !venta.estado, []);
   const handleEliminar = useCallback(() => {
     if (noTienePermiso("Depto", "delete")) return;
@@ -88,6 +91,25 @@ export const StaticVenta = ({
               tipo: "icono",
               size: "small",
             },
+            {
+              ocultar: deshabilitar,
+              color: "error",
+              Icon: PictureAsPdf,
+              name: `Reporte PDF`,
+              onClick: async () => {
+                const res = await clienteAxios.get(`/venta/pdf/${venta._id}`, {
+                  responseType: "blob",
+                });
+                console.log({ res });
+
+                const pdfBlob = new Blob([res.data], {
+                  type: "application/pdf",
+                });
+                saveAs(pdfBlob, `VENTA: ${venta.cliente.name}.pdf`);
+              },
+              tipo: "icono",
+              size: "small",
+            },
             ...actionsJoins,
           ]}
         >
@@ -121,7 +143,9 @@ export const StaticVenta = ({
         </StyledTableCell>
         <StyledTableCell align="center">{venta.totalProductos}</StyledTableCell>
         <StyledTableCell align="center">$ {venta.gastoTotal}</StyledTableCell>
-        <StyledTableCell>{venta.rUsuario.name}</StyledTableCell>
+        <StyledTableCell>
+          {`${venta.rUsuario.lastname} ${venta.rUsuario.name}`}
+        </StyledTableCell>
         <StyledTableCell>{formatearFecha(venta.createdAt)}</StyledTableCell>
       </>
     </StyledTableRow>

@@ -34,6 +34,7 @@ import { useAuthStore, useForm, useProvideSocket } from "../../../../hooks";
 import { useDebouncedCallback, useHttp, useModalConfig } from "../../../hooks";
 import { useEffect, useMemo } from "react";
 import { useCitaStore } from "../hooks/useCitaStore";
+import { format } from "date-fns";
 
 export const ModalCita = () => {
   // Hooks
@@ -355,17 +356,48 @@ export const ModalCita = () => {
                   ))}
                 </TextField>
                 <TextField
-                  label={"Fecha y Hora"}
-                  className="fullWidth"
-                  type="datetime-local"
+                  label={"Fecha"}
+                  type="date"
                   {...defaultPropsGenerator("fecha", true, true)}
+                  value={formValues.fecha.split("T")[0]}
+                  onChange={(e) => {
+                    const fechaConMinutos = new Date(e.target.value);
+                    const fechaSinMinutos = format(
+                      fechaConMinutos,
+                      "yyyy-MM-dd'T'HH:00"
+                    );
+                    console.log(fechaSinMinutos);
+
+                    setformValues({ ...formValues, fecha: fechaSinMinutos });
+                  }}
                 />
+                {/* {formValues.fecha} // 2024-05-31T18:00 */}
+                <TextField
+                  label={"Hora"}
+                  type="number"
+                  {...defaultPropsGenerator("fecha", true, true)}
+                  value={formValues.fecha.split("T")[1].split(":")[0]} // Extrae la hora de la fecha
+                  onChange={(e) => {
+                    const hora = Math.min(
+                      Math.max(Number(e.target.value), 1),
+                      23
+                    );
+                    // Asegúrate de que la hora siempre tenga dos dígitos
+                    const horaFormateada = hora.toString().padStart(2, "0");
+                    const fecha = formValues.fecha.split("T")[0];
+                    setformValues({
+                      ...formValues,
+                      fecha: `${fecha}T${horaFormateada}:00`,
+                    });
+                  }}
+                />
+
                 <TextField
                   multiline
                   className="fullWidth"
                   variant="outlined"
                   label={"Descripción"}
-                  minRows={3} 
+                  minRows={3}
                   {...defaultPropsGenerator("description", true, true)}
                 />
               </StyledGridContainer>

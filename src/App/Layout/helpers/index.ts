@@ -14,6 +14,7 @@ type getDeptosType = () => Promise<{
 export const getPages: getDeptosType = async () => {
   try {
     const res: MyResponse = await clienteAxios.get("/pages");
+    console.log({ res });
 
     return {
       data: res.data.data,

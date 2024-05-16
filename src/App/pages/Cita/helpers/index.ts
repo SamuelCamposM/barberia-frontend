@@ -6,7 +6,10 @@ import {
 } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import { EstadoCita, CitaItem, setDataProps } from "../interfaces";
-import { DateTimeFormateada, formatUsuarioForeign } from "../../../../helpers";
+import {
+  DateTimeFormateadaWithHours,
+  formatUsuarioForeign,
+} from "../../../../helpers";
 
 export enum SocketOnCita {
   agregar = "cliente:cita-agregar",
@@ -93,8 +96,8 @@ export const itemDefault: CitaItem = {
   description: "",
   empleado: formatUsuarioForeign(),
   estadoCita: "PENDIENTE",
-  fecha: DateTimeFormateada(),
-  rUsuario: formatUsuarioForeign(),
+  fecha: DateTimeFormateadaWithHours(),
+  rUsuario: formatUsuarioForeign(), 
   sucursal: {
     _id: "",
     name: "",

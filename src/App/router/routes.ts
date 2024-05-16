@@ -13,4 +13,5 @@ export default {
   Usuario: lazy(() => import("../pages/Usuario/Usuario")),
   Compra: lazy(() => import("../pages/Compra/Compra")),
   Proveedor: lazy(() => import("../pages/Proveedor/Proveedor")),
+  CierreCaja: lazy(() => import("../pages/CierreCaja/CierreCaja")),
 };

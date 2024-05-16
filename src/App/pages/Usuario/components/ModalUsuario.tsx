@@ -75,10 +75,7 @@ export const ModalUsuario = () => {
       ],
       "sucursal.name": [
         (e: string, allValues: UsuarioItem) => {
-          if (
-            (allValues.rol === "EMPLEADO" || allValues.rol === "GERENTE") &&
-            String(e).trim() === ""
-          ) {
+          if (allValues.rol === "EMPLEADO" && String(e).trim() === "") {
             return "SUCURSAL REQUERIDA";
           }
           return "";
@@ -164,6 +161,8 @@ export const ModalUsuario = () => {
       ...values,
     };
 
+    console.log(formAllData);
+    
     socket?.emit(
       SocketEmitUsuario.editar,
       { data: formAllData, eliminados },
