@@ -7,3 +7,6 @@ export const formatearFecha = (fecha: string) =>
     : fecha.trim() === ""
     ? ""
     : format(parseISO(fecha), "hh:mm a, d 'de' MMMM", { locale: es });
+
+export const DateTimeFormateada = () =>
+  format(new Date(), "yyyy-MM-dd'T'HH:mm");

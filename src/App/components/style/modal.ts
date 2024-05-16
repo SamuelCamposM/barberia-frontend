@@ -49,7 +49,7 @@ export const StyledGridContainer = styled(Box)<{
 }>(({ xs = 1, md = 2, lg = 2, theme }) => ({
   display: "grid",
   columnGap: theme.spacing(0.5),
-  rowGap: theme.spacing(0.5),
+  rowGap: theme.spacing(1),
   [theme.breakpoints.up("xs")]: {
     gridTemplateColumns: `repeat(${xs}, 1fr)`,
   },

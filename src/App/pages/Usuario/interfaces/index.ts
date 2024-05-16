@@ -1,5 +1,6 @@
 import { Crud, Pagination, Sort } from "../../../../interfaces/global";
 import { Roles } from "../../../../store/interfaces";
+import { SucursalForeign } from "../../Sucursal";
 
 export type ClienteForeign = Omit<UsuarioForeign, "dui">;
 export interface UsuarioForeign {
@@ -7,6 +8,7 @@ export interface UsuarioForeign {
   dui: string;
   name: string;
   lastname: string;
+  tel: string;
 }
 
 export interface UsuarioItem {
@@ -21,6 +23,7 @@ export interface UsuarioItem {
   photo: string;
   rol: Roles;
   tel: string;
+  sucursal?: SucursalForeign;
   createdAt: string;
   updatedAt: string;
 }

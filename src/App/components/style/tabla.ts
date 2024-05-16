@@ -33,7 +33,7 @@ export const StyledTableRow = styled(TableRow)<{
   crud?: Crud;
   component?: string;
 }>(({ theme, crud }) => ({
-  cursor: "pointer",
+  // cursor: "pointer",
   "& > *": { borderBottom: "unset" },
   backgroundColor: crud?.editado
     ? agregarTransparencia(theme.palette.secondary.light, 0.25)
@@ -74,7 +74,7 @@ export const StyledTableHeaderCell = styled(TableCell)<{
 }));
 export const StyledContainerSubTable = styled(Box)(({ theme }) => ({
   background: `linear-gradient(0deg, ${agregarTransparencia(
-    theme.palette.secondary.light,
-    0.3
+    theme.palette.primary.light,
+    0.2
   )} 20%, ${agregarTransparencia(theme.palette.primary.light, 0.1)} 100%)`,
 }));

@@ -7,6 +7,7 @@ import { usuarioSlice } from "../App/pages/Usuario/store";
 import { productoSlice } from "../App/pages/Producto/store";
 import { compraSlice } from "../App/pages/Compra/store";
 import { ventaSlice } from "../App/pages/Venta/store";
+import { citaSlice } from "../App/pages/Cita/store";
 // import { deptoSlice } from "../App/pages/Depto/store";
 
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
     producto: productoSlice.reducer,
     compra: compraSlice.reducer,
     venta: ventaSlice.reducer,
+    cita: citaSlice.reducer,
     // depto: deptoSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

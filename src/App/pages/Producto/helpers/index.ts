@@ -73,15 +73,13 @@ export const columns: Column[] = [
   },
   {
     campo: "rUsuario.lastname",
-    label: "R. Usuario",
-    required: true,
+    label: "R. Usuario", 
     minWidth: 150,
     sortable: true,
   },
   {
     campo: "createdAt",
-    label: "Fec. Reg.",
-    required: false,
+    label: "Fec. Reg.", 
     minWidth: 150,
     sortable: true,
   },

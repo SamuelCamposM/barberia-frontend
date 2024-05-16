@@ -324,7 +324,9 @@ export const ModalVenta = () => {
                     }
                     disableClearable={false}
                     value={formValues.cliente}
-                    getOptionLabel={(value) => value.name}
+                    getOptionLabel={(value) =>
+                      `${value.lastname} ${value.name}`
+                    }
                     isOptionEqualToValue={(option, value) =>
                       option._id === value._id
                     }

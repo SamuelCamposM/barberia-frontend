@@ -16,6 +16,8 @@ import {
   Typography,
   MenuItem,
   Switch,
+  Autocomplete,
+  LinearProgress,
 } from "@mui/material";
 import { Cancel, Save, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Archivo, ModalLayout } from "../../../components";
@@ -32,13 +34,14 @@ import {
 } from "../../../../helpers";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useProvideSocket } from "../../../../hooks";
-import { useModalConfig } from "../../../hooks";
+import { useDebouncedCallback, useHttp, useModalConfig } from "../../../hooks";
 import { useUsuarioStore } from "../hooks/useUsuarioStore";
 import { ErrorSocket } from "../../../../interfaces/global";
 import { SocketEmitUsuario } from "../helpers";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { UsuarioItem } from "../interfaces";
 import { toast } from "react-toastify";
+import { SucursalForeign } from "../../Sucursal";
 
 export const ModalUsuario = () => {
   // Hooks
@@ -70,6 +73,17 @@ export const ModalUsuario = () => {
           return "";
         },
       ],
+      "sucursal.name": [
+        (e: string, allValues: UsuarioItem) => {
+          if (
+            (allValues.rol === "EMPLEADO" || allValues.rol === "GERENTE") &&
+            String(e).trim() === ""
+          ) {
+            return "SUCURSAL REQUERIDA";
+          }
+          return "";
+        },
+      ],
       newPassword: editar
         ? [(value: string) => minNoRequired(value, 6)]
         : [required, (value: string) => minNoRequired(value, 6)],
@@ -91,7 +105,14 @@ export const ModalUsuario = () => {
     setformValues,
     setCargandoSubmit,
     cargandoSubmit,
-  } = useForm({ ...itemDefault, newPassword: "" }, config);
+  } = useForm(
+    {
+      ...itemDefault,
+      newPassword: "",
+      sucursal: { _id: "", name: "", tel: "" },
+    },
+    config
+  );
 
   type ItemKeys = keyof UsuarioItem;
 
@@ -176,7 +197,14 @@ export const ModalUsuario = () => {
 
   // Efectos secundarios
   useEffect(() => {
-    onNewForm({ ...itemActive, newPassword: "" });
+    onNewForm({
+      ...itemActive,
+      newPassword: "",
+      sucursal:
+        itemActive.rol === "EMPLEADO"
+          ? itemActive.sucursal || { _id: "", name: "", tel: "" }
+          : { _id: "", name: "", tel: "" },
+    });
     setImages({
       photo: {
         antiguo: itemActive.photo || "",
@@ -196,6 +224,22 @@ export const ModalUsuario = () => {
       handleNavigation(e, config, refs);
     },
   });
+
+  //Sucursal
+  const {
+    data: dataSucursal,
+    loading: loadingSucursal,
+    refetchWithNewBody: RFWNBSucursal,
+  } = useHttp<SucursalForeign[], { search: string }>({
+    initialUrl: "/sucursal/search",
+    initialMethod: "post",
+    initialBody: {
+      search: "",
+    },
+    initialData: [],
+  });
+  const dSearchSucursal = useDebouncedCallback(RFWNBSucursal);
+
   return (
     <>
       <ModalLayout
@@ -276,6 +320,62 @@ export const ModalUsuario = () => {
                     label={"DUI"}
                     {...defaultPropsGenerator("dui", true, true)}
                   />
+                )}
+                {formValues.rol === "EMPLEADO" && (
+                  <Box>
+                    <Autocomplete
+                      options={
+                        dataSucursal.length === 0
+                          ? [formValues.sucursal]
+                          : dataSucursal
+                      }
+                      disableClearable={false}
+                      value={formValues.sucursal}
+                      getOptionLabel={(value) => value?.name}
+                      isOptionEqualToValue={(option, value) =>
+                        option._id === value._id
+                      }
+                      onChange={(_, newValue) => {
+                        if (!newValue) return;
+                        setformValues({ ...formValues, sucursal: newValue });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          {...defaultPropsGenerator(
+                            "sucursal.name",
+                            true,
+                            false
+                          )}
+                          label="Sucursal"
+                          onChange={({ target }) => {
+                            dSearchSucursal({ search: target.value });
+                          }}
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: { paddingRight: "0px !important" },
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Tooltip title={`agregar ${"path"}`}>
+                                  <IconButton
+                                    aria-label=""
+                                    onClick={() => {
+                                      // navigate(path);
+                                    }}
+                                  >
+                                    {/* {Icono} */}
+                                  </IconButton>
+                                </Tooltip>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    />
+                    {loadingSucursal && (
+                      <LinearProgress color="primary" variant="query" />
+                    )}
+                  </Box>
                 )}
                 <TextField
                   label={"Correo"}

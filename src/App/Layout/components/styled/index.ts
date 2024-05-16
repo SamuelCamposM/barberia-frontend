@@ -77,12 +77,12 @@ export const AppBarHeader = styled(AppBar)(({ theme }: { theme: Theme }) => ({
   },
 }));
 export const AppBarFooter = styled(AppBar)(({ theme }: { theme: Theme }) => ({
-  // background: "transparent", //  theme.palette.primary.main,
+  // background: "transparent", //theme.palette.primary.main,
   // background: `linear-gradient(0deg, ${agregarTransparencia(
-  //   theme.palette.secondary.dark,
+  //   theme.palette.error.dark,
   //   0.6
-  // )} 20%, ${agregarTransparencia(theme.palette.secondary.light, 0.9)} 100%)`,
-  background: "transparent",
+  // )} 20%, ${agregarTransparencia(theme.palette.error.light, 0.7)} 100%)`,
+  // background: "transparent",
   boxShadow: "none",
   zIndex: theme.zIndex.drawer + 1,
   [theme.breakpoints.down("md")]: {

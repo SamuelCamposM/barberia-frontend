@@ -25,8 +25,7 @@ import {
   Collapse,
   TableRow,
   Tooltip,
-} from "@mui/material";
-import { clienteAxios } from "../../../../api";
+} from "@mui/material"; 
 import { StocksProducto } from "./StocksProducto";
 
 export const StaticProducto = ({

@@ -7,6 +7,7 @@ import { UsuarioState } from "../../App/pages/Usuario";
 import { ProductoState } from "../../App/pages/Producto";
 import { CompraState } from "../../App/pages/Compra";
 import { VentaState } from "../../App/pages/Venta";
+import { CitaState } from "../../App/pages/Cita";
 export interface RootState {
   auth: AuthState;
   chat: ChatState;
@@ -17,4 +18,5 @@ export interface RootState {
   producto: ProductoState;
   compra: CompraState;
   venta: VentaState;
+  cita: CitaState;
 }

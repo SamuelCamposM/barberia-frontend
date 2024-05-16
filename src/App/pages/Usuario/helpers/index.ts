@@ -97,9 +97,7 @@ export const getUsuarios: getUsuariosType = async ({
 }) => {
   try {
     const {
-      data: {
-        result: { docs, limit, page, totalDocs, totalPages },
-      },
+      data: { result },
     }: MyResponse = await clienteAxios.post("/usuario", {
       pagination,
       sort,
@@ -107,13 +105,14 @@ export const getUsuarios: getUsuariosType = async ({
       rol,
       estado,
     });
+    console.log({ result });
 
     return {
       error: {
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result,
     };
   } catch (error: any) {
     return {

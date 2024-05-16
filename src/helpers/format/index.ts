@@ -10,11 +10,13 @@ export const formatUsuarioForeign: (usuario?: Usuario) => UsuarioForeign = (
         dui: usuario.dui || "",
         name: usuario.name,
         lastname: usuario.lastname,
+        tel: usuario.tel,
       }
     : {
         _id: "",
         dui: "",
         name: "",
         lastname: "",
+        tel: "",
       };
 };

@@ -83,6 +83,7 @@ export const itemDefault: VentaItem = {
     _id: "",
     lastname: "",
     name: "",
+    tel: "",
   },
   rUsuario: formatUsuarioForeign(),
   eUsuario: formatUsuarioForeign(),

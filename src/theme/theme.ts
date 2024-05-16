@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { red, deepOrange, green, blueGrey, purple, blue } from "@mui/material/colors";
+import { red, deepOrange, green, blueGrey, blue } from "@mui/material/colors";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -29,6 +29,11 @@ export const purpleTheme = () => {
         defaultProps: {
           autoComplete: "off",
           variant: "standard",
+        },
+      },
+      MuiAutocomplete: {
+        defaultProps: {
+          noOptionsText: "No hay opciones",
         },
       },
       MuiTablePagination: {
