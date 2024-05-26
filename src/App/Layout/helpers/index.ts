@@ -1,19 +1,19 @@
 import { clienteAxios } from "../../../api";
 import { ErrorBackend } from "../../../interfaces/global";
-import { PageItem } from "../../pages/Menu";
+import { PageItem } from "../../pages/Page";
 
 interface MyResponse {
   data: { data: PageItem[] };
 }
 
-type getDeptosType = () => Promise<{
+type getPagesType = () => Promise<{
   error: ErrorBackend;
   data: PageItem[];
 }>;
 
-export const getPages: getDeptosType = async () => {
+export const getPages: getPagesType = async () => {
   try {
-    const res: MyResponse = await clienteAxios.get("/pages");
+    const res: MyResponse = await clienteAxios.get("/page");
     console.log({ res });
 
     return {

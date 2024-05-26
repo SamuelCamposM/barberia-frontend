@@ -10,7 +10,7 @@ import { Action, ErrorSocket } from "../../../../interfaces/global";
 import { CancelOutlined, Check } from "@mui/icons-material";
 import { TextField, Checkbox, Tooltip } from "@mui/material";
 
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { useFieldProps } from "../../../hooks/useFieldProps";
 
 export const EditableCategoria = ({
@@ -26,7 +26,7 @@ export const EditableCategoria = ({
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const config = useMemo(
     () => ({

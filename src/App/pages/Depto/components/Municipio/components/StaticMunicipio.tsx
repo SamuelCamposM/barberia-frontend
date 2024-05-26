@@ -4,7 +4,7 @@ import {
   StyledTableRow,
 } from "../../../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../../../hooks";
-import { useMenuStore } from "../../../../Menu";
+import { usePageStore } from "../../../../Page";
 import { MunicipioItem } from "../interfaces";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../../../hooks";
@@ -26,7 +26,7 @@ export const StaticMunicipio = ({
   depto: string;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const onClickEditar = () => {
     if (noTienePermiso("Depto", "update")) return;

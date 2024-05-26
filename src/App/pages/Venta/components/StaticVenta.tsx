@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { VentaItem, SocketEmitVenta } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
@@ -33,7 +33,7 @@ export const StaticVenta = ({
   itemActive: VentaItem;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const deshabilitar = useMemo(() => !venta.estado, []);
   const handleEliminar = useCallback(() => {

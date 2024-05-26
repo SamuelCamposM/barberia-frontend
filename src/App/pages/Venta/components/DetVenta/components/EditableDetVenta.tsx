@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { useForm } from "../../../../../../hooks";
 
-import { useMenuStore } from "../../../../Menu";
+import { usePageStore } from "../../../../Page";
 import {
   handleNavigation,
   useFieldProps,
@@ -43,7 +43,7 @@ export const EditableDetVenta = ({
   deshabilitar: boolean;
   sucursal_id: string;
 }) => {
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const esNuevo = useMemo(() => !Boolean(detVenta._id), []);
   const config = useMemo(
     () => ({

@@ -16,12 +16,15 @@ export const StyledTableContainer = styled(TableContainer)({
 
 export const StyledTableCell = styled(TableCell)(
   ({ theme }: { theme: Theme }) => ({
-    padding: theme.spacing(0, 0.5), 
+    padding: theme.spacing(0, 0.5),
     ":first-of-type": {
-      borderInline: `1px solid ${agregarTransparencia(
+      position: "sticky",
+      left: 0, // Esto hará que la celda se quede pegada a la derecha
+      borderInline: `2px solid ${agregarTransparencia(
         theme.palette.secondary.light,
         0.25
       )}`,
+      background: theme.palette.background.paper,
     },
     "&.active": {
       background: theme.palette.secondary.dark,

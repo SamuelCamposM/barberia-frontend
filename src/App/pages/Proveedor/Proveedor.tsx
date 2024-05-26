@@ -10,7 +10,7 @@ import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useCommonStates } from "../../hooks";
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import {
@@ -38,7 +38,7 @@ export const Proveedor = ({ dontChangePath }: FromAnotherComponent) => {
   const navigate = useNavigate();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
+  const { noTienePermiso, getPathPage, data: dataMenu } = usePageStore();
 
   const { path } = useMemo(() => getPathPage("Proveedor", false), [dataMenu]);
   // Estados locales para el manejo de la UI y datos.

@@ -1,106 +1,73 @@
 import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
 import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
-import { Box, TableBody, TablePagination } from "@mui/material";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { columns, getVentas, sortDefault } from "./helpers";
+import { Box, TableBody } from "@mui/material";
+import { useCallback, useEffect, useMemo } from "react";
+import { columns, sortDefault } from "./helpers";
 import { ModalRoute } from "./components/ModalRoute";
 import { PaperContainerPage } from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { StaticVenta, VentaItem, setDataProps, useSocketEvents } from ".";
-import { TableCargando } from "../../components/Tabla/TableCargando";
+import { StaticPage, PageItem, setDataProps, useSocketEvents } from ".";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
-import { toast } from "react-toastify";
 import { useCommonStates } from "../../hooks";
-import { usePageStore } from "../Page";
-import { useVentaStore } from "./hooks/useVentaStore";
+
+import { usePageStore } from "./hooks/usePageStore";
 import queryString from "query-string";
-import {
-  getSubPath,
-  paginationDefault,
-  rowsPerPageOptions,
-  validateFunction,
-} from "../../../helpers";
+import { getSubPath, validateFunction } from "../../../helpers";
 import { Acciones, Buscador, TablaLayout, TableTitle } from "../../components";
 
-export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
+export const Page = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
-  const { noTienePermiso, data: dataMenu, getPathPage } = usePageStore();
-  const { path } = useMemo(() => getPathPage("Venta", false), [dataMenu]);
+  const { noTienePermiso, data: dataPage, getPathPage } = usePageStore();
+  console.log({ dataPage });
+
+  const { path } = useMemo(() => getPathPage("Page", false), [dataPage]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
-    useVentaStore();
-  const [estado, setEstado] = useState<boolean>(true);
-  const {
-    // agregando,
-    buscando,
-    busqueda,
-    cargando,
-    // setAgregando,
-    setBuscando,
-    setBusqueda,
-    setCargando,
-    setSort,
-    sort,
-  } = useCommonStates(sortDefault);
-  const [ventasData, setVentasData] = useState<VentaItem[]>([]);
-  const [pagination, setPagination] = useState(paginationDefault);
+    usePageStore();
 
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setData({
-      pagination: { ...pagination, page: newPage + 1 },
-      busqueda,
-      sort,
-      estado,
-    });
-  };
-
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setData({
-      pagination: { ...pagination, page: 1, limit: +event.target.value },
-      busqueda,
-      sort,
-      estado,
-    });
-  };
+  const { buscando, busqueda, setBuscando, setBusqueda, setSort, sort } =
+    useCommonStates(sortDefault);
 
   const sortFunction = (newSort: Sort) => {
-    setData({ pagination, busqueda, sort: newSort, estado });
+    setData({ busqueda, sort: newSort });
   };
   const searchFunction = (newBuscando: boolean, value: string) => {
     setBuscando(newBuscando);
-    setData({ pagination: paginationDefault, sort, busqueda: value, estado });
-  };
-  const handleChangeEstado = (newEstado: boolean) => {
-    setData({ pagination, sort, busqueda, estado: newEstado });
+    setData({
+      sort,
+      busqueda: value,
+    });
   };
 
   // Función asíncrona para obtener y establecer datos.
-  const setData = async ({
-    pagination,
-    sort,
-    busqueda,
-    estado,
-  }: setDataProps) => {
-    setCargando(true);
-    const { error, result } = await getVentas({
-      pagination,
-      sort,
-      busqueda,
-      estado,
-    });
-    if (error.error) {
-      toast.error(error.msg);
-      return;
-    }
-    const { docs, ...rest } = result;
-    setPagination(rest);
-    setVentasData(docs);
-    setSort(sort);
-    setBusqueda(busqueda);
-    setEstado(estado);
-    setCargando(false);
+  const setData = async ({}: // pagination,
+  // sort,
+  // busqueda,
+  // estado,
+  // tipoPage,
+  setDataProps) => {
+    // setCargando(true);
+    // const { error, result } = await getPages({
+    //   pagination,
+    //   sort,
+    //   busqueda,
+    //   estado,
+    //   tipoPage,
+    // });
+    // if (error.error) {
+    //   toast.error(error.msg);
+    //   return;
+    // }
+    // const { docs, ...rest } = result;
+    // setPagination(rest);
+    // setPagesData(docs);
+    // setSort(sort);
+    // setBusqueda(busqueda);
+    // setCargando(false);
+    // setEstado(estado);
+    // setTipoPage(tipoPage);
   };
 
   // Efectos secundarios para la sincronización con la URL y sockets.
@@ -109,13 +76,11 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
     buscando: buscandoQuery,
     pagination: paginationQuery,
     sort: sortQuery,
-    estado: estadoQuery = "true",
   } = queryString.parse(location.search) as {
     q: string;
     buscando: string;
     pagination: string;
     sort: string;
-    estado: string;
   };
 
   useEffect(() => {
@@ -124,49 +89,37 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
       params.set("q", busqueda);
       params.set("buscando", buscando ? "true" : "false");
       params.set("sort", JSON.stringify(sort));
-      params.set("pagination", JSON.stringify(pagination));
-      params.set("estado", estado ? "true" : "false");
       navigate(`?${params.toString()}`, { replace: true });
     }
-  }, [busqueda, buscando, sort, pagination, estado]);
+  }, [busqueda, buscando, sort]);
 
   useEffect(() => {
     if (dontChangePath) {
       const estaBuscando = Boolean(buscandoQuery === "true");
       setBuscando(estaBuscando);
-      setData({
-        pagination,
-        sort,
-        busqueda,
-        estado,
-      });
+      // setData({
+      //   pagination,
+      //   sort,
+      //   busqueda,
+      //   estado,
+      //   tipoPage,
+      // });
     } else {
       const estaBuscando = Boolean(buscandoQuery === "true");
       setBuscando(estaBuscando);
-      setData({
-        pagination: paginationQuery
-          ? JSON.parse(paginationQuery)
-          : paginationDefault,
-        sort: sortQuery ? JSON.parse(sortQuery) : sort,
-        busqueda: estaBuscando ? q : "",
-        estado: estadoQuery === "true",
-      });
+      // setData({
+      //   pagination: paginationQuery
+      //     ? JSON.parse(paginationQuery)
+      //     : paginationDefault,
+      //   sort: sortQuery ? JSON.parse(sortQuery) : sort,
+      //   busqueda: estaBuscando ? q : "",
+      //   estado: estadoQuery ? estadoQuery === "true" : estado,
+      //   tipoPage: tipoPageQuery,
+      // });
     }
   }, []);
-
-  useSocketEvents({ setVentasData, setPagination });
+  useSocketEvents();
   const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
-  const tabEstado: Action = {
-    color: "error",
-    Icon: Refresh,
-    name: "Inactivas",
-    onClick: () => {
-      handleChangeEstado(!estado);
-    },
-    size: "small",
-    tipo: "tab",
-    active: !estado,
-  };
 
   const actions: Action[] = [
     {
@@ -175,10 +128,8 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
       name: "Actualizar",
       onClick: () =>
         setData({
-          pagination,
           sort,
           busqueda: q,
-          estado,
         }),
       tipo: "icono",
     },
@@ -230,7 +181,7 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
   ];
 
   const handleEditar = useCallback(
-    async (itemEditing: VentaItem) => {
+    async (itemEditing: PageItem) => {
       if (noTienePermiso("Page", "update")) {
         return;
       }
@@ -242,7 +193,7 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
         setOpenModal(!openModal);
       }
     },
-    [dataMenu, itemActive]
+    [dataPage, itemActive]
   );
 
   return (
@@ -260,38 +211,28 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
             path="/:_id"
             element={
               <ModalRoute
-                ventasData={ventasData}
-                cargando={cargando}
+                pagesData={dataPage}
+                cargando={false}
                 prevPath={path}
               />
             }
           />
         </Routes>
         <Buscador
-          label="Buscar por Cliente y Sucursal"
+          label="Buscar por Page, Marca y Categoria"
           buscando={buscando}
-          cargando={cargando}
+          cargando={false}
           onSearch={(value) => searchFunction(true, value)}
           onSearchCancel={() => searchFunction(false, "")}
         />
 
-        <TableTitle texto={path} Tabs={[tabEstado]} />
+        <TableTitle texto={path} />
         <Box
           display={"flex"}
           justifyContent={"space-between"}
           alignItems={"center"}
         >
           <Acciones actions={actions} />
-          <TablePagination
-            className="tablePagination"
-            rowsPerPageOptions={rowsPerPageOptions}
-            component="div"
-            count={pagination.totalDocs}
-            rowsPerPage={pagination.limit}
-            page={pagination.page - 1}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
         </Box>
         <TablaLayout>
           <TableHeader
@@ -299,31 +240,28 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
             sort={sort}
             sortFunction={sortFunction}
           />
-          {cargando ? (
-            <TableCargando columnsLength={columns.length} />
-          ) : (
-            <TableBody>
-              {ventasData.length === 0 ? (
-                <TableNoData length={columns.length} title="No hay Venta" />
-              ) : (
-                ventasData.map((venta) => {
-                  return (
-                    <StaticVenta
-                      key={venta._id}
-                      venta={venta}
-                      busqueda={busqueda}
-                      handleEditar={handleEditar}
-                      itemActive={itemActive}
-                    />
-                  );
-                })
-              )}
-            </TableBody>
-          )}
+
+          <TableBody>
+            {dataPage.length === 0 ? (
+              <TableNoData length={columns.length} title="No hay Page" />
+            ) : (
+              dataPage.map((page) => {
+                return (
+                  <StaticPage
+                    key={page._id}
+                    page={page}
+                    busqueda={busqueda}
+                    handleEditar={handleEditar}
+                    itemActive={itemActive}
+                  />
+                );
+              })
+            )}
+          </TableBody>
         </TablaLayout>
       </PaperContainerPage>
     </>
   );
 };
 
-export default Venta;
+export default Page;

@@ -2,30 +2,49 @@ import { ConvertirComponente, convertirPath } from "../../helpers";
 import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../../hooks";
-import { useMenuStore } from "../pages/Menu";
 import { Cargando } from "../components";
+import { PageItem, usePageStore } from "../pages/Page";
+import { useMemo } from "react";
 
 const ChatPage = lazy(() => import("../pages/Chat/ChatPage"));
 
+const generarRutas = (
+  data: PageItem[],
+  padreId: string = "",
+  path = ""
+): JSX.Element[] => {
+  return data
+    .filter(({ padre }) => padre === padreId)
+    .map((page) => {
+      const newPath = path + convertirPath(page.nombre);
+
+      return (
+        <>
+          <Route
+            key={page._id}
+            path={newPath + "/*"}
+            element={ConvertirComponente(page.componente)}
+          ></Route>
+          {generarRutas(data, page._id, newPath + "/")}
+        </>
+      );
+    });
+};
+
 export const ContentRouter = () => {
-  const { data } = useMenuStore();
+  const { data } = usePageStore();
   const { usuario } = useAuthStore();
+
+  const dataFilter = useMemo(
+    () => data.filter(({ ver }) => ver.includes(usuario.rol)),
+    [usuario, data]
+  );
   if (data.length === 0) {
     return <Cargando titulo="Cargando" />;
   }
   return (
     <Routes>
-      {data
-        .filter(({ ver }) => ver.includes(usuario.rol))
-        .map(({ nombre, _id, componente }) => {
-          return (
-            <Route
-              key={_id}
-              path={convertirPath(nombre) + "/*"}
-              element={ConvertirComponente(componente)}
-            />
-          );
-        })}
+      {generarRutas(dataFilter)}
       <Route path={"/chat/*"} element={<ChatPage />} />
       <Route
         path="*"

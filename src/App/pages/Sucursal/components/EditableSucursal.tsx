@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { useDebouncedCallback, useHttp } from "../../../hooks";
 import { handleNavigation, useFieldProps } from "../../../hooks/useFieldProps";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +44,7 @@ export const EditableSucursal = ({
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { noTienePermiso, getPathPage } = useMenuStore();
+  const { noTienePermiso, getPathPage } = usePageStore();
   const navigate = useNavigate();
   const { socket } = useProvideSocket();
   const config = useMemo(

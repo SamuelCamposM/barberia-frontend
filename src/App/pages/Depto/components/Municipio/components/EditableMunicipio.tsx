@@ -12,7 +12,7 @@ import { SocketEmitMunicipio } from "../helpers";
 import { TextField } from "@mui/material";
 import { useForm, useProvideSocket } from "../../../../../../hooks";
 
-import { useMenuStore } from "../../../../Menu";
+import { usePageStore } from "../../../../Page";
 
 export const EditableMunicipio = ({
   municipio,
@@ -25,7 +25,7 @@ export const EditableMunicipio = ({
   setAgregando?: Dispatch<React.SetStateAction<boolean>>;
   setEditando: Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const esNuevo = useMemo(() => !Boolean(municipio._id), []);
   const config = useMemo(

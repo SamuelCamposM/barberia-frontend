@@ -28,7 +28,7 @@ import {
   TablaLayout,
   TableTitle,
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { RowSucursal } from "./components/RowSucursal";
@@ -40,7 +40,7 @@ export const Sucursal = ({ dontChangePath }: FromAnotherComponent) => {
   const navigate = useNavigate();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
+  const { noTienePermiso, getPathPage, data: dataMenu } = usePageStore();
 
   // Estados locales para el manejo de la UI y datos.
   const {

@@ -16,9 +16,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { Suspense, useEffect } from "react";
-import { PageItem, useMenuStore } from "../pages/Menu";
+import { PageItem, usePageStore } from "../pages/Page";
 import { useProvideSocket, useUiStore } from "../../hooks";
-const drawerWidthClose = 56;
+const drawerWidthClose = 95;
 const drawerWidthOpen = 240;
 export const AppLayout = ({
   children,
@@ -26,17 +26,17 @@ export const AppLayout = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   const { socket } = useProvideSocket();
-  const { getDataMenu, onEditMenu, cargando } = useMenuStore();
+  const { getDataPage, onEditPage, cargando } = usePageStore();
   const { openDrawerSidebar } = useUiStore();
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
-    getDataMenu();
+    getDataPage();
   }, []);
   useEffect(() => {
     socket?.on("cliente:page-editar", (data: PageItem) => {
-      onEditMenu(data);
+      onEditPage(data);
     });
     return () => {
       socket?.off("cliente:page-editar");

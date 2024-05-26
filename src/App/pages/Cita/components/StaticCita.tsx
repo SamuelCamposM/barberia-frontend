@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { CitaItem, SocketEmitCita } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
@@ -23,7 +23,7 @@ export const StaticCita = ({
   itemActive: CitaItem;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const handleEliminar = useCallback(() => {
     if (noTienePermiso("Depto", "delete")) return;

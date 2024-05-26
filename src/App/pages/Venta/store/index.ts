@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { VentaItem, VentaState } from "../interfaces";
 import { itemDefault } from "../helpers";
-import { handleSliceChangeComponent } from "../../Menu";
 
 const initialState: VentaState = {
   openModal: false,
@@ -19,11 +18,6 @@ export const ventaSlice = createSlice({
     setSliceItemActive: (state, action: PayloadAction<VentaItem>) => {
       state.itemActive = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(handleSliceChangeComponent, () => {
-      return initialState;
-    });
   },
 });
 

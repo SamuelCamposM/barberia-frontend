@@ -4,7 +4,7 @@ import {
   StyledTableRow,
 } from "../../../../../components/style";
 import { useThemeSwal } from "../../../../../hooks";
-import { useMenuStore } from "../../../../Menu";
+import { usePageStore } from "../../../../Page";
 import { DetVentaItem } from "../interfaces";
 import Swal from "sweetalert2";
 import { Acciones } from "../../../../../components";
@@ -22,7 +22,7 @@ export const StaticDetVenta = ({
   deshabilitar: boolean;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const onClickEditar = () => {
     if (noTienePermiso("Venta", "update")) return;
     setEditando((prev) => !prev);

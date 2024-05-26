@@ -5,7 +5,7 @@ import {
   StyledTableRow,
 } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { ProductoItem, SocketEmitProducto, columns } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
@@ -42,7 +42,7 @@ export const StaticProducto = ({
   itemActive: ProductoItem;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const [expandir, setexpandir] = useState(false);
   const handleEliminar = useCallback(() => {

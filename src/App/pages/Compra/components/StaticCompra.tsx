@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { CompraItem, SocketEmitCompra } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
@@ -31,7 +31,7 @@ export const StaticCompra = ({
   itemActive: CompraItem;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const finalizada = useMemo(() => compra.estado === "FINALIZADA", []);
   const anulada = useMemo(() => compra.estado === "ANULADA", []);

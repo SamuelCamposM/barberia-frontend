@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { useForm } from "../../../../../../hooks";
 
-import { useMenuStore } from "../../../../Menu";
+import { usePageStore } from "../../../../Page";
 import {
   handleNavigation,
   useFieldProps,
@@ -41,7 +41,7 @@ export const EditableDetCompra = ({
   setformValues: Dispatch<React.SetStateAction<CompraItem>>;
   finalizada: boolean;
 }) => {
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const esNuevo = useMemo(() => !Boolean(detCompra._id), []);
   const config = useMemo(
     () => ({

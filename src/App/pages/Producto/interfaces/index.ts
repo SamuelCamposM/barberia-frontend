@@ -18,7 +18,11 @@ export interface StockItem {
   sucursal: string;
   cantidad: number;
 }
-
+//* ESTA PENSADO PARA CUANDO SE BUSQUE UN PRODUCTO
+export interface ProductoForeign {
+  _id: string;
+  name: string;
+}
 export interface ProductoItem {
   photos: string[];
   stocks: StockItem[];

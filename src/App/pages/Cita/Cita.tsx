@@ -13,7 +13,7 @@ import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify";
 import { useCommonStates } from "../../hooks";
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { useCitaStore } from "./hooks/useCitaStore";
 import queryString from "query-string";
 import {
@@ -28,7 +28,7 @@ export const Cita = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
-  const { noTienePermiso, data: dataMenu, getPathPage } = useMenuStore();
+  const { noTienePermiso, data: dataMenu, getPathPage } = usePageStore();
   const { path } = useMemo(() => getPathPage("Cita", false), [dataMenu]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useCitaStore();
@@ -250,7 +250,7 @@ export const Cita = ({ dontChangePath }: FromAnotherComponent) => {
 
   const handleEditar = useCallback(
     async (itemEditing: CitaItem) => {
-      if (noTienePermiso("Menu", "update")) {
+      if (noTienePermiso("Page", "update")) {
         return;
       }
 

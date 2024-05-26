@@ -1,7 +1,7 @@
 import { lazy } from "react";
 
 export default {
-  Menu: lazy(() => import("../pages/Menu/Menu")),
+  Page: lazy(() => import("../pages/Page/Page")),
   Valoraciones: lazy(() => import("../pages/Valoraciones/Valoraciones")),
   Producto: lazy(() => import("../pages/Producto/Producto")),
   Categoria: lazy(() => import("../pages/Categoria/Categoria")),
@@ -14,4 +14,5 @@ export default {
   Compra: lazy(() => import("../pages/Compra/Compra")),
   Proveedor: lazy(() => import("../pages/Proveedor/Proveedor")),
   CierreCaja: lazy(() => import("../pages/CierreCaja/CierreCaja")),
+  Seccion: lazy(() => import("../pages/Seccion/Seccion")),
 };

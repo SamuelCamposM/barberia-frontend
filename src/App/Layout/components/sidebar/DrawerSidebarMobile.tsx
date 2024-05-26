@@ -1,6 +1,6 @@
 import { Drawer } from "@mui/material";
 import { ListSidebar } from "./ListSidebar";
-import { useUiStore } from "../../../hooks";
+import { useUiStore } from "../../../../hooks";
 export const DrawerSidebarMobile = ({
   drawerWidthOpen,
 }: {

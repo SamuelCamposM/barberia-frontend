@@ -6,7 +6,7 @@ import { Dispatch, useCallback } from "react";
 import { handleSocket } from "../../../../helpers";
 import { CategoriaItem, SocketEmitCategoria } from "..";
 import { StyledTableCell, StyledTableRow } from "../../../components/style";
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { useProvideSocket } from "../../../../hooks";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
 import Swal from "sweetalert2";
@@ -23,7 +23,7 @@ export const StaticCategoria = ({
   actionsJoins?: Action[];
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
   const onClickEditar = () => {
     if (noTienePermiso("Categoria", "update")) return;

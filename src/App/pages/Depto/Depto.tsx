@@ -28,7 +28,7 @@ import {
   TablaLayout,
   TableTitle,
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { RowDepto } from "./components/RowDepto";
 import { EditableDepto } from "./components/EditableDepto";
@@ -43,7 +43,7 @@ export const Depto = ({
   const navigate = useNavigate();
 
   // Hooks personalizados para permisos.
-  const { noTienePermiso, getPathPage, data: dataMenu } = useMenuStore();
+  const { noTienePermiso, getPathPage, data: dataMenu } = usePageStore();
 
   const { path } = useMemo(() => getPathPage("Depto", false), [dataMenu]);
   // Estados locales para el manejo de la UI y datos.

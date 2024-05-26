@@ -1,7 +1,7 @@
 import { UiState } from ".";
 import { AuthState } from "./auth";
 import { ChatState } from "./chat";
-import { MenuState } from "../../App/pages/Menu";
+import { PageState } from "../../App/pages/Page";
 import { DeptoState } from "../../App/pages/Depto";
 import { UsuarioState } from "../../App/pages/Usuario";
 import { ProductoState } from "../../App/pages/Producto";
@@ -12,7 +12,7 @@ export interface RootState {
   auth: AuthState;
   chat: ChatState;
   ui: UiState;
-  menu: MenuState;
+  page: PageState;
   depto: DeptoState;
   usuario: UsuarioState;
   producto: ProductoState;

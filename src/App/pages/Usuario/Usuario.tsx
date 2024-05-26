@@ -13,7 +13,7 @@ import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify";
 import { useCommonStates } from "../../hooks";
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { useUsuarioStore } from "./hooks/useUsuarioStore";
 import queryString from "query-string";
 import {
@@ -28,7 +28,7 @@ export const Usuario = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
-  const { noTienePermiso, data: dataMenu, getPathPage } = useMenuStore();
+  const { noTienePermiso, data: dataMenu, getPathPage } = usePageStore();
   const { path } = useMemo(() => getPathPage("Usuario", false), [dataMenu]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useUsuarioStore();
@@ -265,7 +265,7 @@ export const Usuario = ({ dontChangePath }: FromAnotherComponent) => {
 
   const handleEditar = useCallback(
     async (itemEditing: UsuarioItem) => {
-      if (noTienePermiso("Menu", "update")) {
+      if (noTienePermiso("Page", "update")) {
         return;
       }
 

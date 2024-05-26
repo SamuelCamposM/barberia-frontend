@@ -12,7 +12,7 @@ import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify";
 import { useCommonStates } from "../../hooks";
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { useCompraStore } from "./hooks/useCompraStore";
 import queryString from "query-string";
 import {
@@ -27,7 +27,7 @@ export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
-  const { noTienePermiso, data: dataMenu, getPathPage } = useMenuStore();
+  const { noTienePermiso, data: dataMenu, getPathPage } = usePageStore();
   const { path } = useMemo(() => getPathPage("Compra", false), [dataMenu]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     useCompraStore();
@@ -242,7 +242,7 @@ export const Compra = ({ dontChangePath }: FromAnotherComponent) => {
 
   const handleEditar = useCallback(
     async (itemEditing: CompraItem) => {
-      if (noTienePermiso("Menu", "update")) {
+      if (noTienePermiso("Page", "update")) {
         return;
       }
 

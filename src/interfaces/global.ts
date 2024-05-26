@@ -27,7 +27,7 @@ export type Components =
   | "Cita"
   | "Depto"
   | "Marca"
-  | "Menu"
+  | "Page"
   | "Venta"
   | "Producto"
   | "Sucursal"

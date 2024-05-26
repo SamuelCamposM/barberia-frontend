@@ -7,7 +7,7 @@ import { RowMunicipio } from "./components/RowMunicipio";
 import { Sort } from "../../../../../interfaces/global";
 import { TableHeader } from "../../../../components/Tabla/TableHeader";
 import { toast } from "react-toastify";
-import { useMenuStore } from "../../../Menu";
+import { usePageStore } from "../../../Page";
 import { useMunicipioSocketEvents } from "./hooks/useSocketEvents";
 import {
   Box,
@@ -27,7 +27,7 @@ import { useCommonStates } from "../../../../hooks";
 import { EditableMunicipio } from "./components/EditableMunicipio";
 import { TableNoData } from "../../../../components/Tabla/TableNoData";
 export const TablaMunicipio = ({ depto }: { depto: string }) => {
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const {
     agregando,
     buscando,

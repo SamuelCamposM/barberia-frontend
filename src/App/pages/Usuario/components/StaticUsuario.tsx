@@ -5,7 +5,7 @@ import {
   StyledTableRow,
 } from "../../../components/style";
 import { useResaltarTexto, useThemeSwal } from "../../../hooks";
-import { useMenuStore } from "../../Menu";
+import { usePageStore } from "../../Page";
 import { UsuarioItem, SocketEmitUsuario } from "..";
 import Swal from "sweetalert2";
 import { useProvideSocket } from "../../../../hooks";
@@ -29,7 +29,7 @@ export const StaticUsuario = ({
   itemActive: UsuarioItem;
 }) => {
   const themeSwal = useThemeSwal();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const { socket } = useProvideSocket();
 
   const handleEliminar = useCallback(() => {

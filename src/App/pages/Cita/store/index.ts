@@ -1,8 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CitaItem, CitaState } from "../interfaces";
 import { itemDefault } from "../helpers";
-import { handleSliceChangeComponent } from "../../Menu";
-
 const initialState: CitaState = {
   openModal: false,
   itemActive: itemDefault,
@@ -19,11 +17,6 @@ export const citaSlice = createSlice({
     setSliceItemActive: (state, action: PayloadAction<CitaItem>) => {
       state.itemActive = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(handleSliceChangeComponent, () => {
-      return initialState;
-    });
   },
 });
 

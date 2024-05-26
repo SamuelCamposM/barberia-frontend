@@ -9,7 +9,7 @@ import { TableNoData } from "../../components/Tabla/TableNoData";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useCommonStates } from "../../hooks";
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import {
@@ -37,7 +37,7 @@ export const CierreCaja = ({ dontChangePath }: FromAnotherComponent) => {
   const navigate = useNavigate();
 
   // Hooks personalizados para permisos.
-  const { getPathPage, data: dataMenu } = useMenuStore();
+  const { getPathPage, data: dataMenu } = usePageStore();
 
   const { path } = useMemo(() => getPathPage("CierreCaja", false), [dataMenu]);
   // Estados locales para el manejo de la UI y datos.

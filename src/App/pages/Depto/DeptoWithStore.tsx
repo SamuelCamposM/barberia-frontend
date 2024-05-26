@@ -28,7 +28,7 @@ import {
   Cargando,
   TablaLayout, 
 } from "../../components"; // Importaciones de hooks de menú y notificaciones.
-import { useMenuStore } from "../Menu";
+import { usePageStore } from "../Page";
 import { toast } from "react-toastify"; // Definición de las columnas de la tabla.
 import { EditableDepto } from "./components/EditableDepto";
 import { RowDepto } from "./components/RowDepto";
@@ -38,7 +38,7 @@ export const Depto = () => {
   const navigate = useNavigate();
   // Hooks personalizados para socket y permisos.
   const { socket } = useProvideSocket();
-  const { noTienePermiso } = useMenuStore();
+  const { noTienePermiso } = usePageStore();
   const {
     cargando,
     data,
