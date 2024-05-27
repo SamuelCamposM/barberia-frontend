@@ -54,7 +54,7 @@ export const getMarcas: getMarcasType = async (params: setDataProps) => {
   try {
     const {
       data: {
-        result: { docs, limit, page, totalDocs, totalPages },
+        result
       },
     } = await clienteAxios.post<MyResponse>("/marca", params);
 
@@ -63,7 +63,7 @@ export const getMarcas: getMarcasType = async (params: setDataProps) => {
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result
     };
   } catch (error: any) {
     const errorResult = {

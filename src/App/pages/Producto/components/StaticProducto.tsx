@@ -25,7 +25,7 @@ import {
   Collapse,
   TableRow,
   Tooltip,
-} from "@mui/material"; 
+} from "@mui/material";
 import { StocksProducto } from "./StocksProducto";
 
 export const StaticProducto = ({
@@ -112,7 +112,6 @@ export const StaticProducto = ({
                   //     _id: producto._id,
                   //   }
                   // );
-                  // console.log({ res });
 
                   setexpandir(!expandir);
                 },

@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { usePageStore } from "../hooks/usePageStore";
 import { ModalPage } from "./ModalPage";
 import { PageItem } from "../interfaces";
-import { getSubPath, isThereNextPath } from "../../../../helpers";
+import { getSubPath} from "../../../../helpers";
 
 export const ModalRoute = ({
   pagesData,
   cargando,
-  prevPath,
+  
 }: {
   pagesData: PageItem[];
   cargando: boolean;
-  prevPath: string;
+  
 }) => {
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     usePageStore();

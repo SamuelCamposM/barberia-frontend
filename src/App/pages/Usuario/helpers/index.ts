@@ -105,7 +105,6 @@ export const getUsuarios: getUsuariosType = async ({
       rol,
       estado,
     });
-    console.log({ result });
 
     return {
       error: {

@@ -9,6 +9,7 @@ import { SucursalItem, setDataProps } from "../interfaces";
 import { toast } from "react-toastify";
 import { MunicipioForeign } from "../../Depto/components/Municipio/interfaces";
 import { DeptoForeign } from "../../Depto";
+import { handleAxiosError } from "../../../../helpers";
 export enum SocketOnSucursal {
   agregar = "cliente:sucursal-agregar",
   editar = "cliente:sucursal-editar",
@@ -80,33 +81,25 @@ type getSucursalsType = (arg: setDataProps) => Promise<{
   result: MyResponse;
 }>;
 
-export const getSucursals: getSucursalsType = async ({
-  busqueda,
-  pagination,
-  sort,
-}) => {
+export const getSucursals: getSucursalsType = async (
+  params: setDataProps
+): Promise<{
+  error: ErrorBackend;
+  result: MyResponse;
+}> => {
   try {
-    const {
-      data: { docs, limit, page, totalDocs, totalPages },
-    } = await clienteAxios.post<MyResponse>("/sucursal", {
-      pagination,
-      sort,
-      busqueda,
-    });
+    const { data } = await clienteAxios.post<MyResponse>("/sucursal", params);
 
     return {
       error: {
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result: data,
     };
   } catch (error: any) {
     return {
-      error: {
-        error: true,
-        msg: error?.response?.data?.msg || "Error al consultar las sucursales",
-      },
+      error: handleAxiosError(error, "Error al consultar las sucursales"),
       result: { docs: [], ...paginationDefault },
     };
   }

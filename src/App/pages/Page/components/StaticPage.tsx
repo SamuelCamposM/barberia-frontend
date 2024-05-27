@@ -13,7 +13,7 @@ export const StaticPage = ({
   handleEditar,
   itemActive,
 }: {
-  page: PageItem; 
+  page: PageItem;
   actionsJoins?: Action[];
   handleEditar: (itemEditing: PageItem) => void;
   itemActive: PageItem;
@@ -53,7 +53,6 @@ export const StaticPage = ({
               //     //     _id: page._id,
               //     //   }
               //     // );
-              //     // console.log({ res });
 
               //     setexpandir(!expandir);
               //   },

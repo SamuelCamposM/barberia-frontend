@@ -126,7 +126,6 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
       const children = dataPage.filter((page) =>
         normalize(page.nombre).includes(normalize(busqueda))
       );
-      console.log({ children });
       const parents = getParents(children, dataPage);
       setBusqueda(busqueda);
       let uniqueArray = removeDuplicates([...children, ...parents]);
@@ -239,7 +238,6 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
       if (noTienePermiso("Page", "update")) {
         return;
       }
-      console.log(itemEditing);
 
       const canActive = await setItemActive(itemEditing);
       if (canActive) {
@@ -264,13 +262,7 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
         <Routes>
           <Route
             path="/:_id"
-            element={
-              <ModalRoute
-                pagesData={dataPage}
-                cargando={false}
-                prevPath={path}
-              />
-            }
+            element={<ModalRoute pagesData={dataPage} cargando={false} />}
           />
         </Routes>
         <Buscador

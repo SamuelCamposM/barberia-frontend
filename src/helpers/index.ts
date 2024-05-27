@@ -2,7 +2,7 @@ export * from "./const";
 export * from "./path";
 export * from "./date/formatearFecha";
 export * from "./env/getEnvVariables";
-export * from "./errorSocket";
+export * from "./error";
 export * from "./scroll";
 export * from "./ui/agregarTransparencia";
 export * from "./validaciones";

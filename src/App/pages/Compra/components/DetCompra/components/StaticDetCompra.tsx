@@ -97,8 +97,6 @@ export const StaticDetCompra = ({
               Icon: DeleteForever,
               name: `Eliminar`,
               onClick: () => {
-                console.log(detCompra.crud?.eliminado);
-
                 handleEliminar();
               },
               tipo: "icono",

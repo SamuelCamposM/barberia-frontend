@@ -161,8 +161,6 @@ export const ModalUsuario = () => {
       ...values,
     };
 
-    console.log(formAllData);
-    
     socket?.emit(
       SocketEmitUsuario.editar,
       { data: formAllData, eliminados },

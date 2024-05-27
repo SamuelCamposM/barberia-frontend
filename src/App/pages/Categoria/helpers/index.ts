@@ -6,6 +6,7 @@ import {
 } from "../../../../interfaces/global";
 import { paginationDefault } from "../../../../helpers/const";
 import { CategoriaItem, setDataProps } from "../interfaces";
+import { handleAxiosError } from "../../../../helpers";
 
 export enum SocketOnCategoria {
   agregar = "cliente:categoria-agregar",
@@ -45,17 +46,15 @@ interface MyResponse {
   result: Result;
 }
 
-type getCategoriasType = (arg: setDataProps) => Promise<{
+export const getCategorias = async (
+  params: setDataProps
+): Promise<{
   error: ErrorBackend;
   result: Result;
-}>;
-
-export const getCategorias: getCategoriasType = async (params: setDataProps) => {
+}> => {
   try {
     const {
-      data: {
-        result: { docs, limit, page, totalDocs, totalPages },
-      },
+      data: { result },
     } = await clienteAxios.post<MyResponse>("/categoria", params);
 
     return {
@@ -63,13 +62,12 @@ export const getCategorias: getCategoriasType = async (params: setDataProps) => 
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result,
     };
   } catch (error: any) {
-    const errorResult = {
-      msg: error?.response?.data?.msg || "Error al consultar las categorías",
-      error: true,
+    return {
+      error: handleAxiosError(error, "Error al consultar las categorías"),
+      result: { docs: [], ...paginationDefault },
     };
-    return { error: errorResult, result: { docs: [], ...paginationDefault } };
   }
 };

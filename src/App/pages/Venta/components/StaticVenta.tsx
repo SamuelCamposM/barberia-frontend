@@ -100,8 +100,6 @@ export const StaticVenta = ({
                 const res = await clienteAxios.get(`/venta/pdf/${venta._id}`, {
                   responseType: "blob",
                 });
-                console.log({ res });
-
                 const pdfBlob = new Blob([res.data], {
                   type: "application/pdf",
                 });

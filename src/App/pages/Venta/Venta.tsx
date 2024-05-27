@@ -262,7 +262,7 @@ export const Venta = ({ dontChangePath }: FromAnotherComponent) => {
               <ModalRoute
                 ventasData={ventasData}
                 cargando={cargando}
-                prevPath={path}
+                
               />
             }
           />

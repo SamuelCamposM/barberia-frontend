@@ -366,7 +366,6 @@ export const ModalCita = () => {
                       fechaConMinutos,
                       "yyyy-MM-dd'T'HH:00"
                     );
-                    console.log(fechaSinMinutos);
 
                     setformValues({ ...formValues, fecha: fechaSinMinutos });
                   }}

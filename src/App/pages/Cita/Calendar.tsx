@@ -2,7 +2,7 @@ import { Box, styled, useTheme } from "@mui/material";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 
 import esES from "date-fns/locale/es";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar"; 
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 const locales = {
   es: esES,
 };
@@ -32,7 +32,7 @@ export const getMessages = () => {
 };
 const StyledCalendar = styled(Calendar)(({ theme }) => ({
   height: "100%",
-  backgroundColor: theme.palette.background.default, 
+  backgroundColor: theme.palette.background.default,
   // ... puedes añadir más estilos aquí
 }));
 
@@ -49,7 +49,7 @@ export const Calendario = () => {
   return (
     <Box height={"100%"}>
       <StyledCalendar
-        style={{   color: "#fff" }}
+        style={{ color: "#fff" }}
         culture="es"
         localizer={localizer}
         events={[
@@ -74,16 +74,10 @@ export const Calendario = () => {
         // components={{
         //   event: CalendarEvent,
         // }}
-        
-        onDoubleClickEvent={() => {
-          console.log("a");
-        }}
-        onSelectEvent={() => {
-          console.log("a");
-        }}
-        onView={() => {
-          console.log("a");
-        }}
+
+        onDoubleClickEvent={() => {}}
+        onSelectEvent={() => {}}
+        onView={() => {}}
       />
     </Box>
   );

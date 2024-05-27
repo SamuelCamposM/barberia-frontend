@@ -57,7 +57,7 @@ export const useForm = <
 
   const isFormInvalidSubmit = useCallback(
     (formValues: ValueTypes) => {
-      const entries = Object.entries(ObjectValidations); 
+      const entries = Object.entries(ObjectValidations);
 
       const res = entries.some(([name]) => {
         return ObjectValidations[name].some((validation) => {
@@ -66,12 +66,9 @@ export const useForm = <
 
           const result = validation(value, formValues);
 
-          console.log({ result, formValues });
-
           return result !== "";
         });
       });
-      console.log({ res });
 
       return res;
     },

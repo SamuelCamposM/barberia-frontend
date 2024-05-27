@@ -3,16 +3,15 @@ import { useEffect } from "react";
 import { useVentaStore } from "../hooks/useVentaStore";
 import { ModalVenta } from "./ModalVenta";
 import { VentaItem } from "../interfaces";
-import { getSubPath, isThereNextPath } from "../../../../helpers";
+import { getSubPath } from "../../../../helpers";
 
 export const ModalRoute = ({
   ventasData,
   cargando,
-  prevPath,
 }: {
   ventasData: VentaItem[];
   cargando: boolean;
-  prevPath: string;
+  
 }) => {
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useVentaStore();
@@ -44,7 +43,7 @@ export const ModalRoute = ({
         }
       }
     }
-      // return () => {
+    // return () => {
     //   if (!isThereNextPath(prevPath)) {
     //     setItemActive(itemDefault, true);
     //   }

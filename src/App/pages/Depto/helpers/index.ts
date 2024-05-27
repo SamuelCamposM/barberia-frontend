@@ -62,7 +62,7 @@ export const getDeptos: getDeptosType = async ({
   try {
     const {
       data: {
-        result: { docs, limit, page, totalDocs, totalPages },
+        result
       },
     }: MyResponse = await clienteAxios.post("/depto", {
       pagination,
@@ -75,7 +75,7 @@ export const getDeptos: getDeptosType = async ({
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result
     };
   } catch (error: any) {
     const errorResult = {

@@ -97,7 +97,7 @@ export const itemDefault: CitaItem = {
   empleado: formatUsuarioForeign(),
   estadoCita: "PENDIENTE",
   fecha: DateTimeFormateadaWithHours(),
-  rUsuario: formatUsuarioForeign(), 
+  rUsuario: formatUsuarioForeign(),
   sucursal: {
     _id: "",
     name: "",
@@ -129,17 +129,14 @@ type getCitasType = (params: setDataProps) => Promise<{
 export const getCitas: getCitasType = async (params) => {
   try {
     const {
-      data: {
-        result: { docs, limit, page, totalDocs, totalPages },
-      },
+      data: { result },
     } = await clienteAxios.post<MyResponse>("/cita", params);
-    console.log({ docs });
     return {
       error: {
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result,
     };
   } catch (error: any) {
     return {

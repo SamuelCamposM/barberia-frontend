@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { useCitaStore } from "../hooks/useCitaStore";
 import { ModalCita } from "./ModalCita";
 import { CitaItem } from "../interfaces";
-import { getSubPath, isThereNextPath } from "../../../../helpers";
+import { getSubPath} from "../../../../helpers";
 
 export const ModalRoute = ({
   citasData,
   cargando,
-  prevPath,
+  
 }: {
   citasData: CitaItem[];
   cargando: boolean;
-  prevPath: string;
+  
 }) => {
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useCitaStore();

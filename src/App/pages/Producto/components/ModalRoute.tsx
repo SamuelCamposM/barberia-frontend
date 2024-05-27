@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { useProductoStore } from "../hooks/useProductoStore";
 import { ModalProducto } from "./ModalProducto";
 import { ProductoItem } from "../interfaces";
-import { getSubPath, isThereNextPath } from "../../../../helpers";
+import { getSubPath} from "../../../../helpers";
 
 export const ModalRoute = ({
   productosData,
   cargando,
-  prevPath,
+  
 }: {
   productosData: ProductoItem[];
   cargando: boolean;
-  prevPath: string;
+  
 }) => {
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useProductoStore();

@@ -97,15 +97,12 @@ export const StaticCompra = ({
               name: `Reporte PDF`,
               onClick: async () => {
                 try {
-                  console.log(compra._id);
-
                   const res = await clienteAxios.get(
                     `/compra/pdf/${compra._id}`,
                     {
                       responseType: "blob",
                     }
                   );
-                  console.log({ res });
 
                   const pdfBlob = new Blob([res.data], {
                     type: "application/pdf",
@@ -115,13 +112,9 @@ export const StaticCompra = ({
                     `COMPRA: ${compra.proveedor.nombreCompleto}.pdf`
                   );
                 } catch (error: any) {
-                  console.log({ error });
-
-                  const msg =
-                    error?.response?.data?.msg ||
-                    "Error al consultar los detalles de ventas";
-
-                  console.log(msg);
+                  // const msg =
+                  //   error?.response?.data?.msg ||
+                  //   "Error al consultar los detalles de ventas";
                 }
               },
               tipo: "icono",

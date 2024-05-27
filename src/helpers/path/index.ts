@@ -20,18 +20,12 @@ export const isThereNextPath = (prevPath: string): boolean => {
   const pathname = location.pathname;
   // Eliminamos las barras diagonales al principio y al final para normalizar los paths
   const normalizedPathname = pathname.replace(/^\/|\/$/g, "");
-  console.log({ normalizedPathname });
 
   const normalizedPrevPath = prevPath.replace(/^\/|\/$/g, "");
-  console.log({ normalizedPrevPath });
-
   // Dividimos los paths en segmentos
   const segmentsPathname = normalizedPathname.split("/");
-  console.log({ segmentsPathname });
 
   const segmentsPrevPath = normalizedPrevPath.split("/");
-  console.log({ segmentsPrevPath });
-console.log(segmentsPathname.slice(0, -1).join("/"));
 
   // Comparamos los segmentos para verificar si hay una ruta después
   if (segmentsPathname.slice(0, -1).join("/") === segmentsPrevPath.join("/")) {

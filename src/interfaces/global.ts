@@ -52,7 +52,6 @@ export interface Pagination {
   totalDocs: number;
   limit: number;
   page: number;
-  totalPages: number;
 }
 export interface Sort {
   asc: boolean;

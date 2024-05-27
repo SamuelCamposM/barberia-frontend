@@ -73,7 +73,7 @@ export const getCierreCajas: getCierreCajasType = async (
   try {
     const {
       data: {
-        result: { docs, limit, page, totalDocs, totalPages },
+        result
       },
     } = await clienteAxios.post<MyResponse>("/cierreCaja", params);
 
@@ -82,7 +82,7 @@ export const getCierreCajas: getCierreCajasType = async (
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result
     };
   } catch (error: any) {
     const errorResult = {

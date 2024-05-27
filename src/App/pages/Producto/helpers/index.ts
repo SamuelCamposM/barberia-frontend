@@ -73,13 +73,13 @@ export const columns: Column[] = [
   },
   {
     campo: "rUsuario.lastname",
-    label: "R. Usuario", 
+    label: "R. Usuario",
     minWidth: 150,
     sortable: true,
   },
   {
     campo: "createdAt",
-    label: "Fec. Reg.", 
+    label: "Fec. Reg.",
     minWidth: 150,
     sortable: true,
   },
@@ -131,17 +131,14 @@ type getProductosType = (params: setDataProps) => Promise<{
 export const getProductos: getProductosType = async (params) => {
   try {
     const {
-      data: {
-        result: { docs, limit, page, totalDocs, totalPages },
-      },
+      data: { result },
     } = await clienteAxios.post<MyResponse>("/producto", params);
-    console.log({ docs });
     return {
       error: {
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result,
     };
   } catch (error: any) {
     return {

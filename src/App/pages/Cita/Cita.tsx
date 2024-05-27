@@ -281,7 +281,7 @@ export const Cita = ({ dontChangePath }: FromAnotherComponent) => {
               <ModalRoute
                 citasData={citasData}
                 cargando={cargando}
-                prevPath={path}
+                
               />
             }
           />

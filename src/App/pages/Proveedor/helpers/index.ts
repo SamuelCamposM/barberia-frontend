@@ -73,7 +73,7 @@ export const getProveedors: getProveedorsType = async (
   try {
     const {
       data: {
-        result: { docs, limit, page, totalDocs, totalPages },
+        result
       },
     } = await clienteAxios.post<MyResponse>("/proveedor", params);
 
@@ -82,7 +82,7 @@ export const getProveedors: getProveedorsType = async (
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result
     };
   } catch (error: any) {
     const errorResult = {

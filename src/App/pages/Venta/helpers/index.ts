@@ -120,7 +120,7 @@ export const getVentas: getVentasType = async (arg: setDataProps) => {
   try {
     const {
       data: {
-        result: { docs, limit, page, totalDocs, totalPages },
+        result
       },
     }: MyResponse = await clienteAxios.post("/venta", arg);
 
@@ -129,7 +129,7 @@ export const getVentas: getVentasType = async (arg: setDataProps) => {
         error: false,
         msg: "",
       },
-      result: { docs, limit, page, totalDocs, totalPages },
+      result
     };
   } catch (error: any) {
     const errorResult = {

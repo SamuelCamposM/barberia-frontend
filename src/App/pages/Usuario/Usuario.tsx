@@ -296,7 +296,7 @@ export const Usuario = ({ dontChangePath }: FromAnotherComponent) => {
               <ModalRoute
                 usuariosData={usuariosData}
                 cargando={cargando}
-                prevPath={path}
+                
               />
             }
           />

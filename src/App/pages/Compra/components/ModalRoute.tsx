@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { useCompraStore } from "../hooks/useCompraStore";
 import { ModalCompra } from "./ModalCompra";
 import { CompraItem } from "../interfaces";
-import { getSubPath, isThereNextPath } from "../../../../helpers";
+import { getSubPath} from "../../../../helpers";
 
 export const ModalRoute = ({
   comprasData,
   cargando,
-  prevPath,
+  
 }: {
   comprasData: CompraItem[];
   cargando: boolean;
-  prevPath: string;
+  
 }) => {
   const { setOpenModal, setItemActive, itemDefault, itemActive } =
     useCompraStore();

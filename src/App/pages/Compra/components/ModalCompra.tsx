@@ -132,7 +132,6 @@ export const ModalCompra = () => {
       gastoTotal: valuesCompra.dataCompra.gastoTotal,
       totalProductos: valuesCompra.dataCompra.totalProductos,
     };
-    console.log({ formAllData });
 
     socket?.emit(
       SocketEmitCompra.editar,

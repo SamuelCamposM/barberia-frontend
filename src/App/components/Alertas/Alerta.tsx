@@ -16,8 +16,7 @@ export const Alerta = () => {
                   color: "error",
                   Icon: Check,
                   name: "Si",
-                  onClick() {
-                    console.log("Confirmando");
+                  onClick() { 
                   },
                   size: "small",
                   tipo: "boton",
