@@ -185,7 +185,7 @@ export const StaticProducto = ({
       </StyledTableRow>
       <TableRow sx={{ padding: 0 }}>
         <StyledTableCell colSpan={columns.length / 2}>
-          <Collapse in={expandir} timeout="auto">
+          <Collapse in={expandir} timeout="auto" mountOnEnter>
             <StyledContainerSubTable>
               <StocksProducto _id={producto._id || ""} />
             </StyledContainerSubTable>

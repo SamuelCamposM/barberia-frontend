@@ -1,86 +1,153 @@
-import { Action, FromAnotherComponent, Sort } from "../../../interfaces/global";
-import { AddCircle, Cancel, Create, Refresh } from "@mui/icons-material";
-import { Box, TableBody } from "@mui/material";
-import { useCallback, useEffect, useMemo } from "react";
-import { columns, sortDefault } from "./helpers";
+import { Action, FromAnotherComponent } from "../../../interfaces/global";
+import {
+  AddCircle,
+  Cancel,
+  Create,
+  ExpandLess,
+  ExpandMore,
+  Refresh,
+} from "@mui/icons-material";
+import { Box, Collapse, TableBody, TableRow } from "@mui/material";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { columns, getParents, removeDuplicates } from "./helpers";
 import { ModalRoute } from "./components/ModalRoute";
-import { PaperContainerPage } from "../../components/style";
+import {
+  PaperContainerPage,
+  StyledContainerSubTable,
+  StyledTableCell,
+} from "../../components/style";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { StaticPage, PageItem, setDataProps, useSocketEvents } from ".";
 import { TableHeader } from "../../components/Tabla/TableHeader";
 import { TableNoData } from "../../components/Tabla/TableNoData";
-import { useCommonStates } from "../../hooks";
 
 import { usePageStore } from "./hooks/usePageStore";
 import queryString from "query-string";
-import { getSubPath, validateFunction } from "../../../helpers";
+import { getSubPath, normalize, validateFunction } from "../../../helpers";
 import { Acciones, Buscador, TablaLayout, TableTitle } from "../../components";
+
+const generarRows = (
+  data: PageItem[],
+  setOpen: React.Dispatch<React.SetStateAction<{ [x: string]: boolean }>>,
+  open: { [x: string]: boolean },
+  handleEditar: (itemEditing: PageItem) => Promise<void>,
+  itemActive: PageItem,
+  padreId: string = ""
+) => {
+  return data
+    .filter(({ padre }) => padre === padreId)
+    .map((page) => {
+      return (
+        <React.Fragment key={page._id}>
+          <StaticPage
+            key={page._id}
+            page={page}
+            handleEditar={handleEditar}
+            itemActive={itemActive}
+            actionsJoins={[
+              {
+                ocultar: page.tipo !== "SECCION",
+                color: "primary",
+                Icon: open[page._id!] ? ExpandLess : ExpandMore,
+                name: "Expandir",
+                onClick: () => {
+                  setOpen({ ...open, [page._id!]: !open[page._id!] });
+                },
+                tipo: "icono",
+                size: "small",
+              },
+            ]}
+          />
+          {page.tipo === "SECCION" && (
+            <TableRow sx={{ padding: 0 }}>
+              <StyledTableCell colSpan={columns.length}>
+                <Collapse in={open[page._id!]} timeout="auto" unmountOnExit>
+                  <StyledContainerSubTable>
+                    <TableTitle texto={page.nombre} align="left" />
+                    <Box
+                      display={"flex"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                    ></Box>
+                    <TablaLayout maxHeight="30vh">
+                      <TableHeader columns={columns} />
+                      <TableBody>
+                        {data.length === 0 ? (
+                          <TableNoData
+                            length={columns.length}
+                            title="No hay Pages"
+                          />
+                        ) : (
+                          generarRows(
+                            data,
+                            setOpen,
+                            open,
+                            handleEditar,
+                            itemActive,
+                            page._id
+                          )
+                        )}
+                      </TableBody>
+                    </TablaLayout>
+                  </StyledContainerSubTable>
+                </Collapse>
+              </StyledTableCell>
+            </TableRow>
+          )}
+        </React.Fragment>
+      );
+    });
+};
 
 export const Page = ({ dontChangePath }: FromAnotherComponent) => {
   // Hooks de navegación y rutas.
   // Importaciones y definiciones de estado
   const navigate = useNavigate();
   const { noTienePermiso, data: dataPage, getPathPage } = usePageStore();
-  console.log({ dataPage });
 
   const { path } = useMemo(() => getPathPage("Page", false), [dataPage]);
   const { setItemActive, setOpenModal, itemActive, openModal, itemDefault } =
     usePageStore();
 
-  const { buscando, busqueda, setBuscando, setBusqueda, setSort, sort } =
-    useCommonStates(sortDefault);
+  const [pagesData, setPagesData] = useState<PageItem[]>([]);
+  const [buscando, setBuscando] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
 
-  const sortFunction = (newSort: Sort) => {
-    setData({ busqueda, sort: newSort });
-  };
   const searchFunction = (newBuscando: boolean, value: string) => {
     setBuscando(newBuscando);
     setData({
-      sort,
       busqueda: value,
     });
   };
 
-  // Función asíncrona para obtener y establecer datos.
-  const setData = async ({}: // pagination,
-  // sort,
-  // busqueda,
-  // estado,
-  // tipoPage,
-  setDataProps) => {
-    // setCargando(true);
-    // const { error, result } = await getPages({
-    //   pagination,
-    //   sort,
-    //   busqueda,
-    //   estado,
-    //   tipoPage,
-    // });
-    // if (error.error) {
-    //   toast.error(error.msg);
-    //   return;
-    // }
-    // const { docs, ...rest } = result;
-    // setPagination(rest);
-    // setPagesData(docs);
-    // setSort(sort);
-    // setBusqueda(busqueda);
-    // setCargando(false);
-    // setEstado(estado);
-    // setTipoPage(tipoPage);
+  // Uso de la función
+  const setData = async ({ busqueda }: setDataProps) => {
+    if (busqueda !== "") {
+      const children = dataPage.filter((page) =>
+        normalize(page.nombre).includes(normalize(busqueda))
+      );
+      console.log({ children });
+      const parents = getParents(children, dataPage);
+      setBusqueda(busqueda);
+      let uniqueArray = removeDuplicates([...children, ...parents]);
+      const object: { [x: string]: boolean } = {};
+      uniqueArray.forEach((pageUnique) => {
+        object[pageUnique._id!] = true;
+      });
+      setOpen(object);
+      setPagesData(uniqueArray);
+    } else {
+      setBusqueda(busqueda);
+      setPagesData(dataPage);
+    }
   };
 
   // Efectos secundarios para la sincronización con la URL y sockets.
-  const {
-    q = "",
-    buscando: buscandoQuery,
-    pagination: paginationQuery,
-    sort: sortQuery,
-  } = queryString.parse(location.search) as {
+  const { q = "", buscando: buscandoQuery } = queryString.parse(
+    location.search
+  ) as {
     q: string;
     buscando: string;
-    pagination: string;
-    sort: string;
   };
 
   useEffect(() => {
@@ -88,36 +155,24 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
       let params = new URLSearchParams(window.location.search);
       params.set("q", busqueda);
       params.set("buscando", buscando ? "true" : "false");
-      params.set("sort", JSON.stringify(sort));
       navigate(`?${params.toString()}`, { replace: true });
     }
-  }, [busqueda, buscando, sort]);
+  }, [busqueda, buscando]);
 
   useEffect(() => {
     if (dontChangePath) {
-      const estaBuscando = Boolean(buscandoQuery === "true");
-      setBuscando(estaBuscando);
-      // setData({
-      //   pagination,
-      //   sort,
-      //   busqueda,
-      //   estado,
-      //   tipoPage,
-      // });
+      setBuscando(false);
+      setData({
+        busqueda,
+      });
     } else {
       const estaBuscando = Boolean(buscandoQuery === "true");
       setBuscando(estaBuscando);
-      // setData({
-      //   pagination: paginationQuery
-      //     ? JSON.parse(paginationQuery)
-      //     : paginationDefault,
-      //   sort: sortQuery ? JSON.parse(sortQuery) : sort,
-      //   busqueda: estaBuscando ? q : "",
-      //   estado: estadoQuery ? estadoQuery === "true" : estado,
-      //   tipoPage: tipoPageQuery,
-      // });
+      setData({
+        busqueda: estaBuscando ? q : "",
+      });
     }
-  }, []);
+  }, [dataPage]);
   useSocketEvents();
   const nuevoActive = useMemo(() => itemActive.crud?.agregando, [itemActive]);
 
@@ -128,7 +183,6 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
       name: "Actualizar",
       onClick: () =>
         setData({
-          sort,
           busqueda: q,
         }),
       tipo: "icono",
@@ -185,6 +239,7 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
       if (noTienePermiso("Page", "update")) {
         return;
       }
+      console.log(itemEditing);
 
       const canActive = await setItemActive(itemEditing);
       if (canActive) {
@@ -195,7 +250,7 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
     },
     [dataPage, itemActive]
   );
-
+  const [open, setOpen] = useState<{ [x: string]: boolean }>({});
   return (
     <>
       <PaperContainerPage
@@ -219,11 +274,14 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
           />
         </Routes>
         <Buscador
-          label="Buscar por Page, Marca y Categoria"
+          label="Buscar por: Nombre"
           buscando={buscando}
           cargando={false}
           onSearch={(value) => searchFunction(true, value)}
-          onSearchCancel={() => searchFunction(false, "")}
+          onSearchCancel={() => {
+            searchFunction(false, "");
+            setOpen({});
+          }}
         />
 
         <TableTitle texto={path} />
@@ -235,27 +293,12 @@ export const Page = ({ dontChangePath }: FromAnotherComponent) => {
           <Acciones actions={actions} />
         </Box>
         <TablaLayout>
-          <TableHeader
-            columns={columns}
-            sort={sort}
-            sortFunction={sortFunction}
-          />
-
+          <TableHeader columns={columns} />
           <TableBody>
-            {dataPage.length === 0 ? (
+            {pagesData.length === 0 ? (
               <TableNoData length={columns.length} title="No hay Page" />
             ) : (
-              dataPage.map((page) => {
-                return (
-                  <StaticPage
-                    key={page._id}
-                    page={page}
-                    busqueda={busqueda}
-                    handleEditar={handleEditar}
-                    itemActive={itemActive}
-                  />
-                );
-              })
+              generarRows(pagesData, setOpen, open, handleEditar, itemActive)
             )}
           </TableBody>
         </TablaLayout>

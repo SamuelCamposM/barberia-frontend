@@ -1,4 +1,4 @@
-import { Crud, Sort } from "../../../../interfaces/global";
+import { Crud } from "../../../../interfaces/global";
 import { Roles } from "../../../../store/interfaces";
 import { UsuarioForeign } from "../../Usuario";
 
@@ -25,7 +25,6 @@ export interface PageItem {
 
 export interface setDataProps {
   busqueda: string;
-  sort: Sort;
 }
 export interface PageState {
   data: PageItem[];

@@ -44,11 +44,11 @@ export const ModalRoute = ({
         }
       }
     }
-    return () => {
-      if (!isThereNextPath(prevPath)) {
-        setItemActive(itemDefault, true);
-      }
-    };
+      // return () => {
+    //   if (!isThereNextPath(prevPath)) {
+    //     setItemActive(itemDefault, true);
+    //   }
+    // };
   }, [_id, cargando]);
 
   return <ModalVenta />;

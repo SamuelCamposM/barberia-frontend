@@ -115,6 +115,11 @@ export const StyledListItem = styled(ListItem)(
     },
 
     ".link--active": {
+      svg: { 
+        color: theme.palette.primary.contrastText,
+        transitionProperty: "background",
+        transitionDuration: "0.5s",
+      },
       background: agregarTransparencia(theme.palette.primary.light, 0.5),
       color: theme.palette.primary.contrastText,
       transitionProperty: "background",

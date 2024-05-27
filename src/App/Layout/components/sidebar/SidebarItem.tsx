@@ -46,6 +46,7 @@ export const SidebarItem = ({
               sx={{
                 display: "flex",
                 justifyContent: "center",
+          
               }}
             >
               {ConvertirIcono(page.icono, "medium", "primary")}

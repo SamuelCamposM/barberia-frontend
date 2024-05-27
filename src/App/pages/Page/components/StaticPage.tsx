@@ -13,8 +13,7 @@ export const StaticPage = ({
   handleEditar,
   itemActive,
 }: {
-  page: PageItem;
-  busqueda: string;
+  page: PageItem; 
   actionsJoins?: Action[];
   handleEditar: (itemEditing: PageItem) => void;
   itemActive: PageItem;
@@ -66,7 +65,6 @@ export const StaticPage = ({
           ></Acciones>
         </StyledTableCell>
         <>
-          {" "}
           <StyledTableCell>{page.nombre}</StyledTableCell>
           <StyledTableCell>
             <Box sx={{ display: "flex", alignItems: "center" }}>

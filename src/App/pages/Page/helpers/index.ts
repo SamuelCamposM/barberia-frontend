@@ -52,41 +52,31 @@ export const columnsStocks: Column[] = [
   { label: "Cantidad", minWidth: 200 },
 ];
 
-// interface Result extends Pagination {
-//   docs: PageItem[];
-// }
+export const removeDuplicates = (array: PageItem[]) => {
+  let ids = array.map((obj) => obj._id); // Obtén los ids de todos los objetos
+  return array.filter((obj, index) => {
+    return ids.indexOf(obj._id) === index; // Retorna solo el primer objeto de cada id
+  });
+};
 
-// interface MyResponse {
-//   result: Result;
-// }
+export const getParents = (
+  children: PageItem[],
+  allData: PageItem[],
+  allParents: PageItem[] = []
+): PageItem[] => {
+  // Encuentra los padres actuales
+  const currentParents = allData.filter((padre) =>
+    children.some((child) => child.padre === padre._id)
+  );
 
-// type getPagesType = (params: setDataProps) => Promise<{
-//   error: ErrorBackend;
-//   result: Result;
-// }>;
+  // Si no hay padres actuales, retorna todos los padres encontrados
+  if (currentParents.length === 0) {
+    return allParents;
+  }
 
-// export const getPages: getPagesType = async (params) => {
-//   try {
-//     const {
-//       data: {
-//         result: { docs, limit, page, totalDocs, totalPages },
-//       },
-//     } = await clienteAxios.post<MyResponse>("/page", params);
-//     console.log({ docs });
-//     return {
-//       error: {
-//         error: false,
-//         msg: "",
-//       },
-//       result: { docs, limit, page, totalDocs, totalPages },
-//     };
-//   } catch (error: any) {
-//     return {
-//       error: {
-//         error: true,
-//         msg: error?.response?.data?.msg || "Error al consultar las pages",
-//       },
-//       result: { docs: [], ...paginationDefault },
-//     };
-//   }
-// };
+  // Si hay padres actuales, añádelos a todos los padres
+  allParents.push(...currentParents);
+
+  // Llama a getParents de nuevo con los padres actuales
+  return getParents(currentParents, allData, allParents);
+};

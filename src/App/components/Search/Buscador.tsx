@@ -47,7 +47,7 @@ export const Buscador = ({
     onSearch(formValues.search);
   };
   return (
-    <Box component={"form"} onSubmit={onSubmit}>
+    <Box component={"form"} onSubmit={onSubmit} sx={{width:"100%"}}>
       <TextField
         autoFocus
         fullWidth

@@ -1,5 +1,5 @@
 import { ConvertirComponente, convertirPath } from "../../helpers";
-import { lazy } from "react";
+import React, { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "../../hooks";
 import { Cargando } from "../components";
@@ -19,14 +19,14 @@ const generarRutas = (
       const newPath = path + convertirPath(page.nombre);
 
       return (
-        <>
+        <React.Fragment key={page._id}>
           <Route
             key={page._id}
             path={newPath + "/*"}
             element={ConvertirComponente(page.componente)}
           ></Route>
           {generarRutas(data, page._id, newPath + "/")}
-        </>
+        </React.Fragment>
       );
     });
 };
