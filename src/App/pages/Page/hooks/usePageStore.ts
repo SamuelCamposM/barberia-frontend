@@ -14,7 +14,11 @@ import { getPages } from "../../../Layout/helpers";
 import { toast } from "react-toastify";
 import { useCallback } from "react";
 import { Components, tipoPermiso } from "../../../../interfaces/global";
-import { ConvertirIcono, convertirPath } from "../../../../helpers";
+import {
+  ConvertirIcono,
+  convertirPath,
+  obtenerUltimaRuta,
+} from "../../../../helpers";
 export const usePageStore = () => {
   const { openModal, itemActive, itemDefault, data, cargando } = useSelector(
     (state: RootState) => state.page
@@ -186,7 +190,32 @@ export const usePageStore = () => {
       };
     }
   };
+  const getChildren = (): {
+    error: boolean;
+    padreFind?: PageItem;
+    children: PageItem[];
+  } => {
+    const ruta = obtenerUltimaRuta(location.pathname);
+    const padreFind = data.find(
+      (itemFinding) => convertirPath(itemFinding.nombre) === ruta
+    );
 
+    if (!padreFind) {
+      return {
+        error: true,
+        padreFind,
+        children: [],
+      };
+    }
+    const children = data.filter(
+      (pageFilter) => pageFilter.padre === padreFind._id
+    );
+    return {
+      error: false,
+      padreFind,
+      children,
+    };
+  };
   return {
     //Propiedades
     openModal,
@@ -202,5 +231,6 @@ export const usePageStore = () => {
     noTienePermiso,
     getPathPage,
     onAgregarPage,
+    getChildren,
   };
 };

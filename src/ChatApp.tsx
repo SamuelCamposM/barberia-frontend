@@ -1,4 +1,4 @@
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { AppRouter } from "./router";
 import { Provider } from "react-redux";
 import { store } from "./store";
@@ -11,11 +11,11 @@ export const ChatApp = () => {
     <Provider store={store}>
       <SocketProvider>
         <AppTheme>
-          <BrowserRouter>
+          <HashRouter>
             <Box height={"100vh"}>
               <AppRouter />
             </Box>
-          </BrowserRouter>
+          </HashRouter>
         </AppTheme>
       </SocketProvider>
     </Provider>

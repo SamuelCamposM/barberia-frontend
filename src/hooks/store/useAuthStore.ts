@@ -54,6 +54,8 @@ export const useAuthStore = () => {
       localStorage.setItem("token-init-data", new Date().getTime().toString());
       dispatch(onSliceLogin(rest));
     } catch (error: any) {
+      console.log({error});
+      
       const msgError = error?.response?.data?.msg || "Error al registrarse";
       dispatch(onSliceLogout(msgError));
       setTimeout(() => {

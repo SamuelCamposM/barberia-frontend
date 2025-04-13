@@ -13,7 +13,7 @@ export const TablaLayout = ({
       sx={{
         maxHeight,
       }}
-      className={maxHeight ? "" : "animate__animated animate__fadeInUp"}
+      className={maxHeight ? "" : "animate__animated animate__faster animate__fadeInUp animate__faster"}
     >
       <Table size="small" stickyHeader aria-label="sticky table">
         {children}

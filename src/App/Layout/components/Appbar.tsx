@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { AppBarHeader } from "./styled";
-import { ContentCut, MenuTwoTone } from "@mui/icons-material";
+import { MenuTwoTone } from "@mui/icons-material";
 import { useAuthStore, useUiStore } from "../../../hooks";
 import { ModalProfile } from "./ModalProfile";
 export const Appbar = () => {
@@ -19,9 +19,8 @@ export const Appbar = () => {
   const { onToogleSidebar, onToogleSidebarMobile, setOpenProfileModal } =
     useUiStore();
 
-  const [anchorElUsuario, setAnchorElUsuario] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElUsuario, setAnchorElUsuario] =
+    React.useState<null | HTMLElement>(null);
 
   const handleOpenUsuarioMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUsuario(event.currentTarget);
@@ -59,9 +58,8 @@ export const Appbar = () => {
           )}
 
           <Box className="boxEmpresa">
-            <ContentCut className="logoEmpresa" />
             <Typography variant="h6" noWrap className="textoEmpresa">
-              PIBES' BARBERSHOP
+              BETTLE SHOES
             </Typography>
           </Box>
           <Box>

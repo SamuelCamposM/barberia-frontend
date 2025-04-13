@@ -115,24 +115,24 @@ export const columnsStocks: Column[] = [
   { label: "Cantidad", minWidth: 200 },
 ];
 
-interface Result extends Pagination {
-  docs: ProductoItem[];
-}
-
 interface MyResponse {
-  result: Result;
+  result: {
+    docs: ProductoItem[];
+  } & Pagination;
 }
 
-type getProductosType = (params: setDataProps) => Promise<{
+export const getProductos = async (
+  params: setDataProps
+): Promise<{
   error: ErrorBackend;
-  result: Result;
-}>;
-
-export const getProductos: getProductosType = async (params) => {
+  result: MyResponse['result'];
+}> => {
   try {
     const {
       data: { result },
     } = await clienteAxios.post<MyResponse>("/producto", params);
+    console.log(result);
+
     return {
       error: {
         error: false,

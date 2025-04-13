@@ -45,3 +45,10 @@ export const hasSubroute = (pathname: string, path: string) => {
   // Si hay un segmento después del segmento de ruta, devuelve true
   return pathIndex < segments.length - 1;
 };
+export const obtenerUltimaRuta = (url: string) => {
+  // Divide la URL en segmentos basándose en las barras diagonales
+  const segmentos = url.split("/");
+
+  // Devuelve el último segmento no vacío
+  return segmentos.reverse().find((segmento) => segmento !== "");
+};

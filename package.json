@@ -9,7 +9,14 @@
     "build": "tsc && vite build",
     "build:electron": "tsc && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-electron": "electron-builder"
+  },
+  "build": {
+    "files": [
+      "dist/**/*",
+      "src-electron/**/*"
+    ]
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

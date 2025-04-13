@@ -48,7 +48,7 @@ export const ContentRouter = () => {
       <Route path={"/chat/*"} element={<ChatPage />} />
       <Route
         path="*"
-        element={<Navigate replace to={convertirPath(data[0].nombre)} />}
+        element={<Navigate replace to={convertirPath(data[4].nombre)} />}
       />
     </Routes>
   );

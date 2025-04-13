@@ -148,6 +148,7 @@ export const ModalProducto = () => {
       rUsuario: formatUsuarioForeign(usuario),
       ...values,
     };
+    console.log(formAllData);
 
     socket?.emit(
       SocketEmitProducto.agregar,
@@ -175,6 +176,7 @@ export const ModalProducto = () => {
       eUsuario: formatUsuarioForeign(usuario),
       ...values,
     };
+    console.log({ data: formAllData, eliminados });
 
     socket?.emit(
       SocketEmitProducto.editar,
