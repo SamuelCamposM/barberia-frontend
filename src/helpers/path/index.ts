@@ -11,13 +11,13 @@ export const convertirPath = (nombre: string) => {
   return nombre;
 };
 export const getSubPath = () => {
-  const parts = location.pathname.split("/");
+  const parts = location.hash.split("/");
   let params = new URLSearchParams(window.location.search);
   parts.pop(); // Elimina el último elemento del array
   return `${parts.join("/")}?${params.toString()}`; // Une los elementos del array en una cadena
 };
 export const isThereNextPath = (prevPath: string): boolean => {
-  const pathname = location.pathname;
+  const pathname = location.hash;
   // Eliminamos las barras diagonales al principio y al final para normalizar los paths
   const normalizedPathname = pathname.replace(/^\/|\/$/g, "");
 

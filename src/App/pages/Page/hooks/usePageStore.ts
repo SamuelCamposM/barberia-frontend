@@ -195,10 +195,13 @@ export const usePageStore = () => {
     padreFind?: PageItem;
     children: PageItem[];
   } => {
-    const ruta = obtenerUltimaRuta(location.pathname);
+    const ruta = obtenerUltimaRuta(location.hash);
+    console.log({ ruta });
+
     const padreFind = data.find(
       (itemFinding) => convertirPath(itemFinding.nombre) === ruta
     );
+    console.log({ padreFind });
 
     if (!padreFind) {
       return {
@@ -207,6 +210,8 @@ export const usePageStore = () => {
         children: [],
       };
     }
+    console.log({ data });
+
     const children = data.filter(
       (pageFilter) => pageFilter.padre === padreFind._id
     );

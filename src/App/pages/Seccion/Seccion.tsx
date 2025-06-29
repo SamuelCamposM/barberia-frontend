@@ -16,7 +16,7 @@ export const Seccion = () => {
   const { getChildren, data } = usePageStore();
   const { children, padreFind } = useMemo(() => {
     return getChildren();
-  }, [data, location.pathname]);
+  }, [data, location.hash]);
 
   const navigate = useNavigate();
   return (
